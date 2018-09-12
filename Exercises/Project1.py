@@ -4,6 +4,9 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import numpy as np
 from random import random, seed
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 fig = plt.figure()
 ax = fig.gca(projection='3d')
 # Make data.
@@ -17,6 +20,14 @@ def FrankeFunction(x,y):
     term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
     return term1 + term2 + term3 + term4
 z = FrankeFunction(x, y)
+
+#xb = np.c_[np.ones((100,1)), x, x**2]
+#beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(y)
+polyreg = PolynomialFeatures(degree=2)
+xb = polyreg.fit_transform(x)
+linreg = LinearRegression()
+linreg.fit(xb,y)
+ypredict_mse = linreg.predict(xb)
 # Plot the surface.
 surf = ax.plot_surface(x, y, z, cmap=cm.coolwarm,
                        linewidth=0, antialiased=False)
@@ -27,3 +38,5 @@ ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.show()
+
+print("Mean squared error: %.2f" % mean_squared_error(z, ypredict_mse))
