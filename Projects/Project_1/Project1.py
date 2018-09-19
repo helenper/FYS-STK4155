@@ -1,9 +1,11 @@
 ####################
 # Project 1 
 # FYS-STK 3155/4155
-# 2018 
+# Autom 2018 
 ####################
 
+
+# Franke function - given in exercise
 
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
@@ -47,3 +49,8 @@ fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.show()
 
 print("Mean squared error: %.2f" % mean_squared_error(z, ypredict_mse))
+
+
+
+
+
