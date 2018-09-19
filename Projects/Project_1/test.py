@@ -32,22 +32,22 @@ z = FrankeFunction(x, y)
 
 xb = np.c_[np.ones((10000,1)), x, y, x**2, x*y, y**2]
 beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(z)
-xnew = np.random.random(size=(50, 1)) + 1
-ynew = np.random.random(size=(50,1)) +1
-xbnew = np.c_[np.ones((50,1)), xnew,ynew, xnew*ynew, xnew**2, ynew**2]
+xnew = np.random.random(size=(10000, 1)) + 1
+ynew = np.random.random(size=(10000,1)) +1
+xbnew = np.c_[np.ones((10000,1)), xnew,ynew, xnew*ynew, xnew**2, ynew**2]
 zpredict = xbnew.dot(beta)
-print(np.shape(beta), np.shape(xb), np.shape(y))
+print(np.shape(zpredict))
 #scitkitlearn
 polyreg = PolynomialFeatures(degree=2)
 xb = polyreg.fit_transform(x, y)
 linreg = LinearRegression()
 linreg.fit(xb,z)
-xnew = np.random.random(size=(100, 1)) + 1
+xnew = np.random.random(size=(10000, 1)) + 1
 xbnew = polyreg.fit_transform(xnew)
 zpredict_ = linreg.predict(xbnew)
 
 zpredict_mse = linreg.predict(xb)
-print(np.shape(xb))
+print(np.shape(xb), np.shape(zpredict_mse))
 #RSS = (z-xb.dot(beta)).T.dot((z - xb.dot(beta))) 
 
 
@@ -63,7 +63,7 @@ def MSE(y, y_tilde):
 
 z = z.reshape(-1,1)
 zpredict = zpredict.reshape(-1,1)
-print('Mean squared error: %.5f' % MSE(z, zpredict_mse))
+print('Mean squared error: %.5f' % MSE(z, zpredict))
 print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict_mse))
 
 
