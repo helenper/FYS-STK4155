@@ -1,3 +1,10 @@
+####################
+# Project 1 
+# FYS-STK 3155/4155
+# 2018 
+####################
+
+
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib import cm
