@@ -37,6 +37,7 @@ ynew = np.random.random(size=(10000,1)) +1
 xbnew = np.c_[np.ones((10000,1)), xnew,ynew, xnew*ynew, xnew**2, ynew**2]
 zpredict = xbnew.dot(beta)
 print(np.shape(zpredict))
+
 #scitkitlearn
 polyreg = PolynomialFeatures(degree=2)
 xb = polyreg.fit_transform(x, y)
@@ -63,9 +64,16 @@ def MSE(y, y_tilde):
 
 z = z.reshape(-1,1)
 zpredict = zpredict.reshape(-1,1)
-print('Mean squared error: %.5f' % MSE(z, zpredict))
-print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict_mse))
 
+# Why should we use mse? 
+#print('Mean squared error: %.5f' % MSE(z, zpredict_mse))
+#print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict_mse))
+
+
+# This gives equal answers
+print('Mean squared error: %.5f' % MSE(z, zpredict_))
+print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict_))
+#print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict))
 
 # Explained variance score: 1 is perfect prediction      
 def R_2(y, y_tilde):
