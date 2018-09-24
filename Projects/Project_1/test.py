@@ -34,8 +34,8 @@ xb = np.c_[np.ones((10000,1)), x, y, x**2, x*y, y**2]
 beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(z)
 xnew = np.random.random(size=(10000, 1)) #+ 1
 ynew = np.random.random(size=(10000,1)) #+1
-xbnew = np.c_[np.ones((10000,1)), xnew,ynew, xnew*ynew, xnew**2, ynew**2]
-zpredict = xb.dot(beta)
+xbnew = np.c_[np.ones((10000,1)), xnew,ynew, xnew**2, xnew*ynew, ynew**2]
+zpredict = xbnew.dot(beta)
 print(np.shape(zpredict))
 
 #scitkitlearn
@@ -43,8 +43,8 @@ polyreg = PolynomialFeatures(degree=2)
 xb = polyreg.fit_transform(x, y)
 linreg = LinearRegression()
 linreg.fit(xb,z)
-xnew = np.random.random(size=(10000, 1)) + 1
-xbnew = polyreg.fit_transform(xnew)
+#xnew = np.random.random(size=(10000, 1)) #+ 1
+xbnew = polyreg.fit_transform(xnew, ynew)
 zpredict_ = linreg.predict(xbnew)
 
 zpredict_mse = linreg.predict(xb)
@@ -72,7 +72,7 @@ zpredict = zpredict.reshape(-1,1)
 
 # This gives equal answers
 print('Mean squared error: %.5f' % MSE(z, zpredict))
-print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict_mse))
+print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict_))
 #print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict))
 
 # Explained variance score: 1 is perfect prediction      
@@ -87,7 +87,7 @@ def R_2(y, y_tilde):
     return 1-r2_calc
 
 print('Variance score: %.2f' % R_2(z, zpredict))
-print('Variance score scitkitlearn: %.2f' % r2_score(z, zpredict_mse))
+print('Variance score scitkitlearn: %.2f' % r2_score(z, zpredict_))
 
 #print()
 
