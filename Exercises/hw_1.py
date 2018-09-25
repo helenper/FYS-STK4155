@@ -11,6 +11,7 @@ y = 5*x**2+0.1*np.random.randn(100,1)
 #2a
 xb = np.c_[np.ones((100,1)), x, x**2]
 beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(y)
+print('beta=', beta)
 xnew = np.random.random(size=(50, 1)) + 1
 xbnew = np.c_[np.ones((50,1)), xnew, xnew**2]
 ypredict = xbnew.dot(beta)

@@ -17,7 +17,7 @@ def FrankeFunction(x,y):
 
 
 
-n = 100   
+n = 10   
 num_rows = n    # Choose this to be number of x points
 num_cols = n    # Choose this to be number of y points
 
@@ -28,30 +28,40 @@ y = np.random.uniform(0.0,1.0, n)       # create a random number for y-values in
 x_, y_ = np.meshgrid(x,y) 
 x = x_.reshape(-1,1) # Reshape matrix to be a 1 coloum matrix
 y = y_.reshape(-1,1)  # Gives all combinations of x and y in two matrices
-z = FrankeFunction(x, y)
+print(np.shape(x), np.shape(y))
 
-xb = np.c_[np.ones((10000,1)), x, y, x**2, x*y, y**2]
+z = FrankeFunction(x, y) #+0.9*np.random.randn(1)
+z = np.ravel(z)
+xb = np.c_[np.ones((n*n,1)), x, y, x**2, x*y, y**2]
+#print('xb=',np.shape(xb))
+#print(xb)
 beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(z)
-xnew = np.random.random(size=(10000, 1)) #+ 1
-ynew = np.random.random(size=(10000,1)) #+1
-xbnew = np.c_[np.ones((10000,1)), xnew,ynew, xnew**2, xnew*ynew, ynew**2]
+xnew = np.random.random(size=(n*n, 1)) #+ 1
+ynew = np.random.random(size=(n*n,1)) #+1
+xbnew = np.c_[np.ones((n*n,1)), xnew,ynew, xnew**2, xnew*ynew, ynew**2]
 zpredict = xbnew.dot(beta)
-print(np.shape(zpredict))
-
+#print(np.shape(zpredict))
+print('beta = ', beta)
 #scitkitlearn
-polyreg = PolynomialFeatures(degree=2)
-xb = polyreg.fit_transform(x, y)
+polyreg = PolynomialFeatures(degree=3)
+#z = z.reshape(-1,1)
+xb = polyreg.fit_transform(xbnew, z)
+#yb = polyreg.fit_transform(y, z)
+#print('xb=',np.shape(xb), np.shape(yb))
+#print(xb)
 linreg = LinearRegression()
 linreg.fit(xb,z)
 #xnew = np.random.random(size=(10000, 1)) #+ 1
-xbnew = polyreg.fit_transform(xnew, ynew)
-zpredict_ = linreg.predict(xbnew)
+#xbnew = polyreg.fit_transform(xnew, ynew)
+#zpredict_ = linreg.predict(xbnew)
 
 zpredict_mse = linreg.predict(xb)
-print(np.shape(xb), np.shape(zpredict_mse))
+#print('xb=', np.shape(xb))
+#print(xb)
+#print(np.shape(xb), np.shape(zpredict_mse))
 #RSS = (z-xb.dot(beta)).T.dot((z - xb.dot(beta))) 
 
-
+print('Coefficient beta : \n', linreg.coef_)
 
 # The mean squared error  
 
@@ -72,7 +82,7 @@ zpredict = zpredict.reshape(-1,1)
 
 # This gives equal answers
 print('Mean squared error: %.5f' % MSE(z, zpredict))
-print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict_))
+print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict_mse))
 #print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict))
 
 # Explained variance score: 1 is perfect prediction      
@@ -87,7 +97,7 @@ def R_2(y, y_tilde):
     return 1-r2_calc
 
 print('Variance score: %.2f' % R_2(z, zpredict))
-print('Variance score scitkitlearn: %.2f' % r2_score(z, zpredict_))
+print('Variance score scitkitlearn: %.2f' % r2_score(z, zpredict_mse))
 
 #print()
 

@@ -73,7 +73,7 @@ print("Mean squared error: %.2f" % mean_squared_error(z, ypredict_mse))
     
 
 # Make the dataset
-n = 100							# number of datapoints
+n = 10							# number of datapoints
 x = np.random.uniform(0.0,1.0, n)		# create a random number for x-values in dataset
 y = np.random.uniform(0.0,1.0, n)		# create a random number for y-values in dataset with noise
 
@@ -97,7 +97,8 @@ xb= np.c_[np.ones((num_rows*num_cols,1)) , x, y, x**2, x*y, y**2, \
 
 
 
-z = FrankeFunction(x, y)
+#z = FrankeFunction(x, y)
+z = 2*x + y
 beta = np.linalg.inv(xb.T.dot(xb)).dot(xb.T).dot(z) 
 RSS = (y-xb.dot(beta)).T.dot((y - xb.dot(beta))) 
 
@@ -105,11 +106,12 @@ RSS = (y-xb.dot(beta)).T.dot((y - xb.dot(beta)))
 #x = np.sort(x.flatten())
 #print(type(x))
 #y = np.sort(y.flatten())
-x = np.linspace(0,1,100)
-y = np.linspace(0,1,100)
+#x = np.linspace(0,1,100)
+#y = np.linspace(0,1,100)
 
 x_, y_ = np.meshgrid(x,y)
-z = FrankeFunction(x_, y_) +0.9*np.random.randn(1)
+#z = FrankeFunction(x_, y_) +0.9*np.random.randn(1)
+
 
 zpredict = np.zeros((len(x), len(y)))
 for i in range(len(x)):
