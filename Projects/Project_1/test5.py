@@ -18,7 +18,7 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import numpy as np
 from random import random, seed
 from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 
 
@@ -87,7 +87,6 @@ print('Mean square error easy: %.5f' % mse)
 print('Mean squared error: %.5f' % MSE(z, zpredict))
 print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict))
 
-
 # Explained variance score: 1 is perfect prediction      
 def R_2(y, y_tilde):
     y_mean = np.mean(y)
@@ -104,6 +103,76 @@ R2 = 1- (np.sum((z-zpredict)**2))/(np.sum((z-np.mean(z))**2))
 print('Variance score easy: %.5f' % R2)
 print('Variance score: %.5f' % R_2(z, zpredict))
 print('Variance score scitkitlearn: %.5f' % r2_score(z, zpredict))
+"""
+#Some other variances:
+var=1.0/z.shape[0] *np.sum((z - np.mean(z))**2)
+betavar=1.0/z.shape[0] *np.sum((beta - np.mean(beta))**2)
+print('Variance:', var)
+print('Variance of beta', betavar)
+"""
+
+# Ridge and Lasso:
+np.random.seed(4155)
+
+n_samples = 100
+
+x_ = x-np.mean(x)
+y_ = y-np.mean(y)
+z_ = z-np.mean(z) #Needed?
+
+X_ = np.c_[x, y, x**2, x*y, y**2, \
+
+                x**3, x**2*y, x*y**2, y**3, \
+
+                x**4, x**3*y, x**2*y**2, x*y**3,y**4, \
+
+                x**5, x**4*y, x**3*y**2, x**2*y**3,x*y**4, y**5] # Check this! What is this?
+
+lmb_values = [1e-4, 1e-3, 1e-2, 10, 1e2, 1e4]
+num_values = len(lmb_values)
+
+## Ridge-regression of centered and not centered data
+beta_ridge = np.zeros((X.shape[1],num_values))
+beta_ridge_centered = np.zeros((X.shape[1],num_values))
+
+IX = np.eye(X.shape[1])
+IX_ = np.eye(X_.shape[1])
+
+for i,lmb in enumerate(lmb_values):
+    beta_ridge[:,i] = (np.linalg.inv( X.T @ X + lmb*IX) @ X.T @ z).flatten() #maybe change to pinv
+    beta_ridge_centered[1:,i] = (np.linalg.inv( X_.T @ X_ + lmb*IX_) @ X_.T @ z_).flatten() #pinv?
+
+# sett beta_0 = np.mean(z)
+beta_ridge_centered[0,:] = np.mean(z)
+
+## OLS (ordinary least squares) solution 
+beta_ls = np.linalg.inv( X.T @ X ) @ X.T @ z #pinv?
+
+## Evaluate the models
+pred_ls = X @ beta_ls
+pred_ridge =  X @ beta_ridge
+pred_ridge_centered =  X_ @ beta_ridge_centered[1:] + beta_ridge_centered[0,:]
+
+### R2-score of the results
+for i in range(num_values):
+    print('lambda = %g'%lmb_values[i])
+    #print('r2 for scikit: %g'%r2_score(z,pred_ridge_scikit[:,i]))
+    print('r2 for own code, not centered: %g'%r2_score(z,pred_ridge[:,i]))
+    print('r2 for own, centered: %g\n'%r2_score(z,pred_ridge_centered[:,i]))
+
+"""
+#Lasso:
+
+
+lasso=linear_model.Lasso(alpha=0.1)
+lasso.fit(X_train,y_train)
+predl=lasso.predict(X_test)
+print("Lasso Coefficient: ", lasso.coef_)
+print("Lasso Intercept: ", lasso.intercept_)
+
+"""
+
+
 
 
 
