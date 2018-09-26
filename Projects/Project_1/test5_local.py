@@ -321,16 +321,25 @@ plt.show()
 def bootstrap(data, percent):
     size = percent*len(data)
     train = np.random.choice(len(data),int(size))
-    test = set(range(len(data)) - set(train))
-    yield train, test
+    #test = list(set(range(len(data)) - set(train)))
+    #test = [i for i in range(len(data)) if i!= train[i]]
+    return train#, test
 
-X_train = np.zeros(len(X))
-X_test = np.zeros(len(X))
+print(bootstrap(X, 0.7).shape[0])
+print(bootstrap(X, 0.7))
+print(np.shape(X))
+
+
+for train_index in bootstrap(X, 0.7):
+    X_train= X[train_index] # we want the whole fucking row! Not only the 
+
+print(np.shape(X_train))
+print(X_train)
+"""
 for train_index, test_index in bootstrap(X,0.7):
     X_train[train_index] = X[train_index]
     X_test[test_index] = X[test_index]
-
-
+"""
 
 
 
