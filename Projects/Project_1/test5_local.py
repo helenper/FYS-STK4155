@@ -21,7 +21,18 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.metrics import mean_squared_error, r2_score
 from time import time
 import matplotlib.mlab as mlab
-
+from imageio import imread
+"""
+# Load the terrain
+terrain1 = imread(’n59_e010_1arc_v3.tif’)
+# Show the terrain
+plt.figure()
+plt.title(’Terrain over Norway 1’)
+plt.imshow(terrain1, cmap=’gray’)
+plt.xlabel(’X’)
+plt.ylabel(’Y’)
+plt.show()
+"""
 
 def FrankeFunction(x,y):
     term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
