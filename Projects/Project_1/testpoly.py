@@ -36,3 +36,7 @@ X = polynomialfunction(x, y, type=4) # Give your wish for degree as type
 
 print(np.shape(X))
 
+
+for i in range(N):
+    for j+1 in range(5):
+        X[j] = polynomialfunction(x,y, type=j)
