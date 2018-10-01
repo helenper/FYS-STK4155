@@ -306,8 +306,8 @@ r2score_Lasso = np.zeros((5,iterations))
 
 #mse_OLS[4][10] = 5
 #print(mse_OLS)
-lmb = 1e1
-alpha = 0.01
+lmb = 0.01
+alpha = 0.0001
 
 for i in range(iterations):
     train_indices, test_indices = bootstrap(z, 0.7)
@@ -384,6 +384,9 @@ r2score_Lasso_average5 = np.mean(r2score_Lasso[4])
 
 
 
+
+print("Lambda = ", lmb, "\n")
+print("alpha = ", alpha, "\n")
 
 
 print("The average mean sqared error for the different polynomial powers: \n")
