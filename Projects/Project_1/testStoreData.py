@@ -21,16 +21,49 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.metrics import mean_squared_error, r2_score
 from time import time
 import matplotlib.mlab as mlab
-#from imageio import imread
+from imageio import imread
 """
 # Load the terrain
-terrain1 = imread(’n59_e010_1arc_v3.tif’)
+#terrain1 = imread('terrainone.tif')
+#x, y = imread('terrainone.tif')
+terrain1 = imread('terrainone.tif')
+[n,m] = terrain1.shape
+
+    ## Find some random patches within the dataset and perform a fit
+
+patch_size_row = 100
+patch_size_col = 50
+
+    # Define their axes
+rows = np.linspace(0,1,patch_size_row)
+cols = np.linspace(0,1,patch_size_col)
+
+[C,R] = np.meshgrid(cols,rows)
+
+x = C.reshape(-1,1)
+y = R.reshape(-1,1)
+
+print(np.shape(x), np.shape(y))
+
+num_data = patch_size_row*patch_size_col
+
+    # Find the start indices of each patch
+
+num_patches = 5
+
+np.random.seed(4155)
+
+row_starts = np.random.randint(0,n-patch_size_row,num_patches)
+col_starts = np.random.randint(0,m-patch_size_col,num_patches)
 # Show the terrain
+print(np.shape(terrain1))
+"""
+"""
 plt.figure()
-plt.title(’Terrain over Norway 1’)
-plt.imshow(terrain1, cmap=’gray’)
-plt.xlabel(’X’)
-plt.ylabel(’Y’)
+plt.title('Terrain over Norway 1')
+plt.imshow(terrain1, cmap='gray')
+plt.xlabel('X')
+plt.ylabel('Y')
 plt.show()
 """
 
@@ -47,7 +80,7 @@ def FrankeFunction(x,y):
 n = 100					# number of datapoints
 x = np.random.uniform(0.0,1.0, n)       # create a random number for x-values in dataset
 y = np.random.uniform(0.0,1.0, n)       # create a random number for y-values in dataset with noise
-
+#print(np.shape(x), np.shape(y))
 def polynomialfunction(x, y, type):
     if type==1: 
         X = np.c_[np.ones((n,1)) , x, y]
@@ -147,10 +180,10 @@ def ridge(x, y, z, X, lmb):
     pred_ridge_centered =  X_ @ beta_ridge_centered + z_
     
     ### R2-score of the results
-    print('lambda = %g'%lmb)
+    #print('lambda = %g'%lmb)
     #print('r2 for scikit: %g'%r2_score(z,pred_ridge_scikit[:,i]))
-    print('r2 for own code, not centered: %g'%r2_score(z,pred_ridge))
-    print('r2 for own, centered: %g\n'%r2_score(z,pred_ridge_centered))
+    #print('r2 for own code, not centered: %g'%r2_score(z,pred_ridge))
+    #print('r2 for own, centered: %g\n'%r2_score(z,pred_ridge_centered))
     
     return quality(z, pred_ridge)
 
