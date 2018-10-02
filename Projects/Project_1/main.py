@@ -34,7 +34,7 @@ z = FrankeFunction(x, y) + noise*np.random.randn(1) # z with noise
 # value for MSE and R2 for the different methods OSL, Ridge and Lasso
 #---------------------------------------------------------------------
 
-iterations = 100		# number of times we split and save our calculations in train and test point
+iterations = 10		# number of times we split and save our calculations in train and test point
 
 # Create arrays to hold different values to be taken mean over later. 
 # Each arrray is a nested array, where the first index points to the degree of the polynomial
@@ -54,7 +54,7 @@ for i in range(iterations):
     train_indices, test_indices = bootstrap(z, 0.7)
     
     for j in range(5):
-        X = polynomialfunction(x,y,degree=(j+1))
+        X = polynomialfunction(x,y,n,degree=(j+1))
         X_train = X[train_indices]; #print(X_train.shape)
         X_test = X[test_indices]; #print(X_test.shape)
         z_train = z[train_indices];# print(z_train.shape)
@@ -62,7 +62,7 @@ for i in range(iterations):
 
         mse_OLS[j][i], r2score_OLS[j][i] = OLS(X_train,z_train)
 
-        mse_Ridge[j][i], r2score_Ridge[j][i] = ridge(x,y,z_train,X_train,lmb, write=0)
+        mse_Ridge[j][i], r2score_Ridge[j][i] = ridge(x,y,z_train,X_train,alpha, write=0)
 
         mse_Lasso[j][i], r2score_Lasso[j][i] = lasso(X_train,z_train,alpha)
 
@@ -128,7 +128,7 @@ r2score_Lasso_average5 = np.mean(r2score_Lasso[4])
 
 
 
-print("Lambda = ", lmb, "\n")
+#print("Lambda = ", lmb, "\n")
 print("alpha = ", alpha, "\n")
 
 
