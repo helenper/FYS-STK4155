@@ -19,7 +19,7 @@ np.random.seed(4155)
 # Make test-dataset and calculate Franke's function
 #---------------------------------------------------
 
-n = 100									# number of datapoints
+n = 1000									# number of datapoints
 x = np.random.uniform(0.0,1.0, n)       # create a random number for x-values in dataset
 y = np.random.uniform(0.0,1.0, n)       # create a random number for y-values in dataset
 noise = 0.1								# strengt of noise
@@ -34,7 +34,7 @@ z = FrankeFunction(x, y) + noise*np.random.randn(1) # z with noise
 # value for MSE and R2 for the different methods OSL, Ridge and Lasso
 #---------------------------------------------------------------------
 
-iterations = 10		# number of times we split and save our calculations in train and test point
+iterations = 10000		# number of times we split and save our calculations in train and test point
 
 # Create arrays to hold different values to be taken mean over later. 
 # Each arrray is a nested array, where the first index points to the degree of the polynomial
@@ -48,7 +48,7 @@ r2score_Lasso = np.zeros((5,iterations))
 
 
 # Parameter to be sendt into Lasso and Rigde 
-alpha = 0.0001
+alpha = 0.001
 
 for i in range(iterations):
     train_indices, test_indices = bootstrap(z, 0.7)
@@ -66,25 +66,6 @@ for i in range(iterations):
 
         mse_Lasso[j][i], r2score_Lasso[j][i] = lasso(X_train,z_train,alpha)
 
-
-"""
-train_indices, test_indices = bootstrap(z, 0.7)
-X = polynomialfunction(x,y,type=5)
-
-
-
-X_train = X[train_indices]; #print(X_train.shape)
-X_test = X[test_indices]; #print(X_test.shape)
-z_train = z[train_indices];# print(z_train.shape)
-z_test = z[test_indices]; #print(z_test.shape)
-mse_Ridge[0][0], r2score_Ridge[0][0] = ridge(x,y,z_train,X_train)
-mse_Lasso[0][0], r2score_Lasso[0][0] = lasso(X_train,z_train,alpha)
-mse_OLS[0][0], r2score_OLS[0][0] = OLS(X_train,z_train)
-print(z.shape[0])
-print(mse_Ridge[0][0])
-print(mse_Lasso[0][0])
-print(mse_OLS[0][0])
-"""
 
 mse_OLS_average1 = np.mean(mse_OLS[0])
 mse_OLS_average2 = np.mean(mse_OLS[1]) 
