@@ -11,7 +11,15 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter #, MaxNLocator
 
 #def plotStatistics()
 
-def plotMSE(mse_OLS, mse_Ridge, mse_Lasso):
+def plotMSE():#mse_OLS, mse_Ridge, mse_Lasso):
+    file = open('data.txt', 'r')
+    alpha = float(file.readline())
+    for line in file:
+        line_ = line.split()
+        mse_OLS = line_[0]
+    print(np.size(mse_OLS))
+
+"""
     poly = [i+1 for i in range(len(mse_OLS))]
     plt.plot(poly,mse_OLS)
     plt.plot(poly, mse_Ridge)
@@ -21,7 +29,7 @@ def plotMSE(mse_OLS, mse_Ridge, mse_Lasso):
     plt.xlabel('Polynomial degree')
     plt.ylabel('Mean squared error')
     plt.show()
-
+"""
 def plotBias(bias_OLS,bias_Ridge,bias_Lasso):
     poly = [i+1 for i in range(len(mse_OLS))]
     plt.plot(poly,bias_OLS)

@@ -59,24 +59,29 @@ def OLS(X, z, X_test, z_test):
     zpredict = X_test.dot(beta) 
     return quality(z_test,zpredict)
 
-def quality(z,zpredict, write=0):
+def quality(z_test,zpredict, write=0):
     '''A function that calculate the mean square error and the R2 score of 
     the values sendt in. If the write value is anything else than zero
     the function will print out the values'''
 
     # Mean squared error:
-    mse = 1.0/z.shape[0] *np.sum((z - zpredict)**2)
+    mse = 1.0/z_test.shape[0] *np.sum((z_test - zpredict)**2)
+    #error = np.mean( np.mean((z_test - zpredict)**2, axis=1, keepdims=True) )
+    # Bias:
+    bias = np.mean( (z_test - np.mean(zpredict,  keepdims=True))**2 )
+    # Variance:
+    variance = np.mean( np.var(zpredict, keepdims=True) )
     
     # Explained R2 score: 1 is perfect prediction      
-    R2 = 1- (np.sum((z-zpredict)**2))/(np.sum((z-np.mean(z))**2))
+    R2 = 1- (np.sum((z_test-zpredict)**2))/(np.sum((z_test-np.mean(z_test))**2))
     
     if write != 0:
         print('Mean square error: %.5f' % mse)
-        print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z, zpredict))
+        print("Mean squared error scikitlearn: %.5f" % mean_squared_error(z_test, zpredict))
         print('R2 score: %.5f' % R2)
-        print('R2 score scitkitlearn: %.5f' % r2_score(z, zpredict))
+        print('R2 score scitkitlearn: %.5f' % r2_score(z_test, zpredict))
 
-    return mse, R2
+    return mse, R2, bias, variance
 
 
 def ridge(X, z, X_test, z_test, alpha, write=0):
@@ -87,7 +92,11 @@ def ridge(X, z, X_test, z_test, alpha, write=0):
     IX = np.eye(X.shape[1])
 
     beta_ridge = (np.linalg.pinv( X.T @ X + alpha*IX) @ X.T @ z).flatten() 
-
+    """
+    sigma = np.zeros(N)
+    for i in range(n):
+        sigma[i] = np.sqrt(np.var(beta_ridge[i]))
+    """
     pred_ridge =  X_test @ beta_ridge # Shape: 100x6 from 6 lambda-values
 
     
@@ -104,12 +113,12 @@ def ridge(X, z, X_test, z_test, alpha, write=0):
 def lasso(X,z,X_test, z_test, alpha, write=0):
     ''' A function that implements the Lasso method'''
 
-    lasso=Lasso(alpha)
-    lasso.fit(X,z)
+    lasso=Lasso(alpha, max_iter=100000, fit_intercept = False)
+    lasso.fit(X,z) #beta?
     predl=lasso.predict(X_test)
 
     if write != 0:
-        print("Lasso Coefficient: ", lasso.coef_)
+        print("Lasso Coefficient: ", lasso.coef_) #beta!!!
         print("Lasso Intercept: ", lasso.intercept_)
         print("R2 score:", r2_score(z,predl))
 
