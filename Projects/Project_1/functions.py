@@ -65,7 +65,7 @@ def quality(z,zpredict, write=0):
     the function will print out the values'''
 
     # Mean squared error:
-    mse = mean_squared_error(z,zpredict)
+    mse = 1.0/z.shape[0] *np.sum((z - zpredict)**2)
     
     # Explained R2 score: 1 is perfect prediction      
     R2 = 1- (np.sum((z-zpredict)**2))/(np.sum((z-np.mean(z))**2))

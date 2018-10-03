@@ -2,20 +2,70 @@
 # Importing necessary packages for plotting
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
+#from matplotlib.pyplot import figure, show, plot
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-from matplotlib.ticker import LinearLocator, FormatStrFormatter
+from matplotlib.ticker import LinearLocator, FormatStrFormatter #, MaxNLocator
+#import matplotlib.ticker as ticker
+
+#def plotStatistics()
+
+def plotMSE(mse_OLS, mse_Ridge, mse_Lasso):
+    poly = [i+1 for i in range(len(mse_OLS))]
+    plt.plot(poly,mse_OLS)
+    plt.plot(poly, mse_Ridge)
+    plt.plot(poly,mse_Lasso)
+    plt.legend(['OLS', 'Ridge', 'Lasso'])
+    plt.title('Mean squared error calculated with different methods')
+    plt.xlabel('Polynomial degree')
+    plt.ylabel('Mean squared error')
+    plt.show()
+
+def plotBias(bias_OLS,bias_Ridge,bias_Lasso):
+    poly = [i+1 for i in range(len(mse_OLS))]
+    plt.plot(poly,bias_OLS)
+    plt.plot(poly, bias_Ridge)
+    plt.plot(poly,bias_Lasso)
+    plt.legend(['OLS', 'Ridge', 'Lasso'])
+    plt.title('Bias calculated with different methods')
+    plt.xlabel('Polynomial degree')
+    plt.ylabel('Bias')
+    plt.show()  
+
+def plotVariance(var_OLS,var_Ridge,var_Lasso):
+    poly = [i+1 for i in range(len(mse_OLS))]
+    plt.plot(poly,var_OLS)
+    plt.plot(poly, var_Ridge)
+    plt.plot(poly,var_Lasso)
+    plt.legend(['OLS', 'Ridge', 'Lasso'])
+    plt.title('Variance calculated with different methods')
+    plt.xlabel('Polynomial degree')
+    plt.ylabel('Variance')
+    plt.show()
+
+def plotR2(r2_OLS, r2_Ridge, r2_Lasso):
+    poly = [i+1 for i in range(len(r2_OLS))]
+    plt.plot(poly, r2_OLS)
+    plt.plot(poly, r2_Ridge)
+    plt.plot(poly, r2_Lasso)
+    plt.legend(['OLS','Ridge','Lasso'])
+    plt.title('R2 score calculated with different methods')
+    plt.xlabel('Polynomial degree')
+    plt.ylabel('R2 score')
+    plt.show()
 
 
 def plotFrankeFunction(x, y, z, type):
     #x = np.sort(x)
     #y = np.sort(y)
-    x, y = np.meshgrid(x, y)
+    #x, y = np.meshgrid(x, y)
+    #x = x.reshape(-1,1)
+    #y = y.reshape(-1,1)
     #z = z.reshape(-1,1)
     print(x.shape)
     print(z.shape)
-    z = FrankeFunction(x,y)
+    #z = FrankeFunction(x,y)
     #n,m = x.shape 
     #z = z.reshape(n,m)
 
