@@ -56,8 +56,10 @@ def OLS(X, z, X_test, z_test):
     ordinary least squares method'''
 
     beta = np.linalg.pinv(X.T.dot(X)).dot(X.T).dot(z) 
-    zpredict = X_test.dot(beta) 
-    return quality(z_test,zpredict)
+
+    zpredict = X_test.dot(beta)
+    mse, R2, bias, variance = quality(z_test, zpredict) 
+    return mse, R2, bias, variance, beta
 
 def quality(z_test,zpredict, write=0):
     '''A function that calculate the mean square error and the R2 score of 
@@ -92,11 +94,7 @@ def ridge(X, z, X_test, z_test, alpha, write=0):
     IX = np.eye(X.shape[1])
 
     beta_ridge = (np.linalg.pinv( X.T @ X + alpha*IX) @ X.T @ z).flatten() 
-    """
-    sigma = np.zeros(N)
-    for i in range(n):
-        sigma[i] = np.sqrt(np.var(beta_ridge[i]))
-    """
+
     pred_ridge =  X_test @ beta_ridge # Shape: 100x6 from 6 lambda-values
 
     
@@ -141,5 +139,14 @@ def bootstrap(x,y):
     y_train_new = y[indices]
     return x_train_new, y_train_new
 
+def betaConfidenceInterval(beta):
+    #beta = 
+    sigma = np.zeros(len(beta))
+    #print(np.shape(beta), np.shape(sigma))
+    #for i in range(len(beta)):
+    sigma = np.sqrt(np.var(beta))
+    confidenceInterval_start = np.mean(beta)-2*sigma
+    confidenceInterval_end = np.mean(beta)+2*sigma
+    print('Confidence interval', confidenceInterval_start,confidenceInterval_end)
 
-
+    

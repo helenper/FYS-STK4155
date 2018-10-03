@@ -67,6 +67,7 @@ bias_Lasso = np.zeros((5,iterations))
 var_OLS = np.zeros((5,iterations))
 var_Ridge = np.zeros((5,iterations))
 var_Lasso = np.zeros((5,iterations))
+beta = np.zeros(iterations)
 
 file = open('data.txt','w')
 #file.write('alpha     mse_OLS_average1 \n')
@@ -81,7 +82,9 @@ for a in alpha:
 	        X_test = polynomialfunction(x_test,y_test,len(x_test),degree=(j+1))
 	        
 
-	        mse_OLS[j][i], r2score_OLS[j][i], bias_OLS[j][i], var_OLS[j][i] = OLS(X_train,z_train, X_test, z_test)
+	        mse_OLS[j][i], r2score_OLS[j][i], bias_OLS[j][i], var_OLS[j][i], beta = OLS(X_train,z_train, X_test, z_test)
+	        #print(np.shape(beta))
+	        #betaConfidenceInterval(beta)
 
 	        mse_Ridge[j][i], r2score_Ridge[j][i], bias_Ridge[j][i], var_Ridge[j][i] = ridge(X_train,z_train,X_test,z_test,a, write=0)
 
@@ -180,7 +183,9 @@ for a in alpha:
 
 
 file.close()
-
+#print('hei')
+#betaConfidenceInterval(beta)
+#plotMSE()
 """
 
 print("Datasize = ", n, "\n")

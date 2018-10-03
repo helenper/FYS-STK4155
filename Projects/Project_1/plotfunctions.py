@@ -14,10 +14,13 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter #, MaxNLocator
 def plotMSE():#mse_OLS, mse_Ridge, mse_Lasso):
     file = open('data.txt', 'r')
     alpha = float(file.readline())
+    i = 0
+    mse_OLS = np.zeros(15)
     for line in file:
         line_ = line.split()
-        mse_OLS = line_[0]
-    print(np.size(mse_OLS))
+        mse_OLS[i] = line_[0]
+        i += 1
+    print(mse_OLS)
 
 """
     poly = [i+1 for i in range(len(mse_OLS))]
