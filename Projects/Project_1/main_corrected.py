@@ -24,8 +24,18 @@ x = np.random.uniform(0.0,1.0, n)       # create a random number for x-values in
 y = np.random.uniform(0.0,1.0, n)       # create a random number for y-values in dataset
 noise = 0.1								# strengt of noise
 
+
+train_indices, test_indices = splitdata(x, 0.7)
+
+x_train_orig = x[train_indices]
+x_test = x[test_indices]
+y_train_orig = y[train_indices]
+y_test = y[test_indices]
+
+
 # Define the Franke function from our test-dataset
-z = FrankeFunction(x, y) + noise*np.random.randn(1) # z with noise
+
+z_test = FrankeFunction(x_test, y_test) + noise*np.random.randn(len(x_test)) # z with noise
 
 
 
@@ -49,26 +59,24 @@ r2score_Lasso = np.zeros((5,iterations))
 
 # Parameter to be sendt into Lasso and Rigde 
 alpha = 0.001
-train_indices, test_indices = bootstrap(z, 0.7)
 
 
 
 
 for i in range(iterations):
-    
+    x_train, y_train = bootstrap(x_train_orig,y_train_orig)
+    z_train = FrankeFunction(x_train, y_train) + noise*np.random.randn(len(x_train)) # z with noise
+
     for j in range(5):
-        X = polynomialfunction(x,y,n,degree=(j+1))
-        X_train = X[train_indices]; #print(X_train.shape)
-        np.random.shuffle(X_train)
-        X_test = X[test_indices]; #print(X_test.shape)
-        z_train = z[train_indices]; #print(z_train.shape)
-        z_test = z[test_indices]; #print(z_test.shape)
+        X_train = polynomialfunction(x_train,y_train,len(x_train),degree=(j+1))
+        X_test = polynomialfunction(x_test,y_test,len(x_test),degree=(j+1))
+        
 
-        mse_OLS[j][i], r2score_OLS[j][i] = OLS(X_train,z_train, X_test)
+        mse_OLS[j][i], r2score_OLS[j][i] = OLS(X_train,z_train, X_test, z_test)
 
-        mse_Ridge[j][i], r2score_Ridge[j][i] = ridge(x,y,z_train,X_train,X_test,alpha, write=0)
+        mse_Ridge[j][i], r2score_Ridge[j][i] = ridge(X_train,z_train,X_test,z_test,alpha, write=0)
 
-        mse_Lasso[j][i], r2score_Lasso[j][i] = lasso(X_train,z_train,X_test,alpha)
+        mse_Lasso[j][i], r2score_Lasso[j][i] = lasso(X_train,z_train,X_test,z_test,alpha)
 
 
 mse_OLS_average1 = np.mean(mse_OLS[0])
@@ -140,5 +148,5 @@ print("1. order: ", r2score_Lasso_average1, "2. order: ", r2score_Lasso_average2
 
 
 
-var=1.0/z.shape[0] *np.sum((z - np.mean(z))**2)
+#var=1.0/z.shape[0] *np.sum((z - np.mean(z))**2)
 #print(var)
