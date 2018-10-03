@@ -79,33 +79,24 @@ def quality(z,zpredict, write=0):
     return mse, R2
 
 
-def ridge(x, y, X, z, X_test, z_test, alpha, write=0):
+def ridge(X, z, X_test, z_test, alpha, write=0):
     ''' A function that implementes the Rigde method'''
 
     n_samples = 100
 
-    x_ = x-np.mean(x)
-    y_ = y-np.mean(y)
-    z_ = z-np.mean(z)
-    
-    X_ = np.delete(X,0,1)
-
     IX = np.eye(X.shape[1])
-    IX_ = np.eye(X_.shape[1])
 
     beta_ridge = (np.linalg.pinv( X.T @ X + alpha*IX) @ X.T @ z).flatten() 
-    beta_ridge_centered = (np.linalg.pinv( X_.T @ X_ + alpha*IX_) @ X_.T @ z_).flatten() 
-
 
     pred_ridge =  X_test @ beta_ridge # Shape: 100x6 from 6 lambda-values
-    pred_ridge_centered =  X_ @ beta_ridge_centered + z_
+
     
     ### R2-score of the results
-    if write != 0:
+    if write:
         print('lambda = %g'%alpha)
         print('r2 for scikit: %g'%r2_score(z,pred_ridge_scikit[:,i]))
         print('r2 for own code, not centered: %g'%r2_score(z,pred_ridge))
-        print('r2 for own, centered: %g\n'%r2_score(z,pred_ridge_centered))
+        
     
     return quality(z_test, pred_ridge)
 

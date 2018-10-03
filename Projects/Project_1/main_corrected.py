@@ -35,7 +35,7 @@ y_test = y[test_indices]
 
 # Define the Franke function from our test-dataset
 
-z_test = FrankeFunction(x_test, y_test) + noise*np.random.randn(1) # z with noise
+z_test = FrankeFunction(x_test, y_test) + noise*np.random.randn(len(x_test)) # z with noise
 
 
 
@@ -65,7 +65,7 @@ alpha = 0.001
 
 for i in range(iterations):
     x_train, y_train = bootstrap(x_train_orig,y_train_orig)
-    z_train = FrankeFunction(x_train, y_train) + noise*np.random.randn(1) # z with noise
+    z_train = FrankeFunction(x_train, y_train) + noise*np.random.randn(len(x_train)) # z with noise
 
     for j in range(5):
         X_train = polynomialfunction(x_train,y_train,len(x_train),degree=(j+1))
@@ -74,7 +74,7 @@ for i in range(iterations):
 
         mse_OLS[j][i], r2score_OLS[j][i] = OLS(X_train,z_train, X_test, z_test)
 
-        mse_Ridge[j][i], r2score_Ridge[j][i] = ridge(x,y,X_train,z_train,X_test,z_test,alpha, write=0)
+        mse_Ridge[j][i], r2score_Ridge[j][i] = ridge(X_train,z_train,X_test,z_test,alpha, write=0)
 
         mse_Lasso[j][i], r2score_Lasso[j][i] = lasso(X_train,z_train,X_test,z_test,alpha)
 
