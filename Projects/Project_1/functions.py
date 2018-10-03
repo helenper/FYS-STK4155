@@ -51,13 +51,13 @@ def polynomialfunction(x, y, n, degree):
 
     return X
 
-def OLS(X, z, X_test):
+def OLS(X, z, X_test, z_test):
     '''Calculate and return the z and zpredict value by 
     ordinary least squares method'''
 
     beta = np.linalg.pinv(X.T.dot(X)).dot(X.T).dot(z) 
     zpredict = X_test.dot(beta) 
-    return quality(z,zpredict)
+    return quality(z_test,zpredict)
 
 def quality(z,zpredict, write=0):
     '''A function that calculate the mean square error and the R2 score of 
@@ -79,7 +79,7 @@ def quality(z,zpredict, write=0):
     return mse, R2
 
 
-def ridge(x, y, z, X, X_test, alpha, write=0):
+def ridge(x, y, X, z, X_test, z_test, alpha, write=0):
     ''' A function that implementes the Rigde method'''
 
     n_samples = 100
@@ -107,10 +107,10 @@ def ridge(x, y, z, X, X_test, alpha, write=0):
         print('r2 for own code, not centered: %g'%r2_score(z,pred_ridge))
         print('r2 for own, centered: %g\n'%r2_score(z,pred_ridge_centered))
     
-    return quality(z, pred_ridge)
+    return quality(z_test, pred_ridge)
 
 
-def lasso(X,z,X_test, alpha, write=0):
+def lasso(X,z,X_test, z_test, alpha, write=0):
     ''' A function that implements the Lasso method'''
 
     lasso=Lasso(alpha)
@@ -122,20 +122,24 @@ def lasso(X,z,X_test, alpha, write=0):
         print("Lasso Intercept: ", lasso.intercept_)
         print("R2 score:", r2_score(z,predl))
 
-    return quality(z, predl)
+    return quality(z_test, predl)
 
 
-def bootstrap(data, percent):
+def splitdata(data, percent):
     '''A function to implement the method of bootstrap resampeling method to 
     split data into train and test parts. The variable "percent" determins how many percents of
     the data is used to be traind on'''
-
-    size = percent*len(data)
-    train = np.random.choice(len(data),int(size))
+    size = int(len(data)*percent)
+    train = np.random.choice(len(data),size)
     test = list(set(range(len(data))) - set(train))
     return train, test
 
+def bootstrap(x,y):
 
+    indices = np.random.choice(len(x),len(x))
+    x_train_new = x[indices]        
+    y_train_new = y[indices]
+    return x_train_new, y_train_new
 
 
 
