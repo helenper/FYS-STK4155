@@ -51,12 +51,12 @@ def polynomialfunction(x, y, n, degree):
 
     return X
 
-def OLS(X, z):
+def OLS(X, z, X_test):
     '''Calculate and return the z and zpredict value by 
     ordinary least squares method'''
 
     beta = np.linalg.pinv(X.T.dot(X)).dot(X.T).dot(z) 
-    zpredict = X.dot(beta) 
+    zpredict = X_test.dot(beta) 
     return quality(z,zpredict)
 
 def quality(z,zpredict, write=0):
@@ -79,7 +79,7 @@ def quality(z,zpredict, write=0):
     return mse, R2
 
 
-def ridge(x, y, z, X, alpha, write=0):
+def ridge(x, y, z, X, X_test, alpha, write=0):
     ''' A function that implementes the Rigde method'''
 
     n_samples = 100
@@ -97,7 +97,7 @@ def ridge(x, y, z, X, alpha, write=0):
     beta_ridge_centered = (np.linalg.pinv( X_.T @ X_ + alpha*IX_) @ X_.T @ z_).flatten() 
 
 
-    pred_ridge =  X @ beta_ridge # Shape: 100x6 from 6 lambda-values
+    pred_ridge =  X_test @ beta_ridge # Shape: 100x6 from 6 lambda-values
     pred_ridge_centered =  X_ @ beta_ridge_centered + z_
     
     ### R2-score of the results
@@ -110,12 +110,12 @@ def ridge(x, y, z, X, alpha, write=0):
     return quality(z, pred_ridge)
 
 
-def lasso(X,z, alpha, write=0):
+def lasso(X,z,X_test, alpha, write=0):
     ''' A function that implements the Lasso method'''
 
     lasso=Lasso(alpha)
     lasso.fit(X,z)
-    predl=lasso.predict(X)
+    predl=lasso.predict(X_test)
 
     if write != 0:
         print("Lasso Coefficient: ", lasso.coef_)

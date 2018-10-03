@@ -19,7 +19,7 @@ np.random.seed(4155)
 # Make test-dataset and calculate Franke's function
 #---------------------------------------------------
 
-n = 1000									# number of datapoints
+n = 1000    							# number of datapoints
 x = np.random.uniform(0.0,1.0, n)       # create a random number for x-values in dataset
 y = np.random.uniform(0.0,1.0, n)       # create a random number for y-values in dataset
 noise = 0.1								# strengt of noise
@@ -34,7 +34,7 @@ z = FrankeFunction(x, y) + noise*np.random.randn(1) # z with noise
 # value for MSE and R2 for the different methods OSL, Ridge and Lasso
 #---------------------------------------------------------------------
 
-iterations = 10000		# number of times we split and save our calculations in train and test point
+iterations = 1000		# number of times we split and save our calculations in train and test point
 
 # Create arrays to hold different values to be taken mean over later. 
 # Each arrray is a nested array, where the first index points to the degree of the polynomial
@@ -49,22 +49,26 @@ r2score_Lasso = np.zeros((5,iterations))
 
 # Parameter to be sendt into Lasso and Rigde 
 alpha = 0.001
+train_indices, test_indices = bootstrap(z, 0.7)
+
+
+
 
 for i in range(iterations):
-    train_indices, test_indices = bootstrap(z, 0.7)
     
     for j in range(5):
         X = polynomialfunction(x,y,n,degree=(j+1))
         X_train = X[train_indices]; #print(X_train.shape)
+        np.random.shuffle(X_train)
         X_test = X[test_indices]; #print(X_test.shape)
-        z_train = z[train_indices];# print(z_train.shape)
+        z_train = z[train_indices]; #print(z_train.shape)
         z_test = z[test_indices]; #print(z_test.shape)
 
-        mse_OLS[j][i], r2score_OLS[j][i] = OLS(X_train,z_train)
+        mse_OLS[j][i], r2score_OLS[j][i] = OLS(X_train,z_train, X_test)
 
-        mse_Ridge[j][i], r2score_Ridge[j][i] = ridge(x,y,z_train,X_train,alpha, write=0)
+        mse_Ridge[j][i], r2score_Ridge[j][i] = ridge(x,y,z_train,X_train,X_test,alpha, write=0)
 
-        mse_Lasso[j][i], r2score_Lasso[j][i] = lasso(X_train,z_train,alpha)
+        mse_Lasso[j][i], r2score_Lasso[j][i] = lasso(X_train,z_train,X_test,alpha)
 
 
 mse_OLS_average1 = np.mean(mse_OLS[0])
@@ -109,8 +113,9 @@ r2score_Lasso_average5 = np.mean(r2score_Lasso[4])
 
 
 
-#print("Lambda = ", lmb, "\n")
+print("Datasize = ", n, "\n")
 print("alpha = ", alpha, "\n")
+print("bootstrap-iterations = ", iterations, "\n")
 
 
 print("The average mean sqared error for the different polynomial powers: \n")
@@ -132,7 +137,6 @@ print("Ridge: ")
 print("1. order: ", r2score_Ridge_average1, "2. order: ", r2score_Ridge_average2, "3. order: ", r2score_Ridge_average3, "4. order: ", r2score_Ridge_average4, "5. order: ", r2score_Ridge_average5, "\n")
 print("Lasso: ")
 print("1. order: ", r2score_Lasso_average1, "2. order: ", r2score_Lasso_average2, "3. order: ", r2score_Lasso_average3, "4. order: ", r2score_Lasso_average4, "5. order: ", r2score_Lasso_average5, "\n")
-
 
 
 
