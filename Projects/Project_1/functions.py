@@ -151,6 +151,6 @@ def betaConfidenceInterval(beta, beta_file):
     confidenceInterval_start = np.mean(beta)-2*sigma
     confidenceInterval_end = np.mean(beta)+2*sigma
     beta_file.write('%f    %f   \n' %(confidenceInterval_start, confidenceInterval_end))
-    print('Confidence interval', confidenceInterval_start,confidenceInterval_end, np.mean(beta[n-2]))
+    #print('Confidence interval', confidenceInterval_start,confidenceInterval_end, np.mean(beta[n-2]))
 
     

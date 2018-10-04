@@ -24,18 +24,100 @@ x = np.random.uniform(0.0,1.0, n)       # create a random number for x-values in
 y = np.random.uniform(0.0,1.0, n)       # create a random number for y-values in dataset
 noise = 0.1								# strengt of noise
 
+#---------------------------------------------------
+# Load the terrain
+#terrain1 = imread('terrainone.tif')
+#x, y = imread('terrainone.tif')
+terrain1 = imread('terrainone.tif')
+[n,m] = terrain1.shape
 
-train_indices, test_indices = splitdata(x, 0.7)
+    ## Find some random patches within the dataset and perform a fit
 
-x_train_orig = x[train_indices]
-x_test = x[test_indices]
-y_train_orig = y[train_indices]
-y_test = y[test_indices]
+patch_size_row = 100
+patch_size_col = 50
+
+    # Define their axes
+rows = np.linspace(0,1,patch_size_row)
+cols = np.linspace(0,1,patch_size_col)
+
+[C,R] = np.meshgrid(cols,rows)
+
+#print('hei', np.size(C), np.size(R))
+
+x = C.reshape(-1,1)
+y = R.reshape(-1,1)
+print(len(x))
+#print(np.shape(x), np.shape(y))
+
+num_data = patch_size_row*patch_size_col
+
+    # Find the start indices of each patch
+
+num_patches = 5
+
+np.random.seed(4155)
+
+
+
+row_starts = np.random.randint(0,n-patch_size_row,num_patches)
+col_starts = np.random.randint(0,m-patch_size_col,num_patches)
+# Show the terrain
+#print(np.shape(terrain1))
+
+
+for i,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts):
+	row_end = row_start + patch_size_row
+	col_end = col_start + patch_size_col
+
+	x_patch = [i + 1 for i in range(patch_size_row)] + row_start
+	y_patch = [i + 1 for i in range(patch_size_col)] + col_start
+	
+
+	patch = terrain1[row_start:row_end, col_start:col_end]
+	z = patch.reshape(-1,1)
+	#print(row_start, row_end)
+	print(np.shape(patch), np.shape(z))
+	#print(len(patch))
+	N = terrain1[row_start:row_end]
+	train_indices, test_indices = splitdata(z, 0.7)
+	#x_train_indices, x_test_indices = splitdata(x_patch, 0.7)
+	#y_train_indices, y_test_indices = splitdata(y_patch, 0.7)
+	#print(np.shape(train_indices), np.shape(test_indices))
+	#print(len(train_indices))
+	#from sklearn.model_selection import train_test_split
+	#X = polynomialfunction(x, y, len(x), degree=5)
+	#X_train, X_test, z_train, z_test = train_test_split(X, z, test_size=0.2)
+	
+	x_train_orig = x[train_indices]
+	x_test = x[test_indices]
+	y_train_orig = y[train_indices]
+	y_test = y[test_indices]
+
+	z_train = z[train_indices]
+	z_test = z[test_indices]
+	
+	#z_train = patch_train.reshape(-1,1)
+	#z_test = patch_test.reshape(-1,1)
+	#print(np.shape(x_train_orig), np.shape(y_train_orig), np.shape(z_train), num_data)
+	
+	X_train = polynomialfunction(x_train_orig, y_train_orig, len(x_train_orig), degree=5)
+	X_test = polynomialfunction(x_test, y_test, len(x_test), degree=5)
+
+	#print(np.shape(X_train), np.shape(z_train), np.shape(X_test), np.shape(z_test))
+
+	mse , R2, bias, var, beta = OLS(X_train, z_train, X_test, z_test)
+
+	print('mse',mse, 'R2',R2, 'bias',bias,'var', var)
+
+
+#---------------------------------------------------------
+
+
 
 
 # Define the Franke function from our test-dataset
 
-z_test = FrankeFunction(x_test, y_test) + noise*np.random.randn(len(x_test)) # z with noise
+#z_test = FrankeFunction(x_test, y_test) + noise*np.random.randn(len(x_test)) # z with noise
 
 
 
@@ -43,7 +125,7 @@ z_test = FrankeFunction(x_test, y_test) + noise*np.random.randn(len(x_test)) # z
 # Use bootstrap to define train and test data and calculate a mean 
 # value for MSE and R2 for the different methods OSL, Ridge and Lasso
 #---------------------------------------------------------------------
-
+"""
 iterations = 10		# number of times we split and save our calculations in train and test point
 
 # Create arrays to hold different values to be taken mean over later. 
@@ -70,8 +152,8 @@ var_Lasso = np.zeros((5,iterations))
 beta = np.zeros(iterations)
 
 
-file = open('data.txt','w')
-beta_file = open('beta_data.txt', 'w')
+file = open('data_terrain.txt','w') #Change filename
+beta_file = open('beta_data_terrain.txt', 'w')
 
 #file.write('alpha     mse_OLS_average1 \n')
 for a in alpha:
@@ -188,7 +270,7 @@ for a in alpha:
 
 file.close()
 beta_file.close()
-
+"""
 #print(np.size(interval))
 #print('hei')
 #betaConfidenceInterval(beta)
