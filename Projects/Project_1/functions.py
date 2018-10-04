@@ -112,7 +112,8 @@ def lasso(X,z,X_test, z_test, alpha, write=0):
     ''' A function that implements the Lasso method'''
 
     lasso=Lasso(alpha, max_iter=100000, fit_intercept = False)
-    lasso.fit(X,z) #beta?
+    lasso.fit(X,z) 
+
     predl=lasso.predict(X_test)
 
     if write != 0:
@@ -139,14 +140,17 @@ def bootstrap(x,y):
     y_train_new = y[indices]
     return x_train_new, y_train_new
 
-def betaConfidenceInterval(beta):
+def betaConfidenceInterval(beta, beta_file):
     #beta = 
+    
     sigma = np.zeros(len(beta))
+    n = len(beta)
     #print(np.shape(beta), np.shape(sigma))
     #for i in range(len(beta)):
     sigma = np.sqrt(np.var(beta))
     confidenceInterval_start = np.mean(beta)-2*sigma
     confidenceInterval_end = np.mean(beta)+2*sigma
-    print('Confidence interval', confidenceInterval_start,confidenceInterval_end)
+    beta_file.write('%f    %f   \n' %(confidenceInterval_start, confidenceInterval_end))
+    print('Confidence interval', confidenceInterval_start,confidenceInterval_end, np.mean(beta[n-2]))
 
     

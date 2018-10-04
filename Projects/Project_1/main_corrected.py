@@ -19,7 +19,7 @@ np.random.seed(4155)
 # Make test-dataset and calculate Franke's function
 #---------------------------------------------------
 
-n = 1000    							# number of datapoints
+n = 10    							# number of datapoints
 x = np.random.uniform(0.0,1.0, n)       # create a random number for x-values in dataset
 y = np.random.uniform(0.0,1.0, n)       # create a random number for y-values in dataset
 noise = 0.1								# strengt of noise
@@ -69,7 +69,10 @@ var_Ridge = np.zeros((5,iterations))
 var_Lasso = np.zeros((5,iterations))
 beta = np.zeros(iterations)
 
+
 file = open('data.txt','w')
+beta_file = open('beta_data.txt', 'w')
+
 #file.write('alpha     mse_OLS_average1 \n')
 for a in alpha:
 	file.write('%f   \n' %a)
@@ -84,7 +87,8 @@ for a in alpha:
 
 	        mse_OLS[j][i], r2score_OLS[j][i], bias_OLS[j][i], var_OLS[j][i], beta = OLS(X_train,z_train, X_test, z_test)
 	        #print(np.shape(beta))
-	        #betaConfidenceInterval(beta)
+
+	        betaConfidenceInterval(beta, beta_file)
 
 	        mse_Ridge[j][i], r2score_Ridge[j][i], bias_Ridge[j][i], var_Ridge[j][i] = ridge(X_train,z_train,X_test,z_test,a, write=0)
 
@@ -183,6 +187,9 @@ for a in alpha:
 
 
 file.close()
+beta_file.close()
+
+#print(np.size(interval))
 #print('hei')
 #betaConfidenceInterval(beta)
 #plotMSE()
