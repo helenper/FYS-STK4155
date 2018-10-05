@@ -66,21 +66,7 @@ col_starts = np.random.randint(0,m-patch_size_col,num_patches)
 #print(np.shape(terrain1))
 
 
-for i,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts):
-	row_end = row_start + patch_size_row
-	col_end = col_start + patch_size_col
 
-	patch = terrain1[row_start:row_end, col_start:col_end]
-
-	z = patch.reshape(-1,1)
-	
-	X = polynomialfunction(x,y,len(x),4)
-
-	X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
-
-	mse_OLS, r2_score_OLS, bias_OLS, var_OLS = lasso(X_train,z_train, X_test, z_test, 0.01)
-
-	print(mse_OLS, r2_score_OLS)
 
 #---------------------------------------------------------
 
@@ -127,122 +113,146 @@ beta = np.zeros(iterations)
 file = open('data_terrain.txt','w') #Change filename
 beta_file = open('beta_data_terrain.txt', 'w')
 
-#file.write('alpha     mse_OLS_average1 \n')
-for a in alpha:
-	file.write('%f   \n' %a)
-	for i in range(iterations):
-	    X_train, z_train = bootstrap(X_train,z_train)
-	    #z_train = FrankeFunction(x_train, y_train) + noise*np.random.randn(len(x_train)) # z with noise
 
-	    #for j in range(5):
-	    #    X_train = polynomialfunction(x_train,y_train,len(x_train),degree=(j+1))
-	    #    X_test = polynomialfunction(x_test,y_test,len(x_test),degree=(j+1))
+
+for k,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts):
+	file.write('%d    \n' %(k+1))
+	row_end = row_start + patch_size_row
+	col_end = col_start + patch_size_col
+
+	patch = terrain1[row_start:row_end, col_start:col_end]
+	#print(np.shape(patch))
+
+	z = patch.reshape(-1,1)
+	for j in range(5):
+		X = polynomialfunction(x,y,len(x),degree=(j+1))
+		X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
+#file.write('alpha     mse_OLS_average1 \n')
+		for a in alpha:
+			file.write('%f   \n' %a)
+			for i in range(iterations):
+				#print(np.shape(X_train))
+				X_train, z_train = bootstrap(X_train, z_train)
+				#print(np.shape(X_train))
+		#X_train, z_train = bootstrap(X_train,z_train)
+		#z_train = FrankeFunction(x_train, y_train) + noise*np.random.randn(len(x_train)) # z with noise
+
+				
+			#X = polynomialfunction(x,y,len(x),4)
+
+				
+
+				#mse_OLS, r2_score_OLS, bias_OLS, var_OLS, beta = OLS(X_train,z_train, X_test, z_test)
+
+	#print(mse_OLS, r2_score_OLS)
+			
+	        #X_test = polynomialfunction(x_test,y_test,len(x_test),degree=(j+1))
 	        
 
-	    mse_OLS[i], r2score_OLS[i], bias_OLS[i], var_OLS[i], beta = OLS(X_train,z_train, X_test, z_test)
-	        #print(np.shape(beta))
+				mse_OLS[j][i], r2score_OLS[j][i], bias_OLS[j][i], var_OLS[j][i], beta = OLS(X_train,z_train, X_test, z_test)
+		        #print(np.shape(beta))
 
-	    #betaConfidenceInterval(beta, beta_file)
+		        #betaConfidenceInterval(beta, beta_file)
 
-	    #mse_Ridge[j][i], r2score_Ridge[j][i], bias_Ridge[j][i], var_Ridge[j][i] = ridge(X_train,z_train,X_test,z_test,a, write=0)
+				mse_Ridge[j][i], r2score_Ridge[j][i], bias_Ridge[j][i], var_Ridge[j][i] = ridge(X_train,z_train,X_test,z_test,a, write=0)
 
-	    #mse_Lasso[j][i], r2score_Lasso[j][i], bias_Lasso[j][i], var_Lasso[j][i] = lasso(X_train,z_train,X_test,z_test,a, write=0)
+				mse_Lasso[j][i], r2score_Lasso[j][i], bias_Lasso[j][i], var_Lasso[j][i] = lasso(X_train,z_train,X_test,z_test,a, write=0)
 
-	    print(mse_OLS[i], r2score_OLS[i])
-"""
-	mse_OLS_average1 = np.mean(mse_OLS[0])	
-	mse_OLS_average2 = np.mean(mse_OLS[1]) 
-	mse_OLS_average3 = np.mean(mse_OLS[2]) 
-	mse_OLS_average4 = np.mean(mse_OLS[3]) 
-	mse_OLS_average5 = np.mean(mse_OLS[4])
+		    #print(mse_OLS[i], r2score_OLS[i])
 
-	mse_Ridge_average1 = np.mean(mse_Ridge[0]) 
-	mse_Ridge_average2 = np.mean(mse_Ridge[1])
-	mse_Ridge_average3 = np.mean(mse_Ridge[2])
-	mse_Ridge_average4 = np.mean(mse_Ridge[3])
-	mse_Ridge_average5 = np.mean(mse_Ridge[4])
+				mse_OLS_average1 = np.mean(mse_OLS[0])	
+				mse_OLS_average2 = np.mean(mse_OLS[1]) 
+				mse_OLS_average3 = np.mean(mse_OLS[2]) 
+				mse_OLS_average4 = np.mean(mse_OLS[3]) 
+				mse_OLS_average5 = np.mean(mse_OLS[4])
 
-	mse_Lasso_average1 = np.mean(mse_Lasso[0])
-	mse_Lasso_average2 = np.mean(mse_Lasso[1])
-	mse_Lasso_average3 = np.mean(mse_Lasso[2])
-	mse_Lasso_average4 = np.mean(mse_Lasso[3])
-	mse_Lasso_average5 = np.mean(mse_Lasso[4])
+				mse_Ridge_average1 = np.mean(mse_Ridge[0]) 
+				mse_Ridge_average2 = np.mean(mse_Ridge[1])
+				mse_Ridge_average3 = np.mean(mse_Ridge[2])
+				mse_Ridge_average4 = np.mean(mse_Ridge[3])
+				mse_Ridge_average5 = np.mean(mse_Ridge[4])
 
-	r2score_OLS_average1 = np.mean(r2score_OLS[0])
-	r2score_OLS_average2 = np.mean(r2score_OLS[1])
-	r2score_OLS_average3 = np.mean(r2score_OLS[2])
-	r2score_OLS_average4 = np.mean(r2score_OLS[3])
-	r2score_OLS_average5 = np.mean(r2score_OLS[4])
+				mse_Lasso_average1 = np.mean(mse_Lasso[0])
+				mse_Lasso_average2 = np.mean(mse_Lasso[1])
+				mse_Lasso_average3 = np.mean(mse_Lasso[2])
+				mse_Lasso_average4 = np.mean(mse_Lasso[3])
+				mse_Lasso_average5 = np.mean(mse_Lasso[4])
 
-	r2score_Ridge_average1 = np.mean(r2score_Ridge[0])
-	r2score_Ridge_average2 = np.mean(r2score_Ridge[1])
-	r2score_Ridge_average3 = np.mean(r2score_Ridge[2])
-	r2score_Ridge_average4 = np.mean(r2score_Ridge[3])
-	r2score_Ridge_average5 = np.mean(r2score_Ridge[4])
+				r2score_OLS_average1 = np.mean(r2score_OLS[0])
+				r2score_OLS_average2 = np.mean(r2score_OLS[1])
+				r2score_OLS_average3 = np.mean(r2score_OLS[2])
+				r2score_OLS_average4 = np.mean(r2score_OLS[3])
+				r2score_OLS_average5 = np.mean(r2score_OLS[4])
 
-	r2score_Lasso_average1 = np.mean(r2score_Lasso[0])
-	r2score_Lasso_average2 = np.mean(r2score_Lasso[1])
-	r2score_Lasso_average3 = np.mean(r2score_Lasso[2])
-	r2score_Lasso_average4 = np.mean(r2score_Lasso[3])
-	r2score_Lasso_average5 = np.mean(r2score_Lasso[4])
+				r2score_Ridge_average1 = np.mean(r2score_Ridge[0])
+				r2score_Ridge_average2 = np.mean(r2score_Ridge[1])
+				r2score_Ridge_average3 = np.mean(r2score_Ridge[2])
+				r2score_Ridge_average4 = np.mean(r2score_Ridge[3])
+				r2score_Ridge_average5 = np.mean(r2score_Ridge[4])
 
-	bias_OLS_average1 = np.mean(bias_OLS[0])	
-	bias_OLS_average2 = np.mean(bias_OLS[1]) 
-	bias_OLS_average3 = np.mean(bias_OLS[2]) 
-	bias_OLS_average4 = np.mean(bias_OLS[3]) 
-	bias_OLS_average5 = np.mean(bias_OLS[4])
+				r2score_Lasso_average1 = np.mean(r2score_Lasso[0])
+				r2score_Lasso_average2 = np.mean(r2score_Lasso[1])
+				r2score_Lasso_average3 = np.mean(r2score_Lasso[2])
+				r2score_Lasso_average4 = np.mean(r2score_Lasso[3])
+				r2score_Lasso_average5 = np.mean(r2score_Lasso[4])
 
-	bias_Ridge_average1 = np.mean(bias_Ridge[0]) 
-	bias_Ridge_average2 = np.mean(bias_Ridge[1])
-	bias_Ridge_average3 = np.mean(bias_Ridge[2])
-	bias_Ridge_average4 = np.mean(bias_Ridge[3])
-	bias_Ridge_average5 = np.mean(bias_Ridge[4])
+				bias_OLS_average1 = np.mean(bias_OLS[0])	
+				bias_OLS_average2 = np.mean(bias_OLS[1]) 
+				bias_OLS_average3 = np.mean(bias_OLS[2]) 
+				bias_OLS_average4 = np.mean(bias_OLS[3]) 
+				bias_OLS_average5 = np.mean(bias_OLS[4])
 
-	bias_Lasso_average1 = np.mean(bias_Lasso[0])
-	bias_Lasso_average2 = np.mean(bias_Lasso[1])
-	bias_Lasso_average3 = np.mean(bias_Lasso[2])
-	bias_Lasso_average4 = np.mean(bias_Lasso[3])
-	bias_Lasso_average5 = np.mean(bias_Lasso[4])
+				bias_Ridge_average1 = np.mean(bias_Ridge[0]) 
+				bias_Ridge_average2 = np.mean(bias_Ridge[1])
+				bias_Ridge_average3 = np.mean(bias_Ridge[2])
+				bias_Ridge_average4 = np.mean(bias_Ridge[3])
+				bias_Ridge_average5 = np.mean(bias_Ridge[4])
 
-	var_OLS_average1 = np.mean(var_OLS[0])	
-	var_OLS_average2 = np.mean(var_OLS[1]) 
-	var_OLS_average3 = np.mean(var_OLS[2]) 
-	var_OLS_average4 = np.mean(var_OLS[3]) 
-	var_OLS_average5 = np.mean(var_OLS[4])
+				bias_Lasso_average1 = np.mean(bias_Lasso[0])
+				bias_Lasso_average2 = np.mean(bias_Lasso[1])
+				bias_Lasso_average3 = np.mean(bias_Lasso[2])
+				bias_Lasso_average4 = np.mean(bias_Lasso[3])
+				bias_Lasso_average5 = np.mean(bias_Lasso[4])
 
-	var_Ridge_average1 = np.mean(var_Ridge[0]) 
-	var_Ridge_average2 = np.mean(var_Ridge[1])
-	var_Ridge_average3 = np.mean(var_Ridge[2])
-	var_Ridge_average4 = np.mean(var_Ridge[3])
-	var_Ridge_average5 = np.mean(var_Ridge[4])
+				var_OLS_average1 = np.mean(var_OLS[0])	
+				var_OLS_average2 = np.mean(var_OLS[1]) 
+				var_OLS_average3 = np.mean(var_OLS[2]) 
+				var_OLS_average4 = np.mean(var_OLS[3]) 
+				var_OLS_average5 = np.mean(var_OLS[4])
 
-	var_Lasso_average1 = np.mean(var_Lasso[0])
-	var_Lasso_average2 = np.mean(var_Lasso[1])
-	var_Lasso_average3 = np.mean(var_Lasso[2])
-	var_Lasso_average4 = np.mean(var_Lasso[3])
-	var_Lasso_average5 = np.mean(var_Lasso[4])
-	
-	file.write('%f   %f     %f      %f    %f    ' %(mse_OLS_average1, mse_OLS_average2, mse_OLS_average3, mse_OLS_average4, mse_OLS_average5))
-	file.write('%f   %f     %f      %f    %f    ' %(mse_Ridge_average1, mse_Ridge_average2, mse_Ridge_average3, mse_Ridge_average4, mse_Ridge_average5))
-	file.write('%f   %f     %f      %f    %f    \n' %(mse_Lasso_average1, mse_Lasso_average2, mse_Lasso_average3, mse_Lasso_average4, mse_Lasso_average5))
+				var_Ridge_average1 = np.mean(var_Ridge[0]) 
+				var_Ridge_average2 = np.mean(var_Ridge[1])
+				var_Ridge_average3 = np.mean(var_Ridge[2])
+				var_Ridge_average4 = np.mean(var_Ridge[3])
+				var_Ridge_average5 = np.mean(var_Ridge[4])
 
-	file.write('%f   %f     %f      %f    %f    ' %(r2score_OLS_average1, r2score_OLS_average2, r2score_OLS_average3, r2score_OLS_average4, r2score_OLS_average5))
-	file.write('%f   %f     %f      %f    %f    ' %(r2score_Ridge_average1, r2score_Ridge_average2, r2score_Ridge_average3, r2score_Ridge_average4, r2score_Ridge_average5))
-	file.write('%f   %f     %f      %f    %f    \n' %(r2score_Lasso_average1, r2score_Lasso_average2, r2score_Lasso_average3, r2score_Lasso_average4, r2score_Lasso_average5))
+				var_Lasso_average1 = np.mean(var_Lasso[0])
+				var_Lasso_average2 = np.mean(var_Lasso[1])
+				var_Lasso_average3 = np.mean(var_Lasso[2])
+				var_Lasso_average4 = np.mean(var_Lasso[3])
+				var_Lasso_average5 = np.mean(var_Lasso[4])
 
-	file.write('%f   %f     %f      %f    %f    ' %(bias_OLS_average1, bias_OLS_average2, bias_OLS_average3, bias_OLS_average4, bias_OLS_average5))
-	file.write('%f   %f     %f      %f    %f    ' %(bias_Ridge_average1, bias_Ridge_average2, bias_Ridge_average3, bias_Ridge_average4, bias_Ridge_average5))
-	file.write('%f   %f     %f      %f    %f    \n' %(bias_Lasso_average1, bias_Lasso_average2, bias_Lasso_average3, bias_Lasso_average4, bias_Lasso_average5))
+				file.write('%f   %f     %f      %f    %f    ' %(mse_OLS_average1, mse_OLS_average2, mse_OLS_average3, mse_OLS_average4, mse_OLS_average5))
+				file.write('%f   %f     %f      %f    %f    ' %(mse_Ridge_average1, mse_Ridge_average2, mse_Ridge_average3, mse_Ridge_average4, mse_Ridge_average5))
+				file.write('%f   %f     %f      %f    %f    \n' %(mse_Lasso_average1, mse_Lasso_average2, mse_Lasso_average3, mse_Lasso_average4, mse_Lasso_average5))
 
-	file.write('%f   %f     %f      %f    %f    ' %(var_OLS_average1, var_OLS_average2, var_OLS_average3, var_OLS_average4, var_OLS_average5))
-	file.write('%f   %f     %f      %f    %f    ' %(var_Ridge_average1, var_Ridge_average2, var_Ridge_average3, var_Ridge_average4, var_Ridge_average5))
-	file.write('%f   %f     %f      %f    %f    \n' %(var_Lasso_average1, var_Lasso_average2, var_Lasso_average3, var_Lasso_average4, var_Lasso_average5))
+				file.write('%f   %f     %f      %f    %f    ' %(r2score_OLS_average1, r2score_OLS_average2, r2score_OLS_average3, r2score_OLS_average4, r2score_OLS_average5))
+				file.write('%f   %f     %f      %f    %f    ' %(r2score_Ridge_average1, r2score_Ridge_average2, r2score_Ridge_average3, r2score_Ridge_average4, r2score_Ridge_average5))
+				file.write('%f   %f     %f      %f    %f    \n' %(r2score_Lasso_average1, r2score_Lasso_average2, r2score_Lasso_average3, r2score_Lasso_average4, r2score_Lasso_average5))
+
+				file.write('%f   %f     %f      %f    %f    ' %(bias_OLS_average1, bias_OLS_average2, bias_OLS_average3, bias_OLS_average4, bias_OLS_average5))
+				file.write('%f   %f     %f      %f    %f    ' %(bias_Ridge_average1, bias_Ridge_average2, bias_Ridge_average3, bias_Ridge_average4, bias_Ridge_average5))
+				file.write('%f   %f     %f      %f    %f    \n' %(bias_Lasso_average1, bias_Lasso_average2, bias_Lasso_average3, bias_Lasso_average4, bias_Lasso_average5))
+
+				file.write('%f   %f     %f      %f    %f    ' %(var_OLS_average1, var_OLS_average2, var_OLS_average3, var_OLS_average4, var_OLS_average5))
+				file.write('%f   %f     %f      %f    %f    ' %(var_Ridge_average1, var_Ridge_average2, var_Ridge_average3, var_Ridge_average4, var_Ridge_average5))
+				file.write('%f   %f     %f      %f    %f    \n' %(var_Lasso_average1, var_Lasso_average2, var_Lasso_average3, var_Lasso_average4, var_Lasso_average5))
 
 
 
 file.close()
 beta_file.close()
-"""
+
 """
 #print(np.size(interval))
 #print('hei')

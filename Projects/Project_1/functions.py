@@ -139,9 +139,10 @@ def splitdata(data, percent):
 
 def bootstrap(x,y):
 
-    indices = np.random.choice(len(x),len(x))
+    indices = np.random.choice(len(y),len(y))
     x_train_new = x[indices]        
     y_train_new = y[indices]
+    #print(indices)
     return x_train_new, y_train_new
 
 def betaConfidenceInterval(beta, beta_file):
