@@ -100,8 +100,8 @@ for i,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts)
 	#z_test = patch_test.reshape(-1,1)
 	#print(np.shape(x_train_orig), np.shape(y_train_orig), np.shape(z_train), num_data)
 	
-	X_train = polynomialfunction(x_train_orig, y_train_orig, len(x_train_orig), degree=5)
-	X_test = polynomialfunction(x_test, y_test, len(x_test), degree=5)
+	X_train = polynomialfunction(x_train_orig, y_train_orig, len(x_train_orig), degree=2)
+	X_test = polynomialfunction(x_test, y_test, len(x_test), degree=2)
 
 	#print(np.shape(X_train), np.shape(z_train), np.shape(X_test), np.shape(z_test))
 

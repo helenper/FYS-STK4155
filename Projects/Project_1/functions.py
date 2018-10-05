@@ -67,15 +67,17 @@ def quality(z_test,zpredict, write=0):
     the function will print out the values'''
 
     # Mean squared error:
-    mse = 1.0/z_test.shape[0] *np.sum((z_test - zpredict)**2)
-    #error = np.mean( np.mean((z_test - zpredict)**2, axis=1, keepdims=True) )
+    #mse = 1.0/z_test.shape[0] *np.sum((z_test - zpredict)**2)
+    mse = np.mean( np.mean((z_test - zpredict)**2, axis=1, keepdims=True) )
     # Bias:
     bias = np.mean( (z_test - np.mean(zpredict,  keepdims=True))**2 )
     # Variance:
     variance = np.mean( np.var(zpredict, keepdims=True) )
     
     # Explained R2 score: 1 is perfect prediction      
-    R2 = 1- (np.sum((z_test-zpredict)**2))/(np.sum((z_test-np.mean(z_test))**2))
+    #R2 = 1- (np.sum((z_test-zpredict)**2))/(np.sum((z_test-np.mean(z_test))**2))
+    #mse = mean_squared_error(z_test, zpredict)
+    R2 = r2_score(z_test,zpredict)
     
     if write != 0:
         print('Mean square error: %.5f' % mse)
@@ -95,7 +97,7 @@ def ridge(X, z, X_test, z_test, alpha, write=0):
 
     beta_ridge = (np.linalg.pinv( X.T @ X + alpha*IX) @ X.T @ z)#.flatten() 
 
-    print(np.shape(beta_ridge))
+    #print(np.shape(beta_ridge))
 
     pred_ridge =  X_test @ beta_ridge # Shape: 100x6 from 6 lambda-values
 
@@ -113,7 +115,7 @@ def ridge(X, z, X_test, z_test, alpha, write=0):
 def lasso(X,z,X_test, z_test, alpha, write=0):
     ''' A function that implements the Lasso method'''
 
-    lasso=Lasso(alpha, max_iter=1000000, fit_intercept = False)
+    lasso=Lasso(alpha, max_iter=1e3, normalize = True, fit_intercept = False)
     lasso.fit(X,z) 
 
     predl=lasso.predict(X_test)

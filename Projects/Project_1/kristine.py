@@ -113,7 +113,7 @@ if __name__ == '__main__':
         print("variance: %g"%var)
         print("bias: %g\n"%bias)
 
-        surface_plot(fitted_patch,'Fitted terrain surface',patch)
+        #surface_plot(fitted_patch,'Fitted terrain surface',patch)
 
     # Perform fit over the whole dataset
     print("The whole dataset")
