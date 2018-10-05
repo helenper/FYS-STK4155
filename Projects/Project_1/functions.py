@@ -95,6 +95,8 @@ def ridge(X, z, X_test, z_test, alpha, write=0):
 
     beta_ridge = (np.linalg.pinv( X.T @ X + alpha*IX) @ X.T @ z).flatten() 
 
+    print(np.shape(beta_ridge))
+
     pred_ridge =  X_test @ beta_ridge # Shape: 100x6 from 6 lambda-values
 
     
