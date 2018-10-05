@@ -109,6 +109,16 @@ for i,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts)
 
 	print('mse',mse, 'R2',R2, 'bias',bias,'var', var)
 
+	alpha = 0.001
+	mse_R , R2_R, bias_R, var_R = ridge(X_train, z_train, X_test, z_test, alpha, write=0)
+	
+	print('Rigde:', 'mse',mse_R, 'R2',R2_R, 'bias',bias_R,'var', var_R)
+
+
+	mse_L , R2_L, bias_L, var_L = lasso(X_train,z_train,X_test,z_test,alpha, write=0)
+
+	print('Lasso:', 'mse',mse_L, 'R2',R2_L, 'bias',bias_L,'var', var_L)
+
 
 #---------------------------------------------------------
 

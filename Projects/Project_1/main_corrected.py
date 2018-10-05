@@ -24,7 +24,6 @@ x = np.random.uniform(0.0,1.0, n)       # create a random number for x-values in
 y = np.random.uniform(0.0,1.0, n)       # create a random number for y-values in dataset
 noise = 0.1								# strengt of noise
 
-
 train_indices, test_indices = splitdata(x, 0.7)
 
 x_train_orig = x[train_indices]

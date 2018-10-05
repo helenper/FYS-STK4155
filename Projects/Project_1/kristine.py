@@ -55,8 +55,8 @@ if __name__ == '__main__':
 
     ## Find some random patches within the dataset and perform a fit
 
-    patch_size_row = 100
-    patch_size_col = 50
+    patch_size_row = 150
+    patch_size_col = 100
 
     # Define their axes
     rows = np.linspace(0,1,patch_size_row)
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     # Find the start indices of each patch
 
-    num_patches = 1
+    num_patches = 5
 
     np.random.seed(4155)
 
@@ -113,7 +113,7 @@ if __name__ == '__main__':
         print("variance: %g"%var)
         print("bias: %g\n"%bias)
 
-        #surface_plot(fitted_patch,'Fitted terrain surface',patch)
+        surface_plot(fitted_patch,'Fitted terrain surface',patch)
 
     # Perform fit over the whole dataset
     print("The whole dataset")

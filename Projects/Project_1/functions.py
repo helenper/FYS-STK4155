@@ -93,7 +93,7 @@ def ridge(X, z, X_test, z_test, alpha, write=0):
 
     IX = np.eye(X.shape[1])
 
-    beta_ridge = (np.linalg.pinv( X.T @ X + alpha*IX) @ X.T @ z).flatten() 
+    beta_ridge = (np.linalg.pinv( X.T @ X + alpha*IX) @ X.T @ z)#.flatten() 
 
     print(np.shape(beta_ridge))
 
@@ -113,7 +113,7 @@ def ridge(X, z, X_test, z_test, alpha, write=0):
 def lasso(X,z,X_test, z_test, alpha, write=0):
     ''' A function that implements the Lasso method'''
 
-    lasso=Lasso(alpha, max_iter=100000, fit_intercept = False)
+    lasso=Lasso(alpha, max_iter=1000000, fit_intercept = False)
     lasso.fit(X,z) 
 
     predl=lasso.predict(X_test)
