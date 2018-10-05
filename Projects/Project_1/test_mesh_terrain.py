@@ -110,13 +110,17 @@ var_Lasso = np.zeros((5,iterations))
 beta = np.zeros(iterations)
 
 
-file = open('data_terrain.txt','w') #Change filename
+file_OLS = open('data_terrain_OLS.txt','w') #Change filename
+file_Ridge = open('data_terrain_Ridge.txt','w')
+file_Lasso = open('data_terrain_Lasso.txt','w')
 beta_file = open('beta_data_terrain.txt', 'w')
 
 
 
 for k,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts):
-	file.write('%d    \n' %(k+1))
+	file_OLS.write('%d    \n' %(k+1))
+	file_Ridge.write('%d    \n' %(k+1))
+	file_Lasso.write('%d    \n' %(k+1))
 	row_end = row_start + patch_size_row
 	col_end = col_start + patch_size_col
 
@@ -125,11 +129,16 @@ for k,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts)
 
 	z = patch.reshape(-1,1)
 	for j in range(5):
+		file_OLS.write('%d     \n' %(j+1))
+		file_Ridge.write('%d     \n' %(j+1))
+		file_Lasso.write('%d     \n' %(j+1))
 		X = polynomialfunction(x,y,len(x),degree=(j+1))
 		X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
 #file.write('alpha     mse_OLS_average1 \n')
 		for a in alpha:
-			file.write('%f   \n' %a)
+			file_OLS.write('%f   \n' %a)
+			file_Ridge.write('%f   \n' %a)
+			file_Lasso.write('%f   \n' %a)
 			for i in range(iterations):
 				#print(np.shape(X_train))
 				X_train, z_train = bootstrap(X_train, z_train)
@@ -154,9 +163,9 @@ for k,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts)
 
 		        #betaConfidenceInterval(beta, beta_file)
 
-				mse_Ridge[j][i], r2score_Ridge[j][i], bias_Ridge[j][i], var_Ridge[j][i] = ridge(X_train,z_train,X_test,z_test,a, write=0)
+				#mse_Ridge[j][i], r2score_Ridge[j][i], bias_Ridge[j][i], var_Ridge[j][i] = ridge(X_train,z_train,X_test,z_test,a, write=0)
 
-				mse_Lasso[j][i], r2score_Lasso[j][i], bias_Lasso[j][i], var_Lasso[j][i] = lasso(X_train,z_train,X_test,z_test,a, write=0)
+				#mse_Lasso[j][i], r2score_Lasso[j][i], bias_Lasso[j][i], var_Lasso[j][i] = lasso(X_train,z_train,X_test,z_test,a, write=0)
 
 		    #print(mse_OLS[i], r2score_OLS[i])
 
@@ -232,25 +241,25 @@ for k,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts)
 				var_Lasso_average4 = np.mean(var_Lasso[3])
 				var_Lasso_average5 = np.mean(var_Lasso[4])
 
-				file.write('%f   %f     %f      %f    %f    ' %(mse_OLS_average1, mse_OLS_average2, mse_OLS_average3, mse_OLS_average4, mse_OLS_average5))
-				file.write('%f   %f     %f      %f    %f    ' %(mse_Ridge_average1, mse_Ridge_average2, mse_Ridge_average3, mse_Ridge_average4, mse_Ridge_average5))
-				file.write('%f   %f     %f      %f    %f    \n' %(mse_Lasso_average1, mse_Lasso_average2, mse_Lasso_average3, mse_Lasso_average4, mse_Lasso_average5))
+				file_OLS.write('mse 1.degree:%f   mse 2.degree:%f     mse 3.degree:%f      mse 4.degree:%f    mse 5.degree:%f    \n' %(mse_OLS_average1, mse_OLS_average2, mse_OLS_average3, mse_OLS_average4, mse_OLS_average5))
+				file_Ridge.write('mse 1.degree:%f   mse 2.degree:%f     mse 3.degree:%f      mse 4.degree:%f    mse 5.degree:%f    \n' %(mse_Ridge_average1, mse_Ridge_average2, mse_Ridge_average3, mse_Ridge_average4, mse_Ridge_average5))
+				file_Lasso.write('mse 1.degree:%f   mse 2.degree:%f     mse 3.degree:%f      mse 4.degree:%f    mse 5.degree:%f    \n' %(mse_Lasso_average1, mse_Lasso_average2, mse_Lasso_average3, mse_Lasso_average4, mse_Lasso_average5))
 
-				file.write('%f   %f     %f      %f    %f    ' %(r2score_OLS_average1, r2score_OLS_average2, r2score_OLS_average3, r2score_OLS_average4, r2score_OLS_average5))
-				file.write('%f   %f     %f      %f    %f    ' %(r2score_Ridge_average1, r2score_Ridge_average2, r2score_Ridge_average3, r2score_Ridge_average4, r2score_Ridge_average5))
-				file.write('%f   %f     %f      %f    %f    \n' %(r2score_Lasso_average1, r2score_Lasso_average2, r2score_Lasso_average3, r2score_Lasso_average4, r2score_Lasso_average5))
+				file_OLS.write('R2 1.degree:%f   R2 2.degree:%f     R2 3.degree:%f      R2 4.degree:%f    R2 5.degree:%f    \n' %(r2score_OLS_average1, r2score_OLS_average2, r2score_OLS_average3, r2score_OLS_average4, r2score_OLS_average5))
+				file_Ridge.write('%f   %f     %f      %f    %f    \n' %(r2score_Ridge_average1, r2score_Ridge_average2, r2score_Ridge_average3, r2score_Ridge_average4, r2score_Ridge_average5))
+				file_Lasso.write('%f   %f     %f      %f    %f    \n' %(r2score_Lasso_average1, r2score_Lasso_average2, r2score_Lasso_average3, r2score_Lasso_average4, r2score_Lasso_average5))
 
-				file.write('%f   %f     %f      %f    %f    ' %(bias_OLS_average1, bias_OLS_average2, bias_OLS_average3, bias_OLS_average4, bias_OLS_average5))
-				file.write('%f   %f     %f      %f    %f    ' %(bias_Ridge_average1, bias_Ridge_average2, bias_Ridge_average3, bias_Ridge_average4, bias_Ridge_average5))
-				file.write('%f   %f     %f      %f    %f    \n' %(bias_Lasso_average1, bias_Lasso_average2, bias_Lasso_average3, bias_Lasso_average4, bias_Lasso_average5))
+				file_OLS.write('bias 1.degree:%f   bias 2.degree:%f     bias 3.degree:%f      bias 4.degree:%f    bias 5.degree:%f    \n' %(bias_OLS_average1, bias_OLS_average2, bias_OLS_average3, bias_OLS_average4, bias_OLS_average5))
+				file_Ridge.write('%f   %f     %f      %f    %f    \n' %(bias_Ridge_average1, bias_Ridge_average2, bias_Ridge_average3, bias_Ridge_average4, bias_Ridge_average5))
+				file_Lasso.write('%f   %f     %f      %f    %f    \n' %(bias_Lasso_average1, bias_Lasso_average2, bias_Lasso_average3, bias_Lasso_average4, bias_Lasso_average5))
 
-				file.write('%f   %f     %f      %f    %f    ' %(var_OLS_average1, var_OLS_average2, var_OLS_average3, var_OLS_average4, var_OLS_average5))
-				file.write('%f   %f     %f      %f    %f    ' %(var_Ridge_average1, var_Ridge_average2, var_Ridge_average3, var_Ridge_average4, var_Ridge_average5))
-				file.write('%f   %f     %f      %f    %f    \n' %(var_Lasso_average1, var_Lasso_average2, var_Lasso_average3, var_Lasso_average4, var_Lasso_average5))
+				file_OLS.write('var 1.degree:%f   var 2.degree:%f     var 3.degree:%f      var 4.degree:%f    var 5.degree:%f    \n' %(var_OLS_average1, var_OLS_average2, var_OLS_average3, var_OLS_average4, var_OLS_average5))
+				file_Ridge.write('%f   %f     %f      %f    %f    \n' %(var_Ridge_average1, var_Ridge_average2, var_Ridge_average3, var_Ridge_average4, var_Ridge_average5))
+				file_Lasso.write('%f   %f     %f      %f    %f    \n' %(var_Lasso_average1, var_Lasso_average2, var_Lasso_average3, var_Lasso_average4, var_Lasso_average5))
 
-
-
-file.close()
+file_OLS.close()
+file_Ridge.close()
+file_Lasso.close()
 beta_file.close()
 
 """
