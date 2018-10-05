@@ -32,10 +32,10 @@ y = R.reshape(-1,1)
 
 z = FrankeFunction(x,y) + noise*np.random.randn(len(x))
 
-X = polynomialfunction(x,y,len(x),5)
-indices = np.array([i for i in range(len(x))])
+#X = polynomialfunction(x,y,len(x),5)
+#indices = np.array([i for i in range(len(x))])
 
-X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
+#X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
 #print(np.shape(X_train)) 
 #a = X_train.shape[0]
 #print(a)

@@ -10,8 +10,31 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter #, MaxNLocator
 #import matplotlib.ticker as ticker
 
 #def plotStatistics()
+"""
+def surface_plot(surface,title, surface1=None):
+    M,N = surface.shape
 
-def plotMSE():#mse_OLS, mse_Ridge, mse_Lasso):
+    ax_rows = np.arange(M)
+    ax_cols = np.arange(N)
+
+    [X,Y] = np.meshgrid(ax_cols, ax_rows)
+
+    fig = plt.figure()
+    if surface1 is not None:
+        ax = fig.add_subplot(1,2,1,projection='3d')
+        ax.plot_surface(X,Y,surface,cmap=cm.viridis,linewidth=0)
+        plt.title(title)
+
+        ax = fig.add_subplot(1,2,2,projection='3d')
+        ax.plot_surface(X,Y,surface1,cmap=cm.viridis,linewidth=0)
+        plt.title(title)
+    else:
+        ax = fig.gca(projection='3d')
+        ax.plot_surface(X,Y,surface,cmap=cm.viridis,linewidth=0)
+        plt.title(title)
+"""
+def plotMSE(mse_OLS):#, mse_Ridge, mse_Lasso):
+    """
     file = open('data.txt', 'r')
     alpha = float(file.readline())
     i = 0
@@ -21,13 +44,12 @@ def plotMSE():#mse_OLS, mse_Ridge, mse_Lasso):
         mse_OLS[i] = line_[0]
         i += 1
     print(mse_OLS)
-
-"""
+    """
     poly = [i+1 for i in range(len(mse_OLS))]
     plt.plot(poly,mse_OLS)
-    plt.plot(poly, mse_Ridge)
-    plt.plot(poly,mse_Lasso)
-    plt.legend(['OLS', 'Ridge', 'Lasso'])
+    #plt.plot(poly, mse_Ridge)
+    #plt.plot(poly,mse_Lasso)
+    #plt.legend(['OLS', 'Ridge', 'Lasso'])
     plt.title('Mean squared error calculated with different methods')
     plt.xlabel('Polynomial degree')
     plt.ylabel('Mean squared error')
@@ -106,6 +128,7 @@ def plotFrankeFunction(x, y, z, type):
 
 # Plotting Franke function with our prediction of z:
 #plotFrankeFunction(x, y, zpredict, type=2)
+"""
 """
 # Plotting Ridge:
 def plotRidge(x,y):

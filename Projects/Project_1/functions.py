@@ -11,7 +11,8 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.metrics import mean_squared_error, r2_score
 from time import time
-
+from imageio import imread
+from sklearn.model_selection import train_test_split
 
 def FrankeFunction(x,y):
     '''Returns the Franke function'''
@@ -56,6 +57,7 @@ def OLS(X, z, X_test, z_test):
     ordinary least squares method'''
 
     beta = np.linalg.pinv(X.T.dot(X)).dot(X.T).dot(z) 
+    print( np.shape(beta))
 
     zpredict = X_test.dot(beta)
     mse, R2, bias, variance = quality(z_test, zpredict) 
@@ -88,14 +90,15 @@ def quality(z_test,zpredict, write=0):
     return mse, R2, bias, variance
 
 
-def ridge(X, z, X_test, z_test, alpha, write=0):
+def ridge(X, z, X_test, z_test, lambda_value, write=0):
     ''' A function that implementes the Rigde method'''
 
     n_samples = 100
 
     IX = np.eye(X.shape[1])
 
-    beta_ridge = (np.linalg.pinv( X.T @ X + alpha*IX) @ X.T @ z)#.flatten() 
+    beta_ridge = (np.linalg.pinv( X.T @ X + lambda_value*IX) @ X.T @ z) 
+    print(np.shape(IX), np.shape(beta_ridge))
 
     #print(np.shape(beta_ridge))
 
@@ -104,20 +107,20 @@ def ridge(X, z, X_test, z_test, alpha, write=0):
     
     ### R2-score of the results
     if write:
-        print('lambda = %g'%alpha)
+        print('lambda = %g'%lambda_value)
         print('r2 for scikit: %g'%r2_score(z,pred_ridge_scikit[:,i]))
         print('r2 for own code, not centered: %g'%r2_score(z,pred_ridge))
         
-    
-    return quality(z_test, pred_ridge)
+    mse, R2, bias, variance = quality(z_test, pred_ridge)
+    return mse, R2, bias, variance, beta_ridge
 
 
-def lasso(X,z,X_test, z_test, alpha, write=0):
+def lasso(X,z,X_test, z_test, lambda_value, write=0):
     ''' A function that implements the Lasso method'''
 
-    lasso=Lasso(alpha, max_iter=1e3, normalize = True, fit_intercept = False)
+    lasso=Lasso(lambda_value, max_iter=1e6, normalize = True, fit_intercept = False)
     lasso.fit(X,z) 
-
+    beta_lasso = lasso.coef_.T
     predl=lasso.predict(X_test)
 
     if write != 0:
@@ -125,7 +128,8 @@ def lasso(X,z,X_test, z_test, alpha, write=0):
         print("Lasso Intercept: ", lasso.intercept_)
         print("R2 score:", r2_score(z,predl))
 
-    return quality(z_test, predl)
+    mse, R2, bias, variance = quality(z_test, predl)
+    return mse, R2, bias, variance, beta_lasso
 
 
 def splitdata(data, percent):
@@ -142,20 +146,145 @@ def bootstrap(x,y):
     indices = np.random.choice(len(y),len(y))
     x_train_new = x[indices]        
     y_train_new = y[indices]
-    #print(indices)
     return x_train_new, y_train_new
 
-def betaConfidenceInterval(beta, beta_file):
-    #beta = 
-    
+def betaConfidenceInterval(beta, best_beta):
     sigma = np.zeros(len(beta))
-    n = len(beta)
-    #print(np.shape(beta), np.shape(sigma))
-    #for i in range(len(beta)):
     sigma = np.sqrt(np.var(beta))
-    confidenceInterval_start = np.mean(beta)-2*sigma
-    confidenceInterval_end = np.mean(beta)+2*sigma
-    beta_file.write('%f    %f   \n' %(confidenceInterval_start, confidenceInterval_end))
-    #print('Confidence interval', confidenceInterval_start,confidenceInterval_end, np.mean(beta[n-2]))
+    print(sigma)
+    confidenceInterval_start = best_beta-2*sigma
+    confidenceInterval_end = best_beta+2*sigma
+    #beta_file.write('%f    %f   \n' %(confidenceInterval_start, confidenceInterval_end))
+    print(confidenceInterval_start, confidenceInterval_end)
+    
+
+def runFranke(polydegree, lambda_values, method = OLS, seed=False):
+    if seed== True:
+        np.random.seed(4155)
+    else:
+        print('NOTE: You are running with random data.')
+
+    n = 10                                # number of datapoints
+    row = np.random.uniform(0.0,1.0, n)       # create a random number for x-values in dataset
+    col = np.random.uniform(0.0,1.0, n)       # create a random number for y-values in dataset
+    noise = 0.1                             # strengt of noise
+
+    [C,R] = np.meshgrid(col, row)
+
+    x = C.reshape(-1,1)
+    y = R.reshape(-1,1)
+
+    z = FrankeFunction(x,y) + noise*np.random.randn(len(x))
 
     
+    #---------------------------------------------------------------------
+    # Use bootstrap to define train and test data and calculate a mean 
+    # value for MSE and R2 for the different methods OSL, Ridge and Lasso
+    #---------------------------------------------------------------------
+
+    iterations = 5    # number of times we split and save our calculations in train and test point
+
+    # Create arrays to hold different values to be taken mean over later. 
+    # Each arrray is a nested array, where the first index points to the degree of the polynomial
+    # used in that iteration. 
+    X = polynomialfunction(x,y,len(x),degree=polydegree)
+    X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
+
+    mse = np.zeros(iterations)
+    r2score = np.zeros(iterations)
+    bias = np.zeros(iterations)
+    var = np.zeros(iterations)
+    beta = np.zeros(iterations)
+
+    mse_min = 1000
+    r2_for_min_mse = 0
+    #best_beta = np.zeros(X.shape[0])
+
+    for lmd in lambda_values:
+        for i in range(iterations):
+            X_train, z_train = bootstrap(X_train,z_train)
+            if method == OLS:
+                mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,z_train, X_test, z_test)
+            if method == ridge:
+                mse[i], r2score[i], bias[i], var[i],beta = ridge(X_train,z_train,X_test,z_test,lmd, write=0)
+            if method == lasso:
+                mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lmd, write=0)
+
+            if mse[i] < mse_min: 
+                mse_min = mse[i]
+                r2_for_min_mse = r2score[i]
+                best_beta = []
+                for j in range(beta.shape[0]):
+                    best_beta.append(beta[j][i])
+
+        # Average qualities:
+        mse_average = np.mean(mse)
+        r2score_average = np.mean(r2score)
+        bias_average = np.mean(bias)    
+        var_average = np.mean(var)  
+
+
+    return mse_average, r2score_average, bias_average, \
+            var_average, beta, best_beta, mse_min
+
+
+def runTerrain():
+    mse_OLS = np.zeros(iterations)
+    mse_Ridge = np.zeros(iterations)
+    mse_Lasso = np.zeros(iterations)
+    r2score_OLS = np.zeros(iterations)
+    r2score_Ridge = np.zeros(iterations)
+    r2score_Lasso = np.zeros(iterations)
+    bias_OLS = np.zeros(iterations)
+    bias_Ridge = np.zeros(iterations)
+    bias_Lasso = np.zeros(iterations)
+    var_OLS = np.zeros(iterations)
+    var_Ridge = np.zeros(iterations)
+    var_Lasso = np.zeros(iterations)
+    beta_OLS = np.zeros(iterations)
+    beta_ridge = np.zeros(iterations)
+    beta_lasso = np.zeros(iterations)
+    for k,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts):
+        row_end = row_start + patch_size_row
+        col_end = col_start + patch_size_col
+
+        patch = terrain1[row_start:row_end, col_start:col_end]
+        #print(np.shape(patch))
+
+        z = patch.reshape(-1,1)
+        for j in range(5):
+            X = polynomialfunction(x,y,len(x),degree=(j+1))
+            X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
+            for a in alpha:
+                for i in range(iterations):
+                    X_train, z_train = bootstrap(X_train, z_train)
+
+                    mse_OLS[j][i], r2score_OLS[j][i], bias_OLS[j][i], var_OLS[j][i], beta = OLS(X_train,z_train, X_test, z_test)
+
+                    mse_Ridge[j][i], r2score_Ridge[j][i], bias_Ridge[j][i], var_Ridge[j][i] = ridge(X_train,z_train,X_test,z_test,a, write=0)
+
+                    mse_Lasso[j][i], r2score_Lasso[j][i], bias_Lasso[j][i], var_Lasso[j][i] = lasso(X_train,z_train,X_test,z_test,a, write=0)
+
+                    # Getting beta for the confidence interval
+                    #betaConfidenceInterval(beta, beta_file)
+
+
+                    mse_OLS_average = np.mean(mse_OLS)  
+                    r2score_OLS_average = np.mean(r2score_OLS)
+                    bias_OLS_average = np.mean(bias_OLS)    
+                    var_OLS_average = np.mean(var_OLS)  
+
+
+                    mse_Ridge_average = np.mean(mse_Ridge) 
+                    r2score_Ridge_average = np.mean(r2score_Ridge)
+                    bias_Ridge_average = np.mean(bias_Ridge) 
+                    var_Ridge_average = np.mean(var_Ridge) 
+
+
+                    mse_Lasso_average = np.mean(mse_Lasso)
+                    r2score_Lasso_average = np.mean(r2score_Lasso)
+                    bias_Lasso_average = np.mean(bias_Lasso)
+                    var_Lasso_average = np.mean(var_Lasso)
+
+
+    beta_file.close()
