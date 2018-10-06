@@ -61,10 +61,9 @@ def OLS(X, z, X_test, z_test):
     '''Calculate and return the z and zpredict value by 
     ordinary least squares method'''
 
-    beta = np.linalg.pinv(X.T.dot(X)).dot(X.T).dot(z) 
-    #print( np.shape(beta))
-
-    zpredict = X_test.dot(beta)
+    #beta = np.linalg.pinv(X.T.dot(X)).dot(X.T).dot(z) 
+    beta = (np.linalg.pinv(X.T @ X)@ X.T @ z)
+    zpredict = X_test @ beta
     mse, R2, bias, variance = quality(z_test, zpredict) 
     return mse, R2, bias, variance, beta
 
@@ -131,7 +130,6 @@ def bootstrap(x,y):
 def betaConfidenceInterval(beta, best_beta):
     sigma = np.zeros(len(beta))
     sigma = np.sqrt(np.var(beta))
-    print(sigma)
     confidenceInterval_start = best_beta-2*sigma
     confidenceInterval_end = best_beta+2*sigma
     print(confidenceInterval_start, confidenceInterval_end)
@@ -140,7 +138,7 @@ def betaConfidenceInterval(beta, best_beta):
 def runFranke(polydegree, lambda_values, num_data, num_iterations, method = OLS, seed=False):
     if seed== True:
         np.random.seed(4155)
-        print('NOTE: You are running with seed on random data.')
+        print('NOTE: You are running with a given seed on random data.')
     else:
         print('NOTE: You are running with random data.')
 
