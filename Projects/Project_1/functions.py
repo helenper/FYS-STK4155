@@ -4,6 +4,10 @@
 # Fall 2018 
 ####################
 
+# Ignore warnings
+import warnings
+warnings.simplefilter("ignore")
+
 # Import necessary packages
 import numpy as np
 from random import random, seed
@@ -13,6 +17,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from time import time
 from imageio import imread
 from sklearn.model_selection import train_test_split
+from sklearn.utils import safe_indexing, indexable
 
 def FrankeFunction(x,y):
     '''Returns the Franke function'''
@@ -57,7 +62,7 @@ def OLS(X, z, X_test, z_test):
     ordinary least squares method'''
 
     beta = np.linalg.pinv(X.T.dot(X)).dot(X.T).dot(z) 
-    print( np.shape(beta))
+    #print( np.shape(beta))
 
     zpredict = X_test.dot(beta)
     mse, R2, bias, variance = quality(z_test, zpredict) 
@@ -98,7 +103,7 @@ def ridge(X, z, X_test, z_test, lambda_value, write=0):
     IX = np.eye(X.shape[1])
 
     beta_ridge = (np.linalg.pinv( X.T @ X + lambda_value*IX) @ X.T @ z) 
-    print(np.shape(IX), np.shape(beta_ridge))
+    #print(np.shape(IX), np.shape(beta_ridge))
 
     #print(np.shape(beta_ridge))
 
@@ -161,6 +166,7 @@ def betaConfidenceInterval(beta, best_beta):
 def runFranke(polydegree, lambda_values, method = OLS, seed=False):
     if seed== True:
         np.random.seed(4155)
+        print('NOTE: You are running with seed on random data.')
     else:
         print('NOTE: You are running with random data.')
 
@@ -188,7 +194,8 @@ def runFranke(polydegree, lambda_values, method = OLS, seed=False):
     # Each arrray is a nested array, where the first index points to the degree of the polynomial
     # used in that iteration. 
     X = polynomialfunction(x,y,len(x),degree=polydegree)
-    X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
+    indices = np.array([i for i in range(len(z))])
+    X_train, X_test, z_train, z_test, indices_train, indices_test = train_test_split(X, z, indices, train_size = 0.7)
 
     mse = np.zeros(iterations)
     r2score = np.zeros(iterations)
