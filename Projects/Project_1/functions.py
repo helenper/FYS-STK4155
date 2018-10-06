@@ -60,9 +60,11 @@ def polynomialfunction(x, y, n, degree):
 def OLS(X, z, X_test, z_test):
     '''Calculate and return the z and zpredict value by 
     ordinary least squares method'''
-
+    #print(np.shape(X))
+    #print('z',np.shape(z))
     #beta = np.linalg.pinv(X.T.dot(X)).dot(X.T).dot(z) 
     beta = (np.linalg.pinv(X.T @ X)@ X.T @ z)
+    #print(np.shape(beta))
     zpredict = X_test @ beta
     mse, R2, bias, variance = quality(z_test, zpredict) 
     return mse, R2, bias, variance, beta
@@ -92,6 +94,7 @@ def ridge(X, z, X_test, z_test, lambda_value):
     IX = np.eye(X.shape[1])
 
     beta_ridge = (np.linalg.pinv( X.T @ X + lambda_value*IX) @ X.T @ z) 
+    print(np.shape(beta))
 
     pred_ridge =  X_test @ beta_ridge 
     
@@ -151,8 +154,12 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations, method = OLS,
 
     x = C.reshape(-1,1)
     y = R.reshape(-1,1)
+    #print('FrankeFunction - x', np.shape(x))
 
     z = FrankeFunction(x,y) + noise*np.random.randn(len(x))
+    #print('FrankeFunction', np.shape(z))
+    #z = z.reshape(-1,1)
+    print('FrankeFunction', np.shape(z))
 
     
     #---------------------------------------------------------------------
@@ -166,9 +173,11 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations, method = OLS,
     # Each arrray is a nested array, where the first index points to the degree of the polynomial
     # used in that iteration. 
     X = polynomialfunction(x,y,len(x),degree=polydegree)
-    indices = np.array([i for i in range(len(z))])
-    X_train, X_test, z_train, z_test, indices_train, indices_test = train_test_split(X, z, indices, train_size = 0.7)
+    print('Franke', np.shape(X))
+    #indices = np.array([i for i in range(len(z))])
+    X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
 
+    #, indices_train, indices_test
     mse = np.zeros(iterations)
     r2score = np.zeros(iterations)
     bias = np.zeros(iterations)
@@ -182,8 +191,10 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations, method = OLS,
     for lmd in lambda_values:
         for i in range(iterations):
             X_train, z_train = bootstrap(X_train,z_train)
+            #print('X_train', np.shape(X_train))
             if method == OLS:
                 mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,z_train, X_test, z_test)
+                #print(np.shape(beta))
             if method == ridge:
                 mse[i], r2score[i], bias[i], var[i],beta = ridge(X_train,z_train,X_test,z_test,lmd)
             if method == lasso:
@@ -193,6 +204,7 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations, method = OLS,
                 mse_min = mse[i]
                 r2_for_min_mse = r2score[i]
                 best_beta = []
+                #print(np.shape(beta))
                 for j in range(beta.shape[0]):
                     best_beta.append(beta[j][i])
 
@@ -207,12 +219,35 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations, method = OLS,
             var_average, beta, best_beta, mse_min
 
 
-def runTerrain(polydegree, lambda_values, method = OLS, seed=False):
+def runTerrain(polydegree, lambda_values, n, iterations, method = OLS, seed=False):
+    terrain1 = imread('terrainone.tif')
+    [n,m] = terrain1.shape
+
+    patch_size_row = 100
+    patch_size_col = 50
+
+    rows = np.linspace(0,1,patch_size_row)
+    cols = np.linspace(0,1,patch_size_col)
+
+    [C,R] = np.meshgrid(cols,rows)
+
+    x = C.reshape(-1,1)
+    y = R.reshape(-1,1)
+
+    num_data = patch_size_row*patch_size_col
+    num_patches = 5
+
+    row_starts = np.random.randint(0,n-patch_size_row,num_patches)
+    col_starts = np.random.randint(0,m-patch_size_col,num_patches)
+
     mse = np.zeros(iterations)
     r2score = np.zeros(iterations)
     bias = np.zeros(iterations)
     var = np.zeros(iterations)
     beta = np.zeros(iterations)
+    mse_min = 10000
+    best_beta = 0
+
 
     for k,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts):
         row_end = row_start + patch_size_row
@@ -221,25 +256,49 @@ def runTerrain(polydegree, lambda_values, method = OLS, seed=False):
         patch = terrain1[row_start:row_end, col_start:col_end]
 
         z = patch.reshape(-1,1)
+        print('blaaa', np.shape(z))
         X = polynomialfunction(x,y,len(x),degree=polydegree)
+        #X = X.reshape(-1,1)
+        print('terrain', np.shape(X))
         X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
-        for a in alpha:
+        #print('hei',np.shape(X_train))
+        for lmd in lambda_values:
             for i in range(iterations):
                 X_train, z_train = bootstrap(X_train, z_train)
+                #print('X_train', np.shape(X_train))
                 if method == OLS:
                     mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,z_train, X_test, z_test)
+                    print(mse)
+                    #print(np.shape(beta))
                 if method == ridge:
                     mse[i], r2score[i], bias[i], var[i],beta = ridge(X_train,z_train,X_test,z_test,lmd)
                 if method == lasso:
                     mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lmd)
 
+                """
+                if mse[i] < mse_min: 
+                    mse_min = mse[i]
+                    #print(mse_min)
+                    r2_for_min_mse = r2score[i]
+                    best_beta = []
+                    #print(np.shape(beta))
+                    for j in range(len(beta)):
+                        best_beta.append(beta[j][i])
                 # Getting beta for the confidence interval
                 #betaConfidenceInterval(beta, beta_file)
+                """
+                mse_average = np.mean(mse[k]) 
+                #print(mse_average) 
+        r2score_average = np.mean(r2score[k])
+        bias_average = np.mean(bias[k])    
+        var_average = np.mean(var[k])
+        #print(mse_average) 
+    """
+    mse_average = np.mean(mse)  
+    r2score_average = np.mean(r2score)
+    bias_average = np.mean(bias)    
+    var_average = np.mean(var)  
+    """
 
-
-                mse_average = np.mean(mse)  
-                r2score_average = np.mean(r2score)
-                bias_average = np.mean(bias)    
-                var_average = np.mean(var)  
-
-
+    return mse_average, r2score_average, bias_average, \
+                var_average, beta, best_beta, mse_min
