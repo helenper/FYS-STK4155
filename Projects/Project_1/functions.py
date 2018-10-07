@@ -178,29 +178,43 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations, method = OLS,
     X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
 
     #, indices_train, indices_test
-    mse = np.zeros(iterations)
+    mse = np.zeros((len(lambda_values), iterations))
+    print(np.shape(mse))
     r2score = np.zeros(iterations)
     bias = np.zeros(iterations)
     var = np.zeros(iterations)
     beta = np.zeros(iterations)
 
+    #mse = []
+    #r2score= []
+    #bias= []
+    #var= []
+    #beta= []
+    best_beta = 0
+
     mse_min = 1000
     r2_for_min_mse = 0
     #best_beta = np.zeros(X.shape[0])
+    k =0
 
     for lmd in lambda_values:
         for i in range(iterations):
             X_train, z_train = bootstrap(X_train,z_train)
             #print('X_train', np.shape(X_train))
             if method == OLS:
-                mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,z_train, X_test, z_test)
+                mse[k][i], r2score[i], bias[i], var[i], beta = OLS(X_train,z_train, X_test, z_test)
                 #print(np.shape(beta))
+            #if method == ridge:
+            #    mse.append(ridge(X_train,z_train,X_test,z_test,lmd)[0])
+
             if method == ridge:
                 mse[i], r2score[i], bias[i], var[i],beta = ridge(X_train,z_train,X_test,z_test,lmd)
                 print(mse)
             if method == lasso:
                 mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lmd)
+        k += 1
 
+        """
             if mse[i] < mse_min: 
                 mse_min = mse[i]
                 r2_for_min_mse = r2score[i]
@@ -208,7 +222,7 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations, method = OLS,
                 #print(np.shape(beta))
                 for j in range(beta.shape[0]):
                     best_beta.append(beta[j][i])
-
+        """
         # Average qualities:
         mse_average = np.mean(mse)
         r2score_average = np.mean(r2score)
