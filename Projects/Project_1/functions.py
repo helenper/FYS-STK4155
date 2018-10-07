@@ -132,10 +132,10 @@ def bootstrap(x,y):
 
 def betaConfidenceInterval(beta, best_beta, iteration_best):
     confidenceInterval = []
-    for i in range(beta.shape[1]):
+    for i in range(best_beta.shape[0]):
         sigma = np.sqrt(np.var(beta[iteration_best][i]))
-        confidenceInterval_start = np.mean(best_beta[iteration_best][i]) - 2*sigma
-        confidenceInterval_end = np.mean(best_beta[iteration_best][i]) + 2*sigma
+        confidenceInterval_start = np.mean(best_beta[i]) - 2*sigma
+        confidenceInterval_end = np.mean(best_beta[i]) + 2*sigma
         confidenceInterval.append([confidenceInterval_start, confidenceInterval_end])
     
     return confidenceInterval
@@ -150,7 +150,7 @@ def betaConfidenceInterval(beta, best_beta, iteration_best):
 '''
   
 
-def runFranke(polydegree, lambda_values, num_data, num_iterations,seed=False, method = OLS):
+def runFranke(polydegree, lambda_values, num_data, num_iterations,seed, method):
     if seed== True:
         np.random.seed(4155)
         print('NOTE: You are running with a given seed on random data.')
@@ -219,7 +219,7 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed=False, me
     r2_for_min_mse = 0
     #best_beta = np.zeros(X.shape[0])
     k =0
-    iteration_best = 0
+    
 
     #for k in range(len(lambda_values)):
     for i in range(iterations):
@@ -232,14 +232,14 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed=False, me
         #if method == ridge:
         #    mse.append(ridge(X_train,z_train,X_test,z_test,lmd)[0])
 
-        if method == 'ridge':
+        if method == 'Ridge':
             #mse[k][i], r2score[k][i], bias[k][i], var[k][i] = ridge(X_train,z_train,X_test,z_test,lambda_values[k])
             #print(mse)
             mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,z_train,X_test,z_test,lambda_values)
             beta_list.append(beta)
         
-        if method == 'lasso':
-            mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lmd)
+        if method == 'Lasso':
+            mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lambda_values)
             beta_list.append(beta)
 
         if mse[i] < mse_min: 
@@ -247,6 +247,7 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed=False, me
             r2_for_min_mse = r2score[i]
             best_beta = beta
             iteration_best = i
+        
             #best_beta = []
             #best_beta.append(beta)
 
@@ -260,6 +261,8 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed=False, me
     r2score_average = np.mean(r2score[k])
     bias_average = np.mean(bias[k])    
     var_average = np.mean(var[k])  
+
+    #print('b-list:', np.shape(beta_list))
 
     return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), best_beta, mse_min, r2_for_min_mse, iteration_best
 
