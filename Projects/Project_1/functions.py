@@ -94,7 +94,7 @@ def ridge(X, z, X_test, z_test, lambda_value):
     IX = np.eye(X.shape[1])
 
     beta_ridge = (np.linalg.pinv( X.T @ X + lambda_value*IX) @ X.T @ z) 
-    print(np.shape(beta))
+    #print(np.shape(beta_ridge))
 
     pred_ridge =  X_test @ beta_ridge 
     
@@ -197,6 +197,7 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations, method = OLS,
                 #print(np.shape(beta))
             if method == ridge:
                 mse[i], r2score[i], bias[i], var[i],beta = ridge(X_train,z_train,X_test,z_test,lmd)
+                print(mse)
             if method == lasso:
                 mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lmd)
 
@@ -287,11 +288,15 @@ def runTerrain(polydegree, lambda_values, n, iterations, method = OLS, seed=Fals
                 # Getting beta for the confidence interval
                 #betaConfidenceInterval(beta, beta_file)
                 """
-                mse_average = np.mean(mse[k]) 
+                mse_average = np.mean(mse[k])
+                print(mse_average) 
                 #print(mse_average) 
         r2score_average = np.mean(r2score[k])
         bias_average = np.mean(bias[k])    
         var_average = np.mean(var[k])
+
+
+        #mse_average = [mse_average[0], mse_average[1], mse_average[2], mse_average[3], mse_average[4]]
         #print(mse_average) 
     """
     mse_average = np.mean(mse)  
