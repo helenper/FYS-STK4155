@@ -151,7 +151,7 @@ def betaConfidenceInterval(beta, best_beta, iteration_best):
   
 
 def runFranke(polydegree, lambda_values, num_data, num_iterations,seed, method):
-    if seed== True:
+    if seed == 'True' or seed == 'true':
         np.random.seed(4155)
         print('NOTE: You are running with a given seed on random data.')
     else:
@@ -226,6 +226,7 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed, method):
         X_train, z_train = bootstrap(X_train,z_train)
         #print('X_train', np.shape(X_train))
         if method == 'OLS':
+            print(i)
             mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,z_train, X_test, z_test)
             beta_list.append(beta)
             #print(np.shape(beta))
@@ -233,12 +234,14 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed, method):
         #    mse.append(ridge(X_train,z_train,X_test,z_test,lmd)[0])
 
         if method == 'Ridge':
+            print(i)
             #mse[k][i], r2score[k][i], bias[k][i], var[k][i] = ridge(X_train,z_train,X_test,z_test,lambda_values[k])
             #print(mse)
             mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,z_train,X_test,z_test,lambda_values)
             beta_list.append(beta)
         
         if method == 'Lasso':
+            print(i)
             mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lambda_values)
             beta_list.append(beta)
 

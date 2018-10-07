@@ -9,9 +9,9 @@ from functions import *
 from plotfunctions import *
 import sys
 
-n = 5
-iterations = 5
-lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4]
+n = 100
+iterations = 1000
+lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
 method = ['OLS', 'Ridge', 'Lasso']
 seed= input('Do you want to run the program with a set seed on random numbers? If yes => true, if no => false [true/false]: ' )
 
@@ -32,8 +32,7 @@ for m in method:
 				#print(the_beta_values)
 
 				confidenceIntervall = betaConfidenceInterval(beta, best_beta, iteration_best)
-				print(the_beta_values)
-				print(confidenceIntervall)
+
 
 				file.write('The results from running a degree %s polynominal with lamda = %f \n' %(d, elm))
 				file.write('MSE_average: 		%f \n' %mse_average )
