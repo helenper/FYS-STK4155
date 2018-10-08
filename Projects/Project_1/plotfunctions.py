@@ -111,8 +111,8 @@ def plotMSE_Ridge(mse):
     plt.ylabel('MSE')
     plt.show()
 
-mse, r2, bias, var = retrive_data_from_file('results_franke_Ridge.txt', 5, 6)
-plotMSE_Ridge(mse)
+#mse, r2, bias, var = retrive_data_from_file('results_franke_Ridge.txt', 5, 6)
+#plotMSE_Ridge(mse)
 
 def plotMSE_Lasso():
     lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]

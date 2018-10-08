@@ -140,6 +140,17 @@ def betaConfidenceInterval(beta, best_beta, iteration_best):
     
     return confidenceInterval
 
+def betaConfidenceInterval_terrain(beta, best_beta, iteration_best):
+    confidenceInterval = []
+    print(len(best_beta))
+    for i in range(len(best_beta)):
+        sigma = np.sqrt(np.var(beta[i]))
+        confidenceInterval_start = np.mean(best_beta[i]) - 2*sigma
+        confidenceInterval_end = np.mean(best_beta[i]) + 2*sigma
+        confidenceInterval.append([confidenceInterval_start, confidenceInterval_end])
+    
+    return confidenceInterval
+
 
 '''
     beta_var = np.zeros((beta.shape[1], beta.shape[0]*beta.shape[2]))
@@ -272,6 +283,12 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed, method):
        
 
 def runTerrain(polydegree, lambda_values, num_data, num_iterations,seed, method):
+    if seed == 'True' or seed == 'true':
+        np.random.seed(4155)
+        print('NOTE: You are running with a given seed on random data.')
+    else:
+        print('NOTE: You are running with random data.')
+
     terrain1 = imread('terrainone.tif')
     [n,m] = terrain1.shape
 
@@ -306,7 +323,8 @@ def runTerrain(polydegree, lambda_values, num_data, num_iterations,seed, method)
     var_average = np.zeros(num_patches)
 
     beta= 0
-    best_beta = [0, 0, 0, 0, 0]
+    best_beta = [[], [], [], [], []]
+    print(best_beta)
 
     mse_min = [1e7, 1e7, 1e7, 1e7, 1e7]
     r2_for_min_mse = [0, 0, 0, 0, 0]
@@ -321,17 +339,15 @@ def runTerrain(polydegree, lambda_values, num_data, num_iterations,seed, method)
         patch = terrain1[row_start:row_end, col_start:col_end]
 
         z = patch.reshape(-1,1)
-        print('blaaa', np.shape(z))
         X = polynomialfunction(x,y,len(x),degree=polydegree)
         #X = X.reshape(-1,1)
-        print('terrain', np.shape(X))
         X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
         #print('hei',np.shape(X_train))
         for i in range(iterations):
             X_train, z_train = bootstrap(X_train, z_train)
             #print('X_train', np.shape(X_train))
             if method == 'OLS':
-                print(i)
+                print(lambda_values, i)
                 mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,z_train, X_test, z_test)
                 beta_list.append(beta)
                 #print(np.shape(beta))
@@ -339,21 +355,22 @@ def runTerrain(polydegree, lambda_values, num_data, num_iterations,seed, method)
             #    mse.append(ridge(X_train,z_train,X_test,z_test,lmd)[0])
 
             if method == 'Ridge':
-                print(i)
+                print(lambda_values, i)
                 #mse[k][i], r2score[k][i], bias[k][i], var[k][i] = ridge(X_train,z_train,X_test,z_test,lambda_values[k])
                 #print(mse)
                 mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,z_train,X_test,z_test,lambda_values)
                 beta_list.append(beta)
             
             if method == 'Lasso':
-                print(i)
+                print(lambda_values, i)
                 mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lambda_values)
                 beta_list.append(beta)
-            print('mse', mse[i])
+            #print('mse', mse[i])
 
             if mse[i] < mse_min[k]: 
                 mse_min[k] = mse[i]
                 r2_for_min_mse[k] = r2score[i]
+                #print(beta)
                 best_beta[k] = beta
                 iteration_best = i
 
@@ -363,5 +380,7 @@ def runTerrain(polydegree, lambda_values, num_data, num_iterations,seed, method)
         var_average[k] = np.mean(var[k])  
 
     #print('b-list:', np.shape(beta_list))
+
+    print(best_beta)
 
     return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), best_beta, mse_min, r2_for_min_mse, iteration_best
