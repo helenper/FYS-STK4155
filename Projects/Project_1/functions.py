@@ -271,7 +271,7 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed, method):
 
        
 
-def runTerrain(polydegree, lambda_values, n, iterations, method = OLS, seed=False):
+def runTerrain(polydegree, lambda_values, num_data, num_iterations,seed, method):
     terrain1 = imread('terrainone.tif')
     [n,m] = terrain1.shape
 
@@ -292,14 +292,26 @@ def runTerrain(polydegree, lambda_values, n, iterations, method = OLS, seed=Fals
     row_starts = np.random.randint(0,n-patch_size_row,num_patches)
     col_starts = np.random.randint(0,m-patch_size_col,num_patches)
 
+    iterations = num_iterations
+
     mse = np.zeros(iterations)
     r2score = np.zeros(iterations)
     bias = np.zeros(iterations)
     var = np.zeros(iterations)
-    beta_list = [[] for i in range(len(lambda_values))]
-    print(beta_list)
-    mse_min = 10000
-    best_beta = 0
+    beta_list = [] #np.zeros(iterations)
+
+    mse_average = np.zeros(num_patches)
+    r2score_average = np.zeros(num_patches)
+    bias_average = np.zeros(num_patches)
+    var_average = np.zeros(num_patches)
+
+    beta= 0
+    best_beta = [0, 0, 0, 0, 0]
+
+    mse_min = [1e7, 1e7, 1e7, 1e7, 1e7]
+    r2_for_min_mse = [0, 0, 0, 0, 0]
+    #iteration_best =1
+    #best_beta = np.zeros(X.shape[0])
 
 
     for k,row_start, col_start in zip(np.arange(num_patches),row_starts, col_starts):
@@ -315,47 +327,41 @@ def runTerrain(polydegree, lambda_values, n, iterations, method = OLS, seed=Fals
         print('terrain', np.shape(X))
         X_train, X_test, z_train, z_test = train_test_split(X, z, train_size = 0.7)
         #print('hei',np.shape(X_train))
-        for lmd in lambda_values:
-            for i in range(iterations):
-                X_train, z_train = bootstrap(X_train, z_train)
-                #print('X_train', np.shape(X_train))
-                if method == OLS:
-                    mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,z_train, X_test, z_test)
-                    print(mse)
-                    #print(np.shape(beta))
-                if method == ridge:
-                    mse[i], r2score[i], bias[i], var[i],beta = ridge(X_train,z_train,X_test,z_test,lmd)
-                if method == lasso:
-                    mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lmd)
+        for i in range(iterations):
+            X_train, z_train = bootstrap(X_train, z_train)
+            #print('X_train', np.shape(X_train))
+            if method == 'OLS':
+                print(i)
+                mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,z_train, X_test, z_test)
+                beta_list.append(beta)
+                #print(np.shape(beta))
+            #if method == ridge:
+            #    mse.append(ridge(X_train,z_train,X_test,z_test,lmd)[0])
 
-                """
-                if mse[i] < mse_min: 
-                    mse_min = mse[i]
-                    #print(mse_min)
-                    r2_for_min_mse = r2score[i]
-                    best_beta = []
-                    #print(np.shape(beta))
-                    for j in range(len(beta)):
-                        best_beta.append(beta[j][i])
-                # Getting beta for the confidence interval
-                #betaConfidenceInterval(beta, beta_file)
-                """
-                mse_average = np.mean(mse[k])
-                print(mse_average) 
-                #print(mse_average) 
-        r2score_average = np.mean(r2score[k])
-        bias_average = np.mean(bias[k])    
-        var_average = np.mean(var[k])
+            if method == 'Ridge':
+                print(i)
+                #mse[k][i], r2score[k][i], bias[k][i], var[k][i] = ridge(X_train,z_train,X_test,z_test,lambda_values[k])
+                #print(mse)
+                mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,z_train,X_test,z_test,lambda_values)
+                beta_list.append(beta)
+            
+            if method == 'Lasso':
+                print(i)
+                mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,z_train,X_test,z_test,lambda_values)
+                beta_list.append(beta)
+            print('mse', mse[i])
 
+            if mse[i] < mse_min[k]: 
+                mse_min[k] = mse[i]
+                r2_for_min_mse[k] = r2score[i]
+                best_beta[k] = beta
+                iteration_best = i
 
-        #mse_average = [mse_average[0], mse_average[1], mse_average[2], mse_average[3], mse_average[4]]
-        #print(mse_average) 
-    """
-    mse_average = np.mean(mse)  
-    r2score_average = np.mean(r2score)
-    bias_average = np.mean(bias)    
-    var_average = np.mean(var)  
-    """
+        mse_average[k] = np.mean(mse[k])
+        r2score_average[k] = np.mean(r2score[k])
+        bias_average[k] = np.mean(bias[k])    
+        var_average[k] = np.mean(var[k])  
 
-    return mse_average, r2score_average, bias_average, \
-                var_average, beta, best_beta, mse_min
+    #print('b-list:', np.shape(beta_list))
+
+    return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), best_beta, mse_min, r2_for_min_mse, iteration_best

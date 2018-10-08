@@ -33,27 +33,175 @@ def surface_plot(surface,title, surface1=None):
         ax.plot_surface(X,Y,surface,cmap=cm.viridis,linewidth=0)
         plt.title(title)
 """
-def plotMSE(mse_OLS):#, mse_Ridge, mse_Lasso):
-    """
-    file = open('data.txt', 'r')
-    alpha = float(file.readline())
-    i = 0
-    mse_OLS = np.zeros(15)
-    for line in file:
-        line_ = line.split()
-        mse_OLS[i] = line_[0]
-        i += 1
-    print(mse_OLS)
-    """
-    poly = [i+1 for i in range(len(mse_OLS))]
-    plt.plot(poly,mse_OLS)
-    #plt.plot(poly, mse_Ridge)
-    #plt.plot(poly,mse_Lasso)
-    #plt.legend(['OLS', 'Ridge', 'Lasso'])
-    plt.title('Mean squared error calculated with different methods')
-    plt.xlabel('Polynomial degree')
-    plt.ylabel('Mean squared error')
+
+def retrive_data_from_file(filename, num_degree, numb_of_lambda):
+    infile = open(filename, 'r')
+
+    #lamda_values = np.zeros((num_degree, numb_of_lambda))
+    #MSE_average = np.zeros((num_degree,numb_of_lambda))
+    MSE_average = []
+    R2_average = []
+    Bias_average = []
+    Variance_average =[]
+
+
+    #i = 0
+
+    for lines in infile: 
+        line = lines.split()
+        """
+        if len(line) > 10:
+            if line
+            print('a') 
+            lamda_values[i] = line[11]
+        """
+        #for i in range(numb_of_lambda):
+        if len(line) == 2:
+            #print(line[1])
+            if line[0] == 'MSE_average:' :
+                MSE_average.append(float(line[1]))
+            
+            if line[0] == 'R2_score_average:':
+                R2_average.append(line[1])
+
+            if line[0] == 'Bias_average:' :
+                Bias_average.append(line[1])
+
+            if line[0] == 'Variance_average:':
+                Variance_average.append(line[1])
+            
+
+
+    infile.close()
+
+    return MSE_average, R2_average, Bias_average, Variance_average
+
+#MSE_average, R2_average, Bias_average, Variance_average = retrive_data_from_file('results_franke_OLS.txt', 5, 6)
+#print(MSE_average, R2_average, Bias_average, Variance_average)
+
+def plotMSE_OLS(mse):
+    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
+    print(mse[0:6])
+    print(mse[6:12])
+    plt.plot(lambda_values, mse[0:6])
+    plt.plot(lambda_values, mse[6:12])
+    plt.plot(lambda_values, mse[12:18])
+    plt.plot(lambda_values, mse[18:24])
+    plt.plot(lambda_values, mse[24:30])
+    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
+    plt.title('MSE calculated by OLS')
+    plt.xlabel(r'$\lambda$')
+    plt.ylabel('MSE')
     plt.show()
+
+#mse, r2, bias, var = retrive_data_from_file('results_franke_OLS.txt', 5, 6)
+#plotMSE_OLS(mse)
+
+
+def plotMSE_Ridge(mse):
+    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
+    plt.plot(lambda_values, mse[0:6])
+    plt.plot(lambda_values, mse[6:12])
+    plt.plot(lambda_values, mse[12:18])
+    plt.plot(lambda_values, mse[18:24])
+    plt.plot(lambda_values, mse[24:30])
+    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
+    plt.title('MSE calculated by Ridge')
+    plt.xlabel(r'$\lambda$')
+    plt.ylabel('MSE')
+    plt.show()
+
+mse, r2, bias, var = retrive_data_from_file('results_franke_Ridge.txt', 5, 6)
+plotMSE_Ridge(mse)
+
+def plotMSE_Lasso():
+    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
+    plt.plot(lambda_values, mse_1)
+    plt.plot(lambda_values, mse_2)
+    plt.plot(lambda_values, mse_3)
+    plt.plot(lambda_values, mse_4)
+    plt.plot(lambda_values, mse_5)
+    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
+    plt.title('MSE calculated by Lasso')
+    plt.xlabel(r'$\lambda$')
+    plt.ylabel('MSE')
+    plt.show()
+
+def plotR2_OLS():
+    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
+    plt.plot(lambda_values, mse_1)
+    plt.plot(lambda_values, mse_2)
+    plt.plot(lambda_values, mse_3)
+    plt.plot(lambda_values, mse_4)
+    plt.plot(lambda_values, mse_5)
+    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
+    plt.title(r'R$^2$ score calculated by OLS')
+    plt.xlabel(r'$\lambda$')
+    plt.ylabel(r'R$^2$ score')
+    plt.show()
+
+def plotR2_Ridge():
+    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
+    plt.plot(lambda_values, mse_1)
+    plt.plot(lambda_values, mse_2)
+    plt.plot(lambda_values, mse_3)
+    plt.plot(lambda_values, mse_4)
+    plt.plot(lambda_values, mse_5)
+    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
+    plt.title(r'R$^2$ score calculated by Ridge')
+    plt.xlabel(r'$\lambda$')
+    plt.ylabel(r'R$^2$ score')
+    plt.show()
+
+def plotR2_Lasso():
+    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
+    plt.plot(lambda_values, mse_1)
+    plt.plot(lambda_values, mse_2)
+    plt.plot(lambda_values, mse_3)
+    plt.plot(lambda_values, mse_4)
+    plt.plot(lambda_values, mse_5)
+    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
+    plt.title(r'R$^2$ score calculated by Lasso')
+    plt.xlabel(r'$\lambda$')
+    plt.ylabel(r'R$^2$ score')
+    plt.show()    
+
+def plotOLS():#, mse_Ridge, mse_Lasso):
+    poly = [i+1 for i in range(len(mse))]
+    plt.plot(poly,mse)
+    plt.plot(poly, r2)
+    plt.plot(poly, bias)
+    plt.plot(poly, var)
+    plt.legend(['MSE', r'R$^2$ score', r'Bias$^2$', 'Variance'])
+    plt.title('Different statistical qualitites calculated with OLS')
+    plt.xlabel('Polynomial degree')
+    plt.ylabel('Statistics')
+    plt.show()
+
+def plotRidge():#, mse_Ridge, mse_Lasso):
+    poly = [i+1 for i in range(len(mse))]
+    plt.plot(poly,mse)
+    plt.plot(poly, r2)
+    plt.plot(poly, bias)
+    plt.plot(poly, var)
+    plt.legend(['MSE', r'R$^2$ score', r'Bias$^2$', 'Variance'])
+    plt.title('Different statistical qualitites calculated with Ridge')
+    plt.xlabel('Polynomial degree')
+    plt.ylabel('Statistics')
+    plt.show()
+
+def plotLasso():#, mse_Ridge, mse_Lasso):
+    poly = [i+1 for i in range(len(mse))]
+    plt.plot(poly,mse)
+    plt.plot(poly, r2)
+    plt.plot(poly, bias)
+    plt.plot(poly, var)
+    plt.legend(['MSE', r'R$^2$ score', r'Bias$^2$', 'Variance'])
+    plt.title('Different statistical qualitites calculated with Lasso')
+    plt.xlabel('Polynomial degree')
+    plt.ylabel('Statistics')
+    plt.show()
+
 """
 def plotBias(bias_OLS,bias_Ridge,bias_Lasso):
     poly = [i+1 for i in range(len(mse_OLS))]
