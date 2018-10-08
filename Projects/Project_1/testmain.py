@@ -10,8 +10,8 @@ from plotfunctions import *
 import sys
 
 n = 100
-iterations = 1000
-lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
+iterations = 100
+lambda_values = [1e-4]#, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
 method = ['OLS', 'Ridge', 'Lasso']
 seed= input('Do you want to run the program with a set seed on random numbers? If yes => true, if no => false [true/false]: ' )
 
@@ -20,8 +20,8 @@ for m in method:
     print('The next method to run is: %s' %m)
     answer = input('Do you want to run for %s [y/n] ?' %m)
     if answer == 'y' or answer == 'Y': 
-        file = open('results_terrain_%s.txt' %m,  'w')
-        for d in range(1,2):
+        file = open('results_terrain_%s_plot.txt' %m,  'w')
+        for d in range(5,6):
             for elm in lambda_values: 
                 mse_average, r2score_average, bias_average, var_average, beta, best_beta, mse_min, r2_min, iteration_best = runTerrain(d, elm, n, iterations, seed, method=m)
                # print(np.shape(beta))

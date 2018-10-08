@@ -10,8 +10,8 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter #, MaxNLocator
 #import matplotlib.ticker as ticker
 
 #def plotStatistics()
-"""
-def surface_plot(surface,title, surface1=None):
+
+def surface_plot(surface,title1, title2, surface1=None):
     M,N = surface.shape
 
     ax_rows = np.arange(M)
@@ -23,16 +23,16 @@ def surface_plot(surface,title, surface1=None):
     if surface1 is not None:
         ax = fig.add_subplot(1,2,1,projection='3d')
         ax.plot_surface(X,Y,surface,cmap=cm.viridis,linewidth=0)
-        plt.title(title)
+        plt.title(title1)
 
         ax = fig.add_subplot(1,2,2,projection='3d')
         ax.plot_surface(X,Y,surface1,cmap=cm.viridis,linewidth=0)
-        plt.title(title)
+        plt.title(title2)
     else:
         ax = fig.gca(projection='3d')
         ax.plot_surface(X,Y,surface,cmap=cm.viridis,linewidth=0)
-        plt.title(title)
-"""
+        plt.title(title1)
+
 
 def retrive_data_from_file(filename, num_degree, numb_of_lambda):
     infile = open(filename, 'r')
@@ -95,7 +95,7 @@ def plotMSE_OLS(mse):
     plt.ylabel('MSE')
     #plt.show()
 """
-mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_franke_OLS.txt', 5, 6)
+#mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_franke_OLS.txt', 5, 6)
 #plotMSE_OLS(mse)
 
 
@@ -119,8 +119,8 @@ def plotMSE_Ridge(mse, mse_OLS):
     plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
     plt.show()
 
-mse, r2, bias, var = retrive_data_from_file('results_franke_Ridge.txt', 5, 6)
-plotMSE_Ridge(mse, mse_OLS)
+#mse, r2, bias, var = retrive_data_from_file('results_franke_Ridge.txt', 5, 6)
+#plotMSE_Ridge(mse, mse_OLS)
 
 def plotMSE_Lasso(mse):
     lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
@@ -135,8 +135,8 @@ def plotMSE_Lasso(mse):
     plt.ylabel('MSE')
     plt.show()
 
-mse, r2, bias, var = retrive_data_from_file('results_franke_Lasso_n10.txt', 5, 6)
-plotMSE_Lasso(mse)
+#mse, r2, bias, var = retrive_data_from_file('results_franke_Lasso_n10.txt', 5, 6)
+#plotMSE_Lasso(mse)
 
 def plotR2_OLS():
     lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]

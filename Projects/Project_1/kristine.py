@@ -102,6 +102,8 @@ if __name__ == '__main__':
         beta_ols = np.linalg.inv(data.T @ data) @ data.T @ z
 
         fitted_patch = predict(rows, cols, beta_ols)
+        print(np.shape(fitted_patch))
+        print(np.shape(beta_ols))
 
         mse = np.sum( (fitted_patch - patch)**2 )/num_data
         R2 = 1 - np.sum( (fitted_patch - patch)**2 )/np.sum( (patch - np.mean(patch))**2 )

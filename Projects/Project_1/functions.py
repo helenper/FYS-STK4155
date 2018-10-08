@@ -18,6 +18,7 @@ from time import time
 from imageio import imread
 from sklearn.model_selection import train_test_split
 from sklearn.utils import safe_indexing, indexable
+from plotfunctions import *
 
 def FrankeFunction(x,y):
     '''Returns the Franke function'''
@@ -280,7 +281,22 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed, method):
 
     return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), best_beta, mse_min, r2_for_min_mse, iteration_best
 
-       
+def predict(rows, cols, beta):
+    out = np.zeros((np.size(rows), np.size(cols)))
+
+    for i,y_ in enumerate(rows):
+        for j,x_ in enumerate(cols):
+            data_vec = np.array([1, x_, y_, x_**2, x_*y_, y_**2, \
+                                x_**3, x_**2*y_, x_*y_**2, y_**3, \
+                                x_**4, x_**3*y_, x_**2*y_**2, x_*y_**3,y_**4, \
+                                x_**5, x_**4*y_, x_**3*y_**2, x_**2*y_**3,x_*y_**4,y_**5])#,\
+                            #    x_**6, x_**5*y_, x_**4*y_**2, x_**3*y_**3,x_**2*y_**4, x_*y_**5, y_**6, \
+                            #    x_**7, x_**6*y_, x_**5*y_**2, x_**4*y_**3,x_**3*y_**4, x_**2*y_**5, x_*y_**6, y_**7, \
+                            #    x_**8, x_**7*y_, x_**6*y_**2, x_**5*y_**3,x_**4*y_**4, x_**3*y_**5, x_**2*y_**6, x_*y_**7,y_**8, \
+                            #    x_**9, x_**8*y_, x_**7*y_**2, x_**6*y_**3,x_**5*y_**4, x_**4*y_**5, x_**3*y_**6, x_**2*y_**7,x_*y_**8, y_**9])
+            out[i,j] = data_vec @ beta
+
+    return out      
 
 def runTerrain(polydegree, lambda_values, num_data, num_iterations,seed, method):
     if seed == 'True' or seed == 'true':
@@ -377,10 +393,12 @@ def runTerrain(polydegree, lambda_values, num_data, num_iterations,seed, method)
         mse_average[k] = np.mean(mse[k])
         r2score_average[k] = np.mean(r2score[k])
         bias_average[k] = np.mean(bias[k])    
-        var_average[k] = np.mean(var[k])  
+        var_average[k] = np.mean(var[k]) 
 
-    #print('b-list:', np.shape(beta_list))
 
-    print(best_beta)
 
+        fitted_patch = predict(rows, cols, beta)
+
+        surface_plot(fitted_patch,'Fitted terrain surface', 'Patch terrain suface',patch)
+        plt.show()
     return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), best_beta, mse_min, r2_for_min_mse, iteration_best
