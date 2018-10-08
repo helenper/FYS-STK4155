@@ -99,19 +99,3 @@ plotOLS(mse_OLS, r2_OLS, bias_OLS, var_OLS)
 plotRidge(mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge)
 plotLasso(mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

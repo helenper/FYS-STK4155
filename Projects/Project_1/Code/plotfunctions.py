@@ -18,7 +18,6 @@ def retrive_data_from_file(filename, num_degree, numb_of_lambda):
     for lines in infile: 
         line = lines.split()
         if len(line) == 2:
-            #print(line[1])
             if line[0] == 'MSE_average:' :
                 MSE_average.append(float(line[1]))
             
@@ -126,15 +125,12 @@ def retrive_data_from_file_terrain(filename, num_degree, numb_of_lambda):
 
     for lines in infile: 
         line = lines.split()
-        #print(line)
         if len(line) >= 2:
             if line[0] == 'MSE_average:' :
-                #line[1].replace(' [ ' ,' ')
                 line[1] =re.sub("\\[","",line[1])
                 line[-1] = re.sub("\\]","",line[-1])
                 for i in range(1,len(line)):
                     MSE_average.append(line[i])
-                #print(MSE_average)
 
             if line[0] == 'R2_score_average:':
                 line[1] =re.sub("\\[","",line[1])
