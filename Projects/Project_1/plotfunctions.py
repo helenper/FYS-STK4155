@@ -78,54 +78,65 @@ def retrive_data_from_file(filename, num_degree, numb_of_lambda):
 
 #MSE_average, R2_average, Bias_average, Variance_average = retrive_data_from_file('results_franke_OLS.txt', 5, 6)
 #print(MSE_average, R2_average, Bias_average, Variance_average)
-
+"""
 def plotMSE_OLS(mse):
     lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
     print(mse[0:6])
     print(mse[6:12])
-    plt.plot(lambda_values, mse[0:6])
-    plt.plot(lambda_values, mse[6:12])
-    plt.plot(lambda_values, mse[12:18])
-    plt.plot(lambda_values, mse[18:24])
-    plt.plot(lambda_values, mse[24:30])
+    plt.plot(lambda_values, mse[0:6], 'o')
+    plt.plot(lambda_values, mse[6:12], 'o')
+    plt.plot(lambda_values, mse[12:18], 'o')
+    plt.plot(lambda_values, mse[18:24], 'o')
+    plt.plot(lambda_values, mse[24:30], 'o')
     plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
     plt.title('MSE calculated by OLS')
     plt.xlabel(r'$\lambda$')
+    plt.semilogx()
     plt.ylabel('MSE')
-    plt.show()
-
-#mse, r2, bias, var = retrive_data_from_file('results_franke_OLS.txt', 5, 6)
+    #plt.show()
+"""
+mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_franke_OLS.txt', 5, 6)
 #plotMSE_OLS(mse)
 
 
-def plotMSE_Ridge(mse):
+def plotMSE_Ridge(mse, mse_OLS):
+    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
+    plt.plot(lambda_values, mse[0:6], 'b')
+    plt.plot(lambda_values, mse[6:12], 'c')
+    plt.plot(lambda_values, mse[12:18], 'g')
+    plt.plot(lambda_values, mse[18:24], 'r')
+    plt.plot(lambda_values, mse[24:30], 'm')
+    plt.plot( lambda_values, mse_OLS[0:6], 'bo')
+    plt.plot(lambda_values, mse_OLS[6:12], 'co')
+    plt.plot(lambda_values, mse_OLS[12:18], 'go')
+    plt.plot(lambda_values, mse_OLS[18:24], 'ro')
+    plt.plot(lambda_values, mse_OLS[24:30], 'mo')
+
+    plt.title('MSE calculated by Ridge')
+    plt.xlabel(r'$\lambda$')
+    plt.ylabel('MSE')
+    plt.semilogx()
+    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
+    plt.show()
+
+mse, r2, bias, var = retrive_data_from_file('results_franke_Ridge.txt', 5, 6)
+plotMSE_Ridge(mse, mse_OLS)
+
+def plotMSE_Lasso(mse):
     lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
     plt.plot(lambda_values, mse[0:6])
     plt.plot(lambda_values, mse[6:12])
     plt.plot(lambda_values, mse[12:18])
     plt.plot(lambda_values, mse[18:24])
     plt.plot(lambda_values, mse[24:30])
-    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
-    plt.title('MSE calculated by Ridge')
-    plt.xlabel(r'$\lambda$')
-    plt.ylabel('MSE')
-    plt.show()
-
-#mse, r2, bias, var = retrive_data_from_file('results_franke_Ridge.txt', 5, 6)
-#plotMSE_Ridge(mse)
-
-def plotMSE_Lasso():
-    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
-    plt.plot(lambda_values, mse_1)
-    plt.plot(lambda_values, mse_2)
-    plt.plot(lambda_values, mse_3)
-    plt.plot(lambda_values, mse_4)
-    plt.plot(lambda_values, mse_5)
     plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
     plt.title('MSE calculated by Lasso')
     plt.xlabel(r'$\lambda$')
     plt.ylabel('MSE')
     plt.show()
+
+mse, r2, bias, var = retrive_data_from_file('results_franke_Lasso_n10.txt', 5, 6)
+plotMSE_Lasso(mse)
 
 def plotR2_OLS():
     lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]

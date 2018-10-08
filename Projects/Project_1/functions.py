@@ -5,8 +5,8 @@
 ####################
 
 # Ignore warnings
-import warnings
-warnings.simplefilter("ignore")
+#import warnings
+#warnings.simplefilter("ignore")
 
 # Import necessary packages
 import numpy as np
@@ -105,7 +105,7 @@ def ridge(X, z, X_test, z_test, lambda_value):
 def lasso(X,z,X_test, z_test, lambda_value):
     ''' A function that implements the Lasso method'''
 
-    lasso=Lasso(lambda_value, max_iter=1e6, normalize = True, fit_intercept = False)
+    lasso=Lasso(lambda_value, max_iter=1e7, normalize = True, fit_intercept = False)
     lasso.fit(X,z) 
     beta_lasso = lasso.coef_.T
     predl=lasso.predict(X_test)
