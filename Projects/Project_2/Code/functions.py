@@ -17,43 +17,6 @@ from sklearn.utils import safe_indexing, indexable
 #from plotfunctions import *
 import re
 
-def FrankeFunction(x,y):
-    '''Returns the Franke function'''
-
-    term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
-    term2 = 0.75*np.exp(-((9*x+1)**2)/49.0 - 0.1*(9*y+1))
-    term3 = 0.5*np.exp(-(9*x-7)**2/4.0 - 0.25*((9*y-3)**2))
-    term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
-    return term1 + term2 + term3 + term4
-
-def polynomialfunction(x, y, n, degree):
-    '''Returns the X-hat matrix for different degrees of 
-    polynomials up to degree five'''
-
-    if degree==1: 
-        X = np.c_[np.ones((n,1)) , x, y]
-
-    elif degree==2:
-        X = np.c_[np.ones((n,1)) , x, y, x**2, x*y, y**2]
-
-    elif degree==3:
-        X = np.c_[np.ones((n,1)) , x, y, x**2, x*y, y**2, \
-                x**3, x**2*y, x*y**2, y**3]
-
-    elif degree==4:
-        X = np.c_[np.ones((n,1)) , x, y, x**2, x*y, y**2, \
-                x**3, x**2*y, x*y**2, y**3, \
-                x**4, x**3*y, x**2*y**2, x*y**3,y**4]
-
-    elif degree==5:
-        X = np.c_[np.ones((n,1)) , x, y, x**2, x*y, y**2, \
-                x**3, x**2*y, x*y**2, y**3, \
-                x**4, x**3*y, x**2*y**2, x*y**3,y**4, \
-                x**5, x**4*y, x**3*y**2, x**2*y**3,x*y**4, y**5]
-    else:
-        print('Degree out of range!')
-
-    return X
 
 def OLS(X, z, X_test, z_test):
     '''Calculate and return the z and zpredict value by 
@@ -100,15 +63,6 @@ def lasso(X,z,X_test, z_test, lambda_value):
     mse, R2, bias, variance = quality(z_test, predl)
     return mse, R2, bias, variance, beta_lasso
 
-
-def splitdata(data, percent):
-    '''A function to implement the method of bootstrap resampeling method to 
-    split data into train and test parts. The variable "percent" determins how many percents of
-    the data is used to be traind on'''
-    size = int(len(data)*percent)
-    train = np.random.choice(len(data),size)
-    test = list(set(range(len(data))) - set(train))
-    return train, test
 
 def bootstrap(x,y):
 
@@ -211,19 +165,6 @@ def runFranke(polydegree, lambda_values, num_data, num_iterations,seed, method):
 
     return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), best_beta, mse_min, r2_for_min_mse, iteration_best
 
-def predict(rows, cols, beta):
-    ''' Made by Kristine '''
-    out = np.zeros((np.size(rows), np.size(cols)))
-
-    for i,y_ in enumerate(rows):
-        for j,x_ in enumerate(cols):
-            data_vec = np.array([1, x_, y_, x_**2, x_*y_, y_**2, \
-                                x_**3, x_**2*y_, x_*y_**2, y_**3, \
-                                x_**4, x_**3*y_, x_**2*y_**2, x_*y_**3,y_**4, \
-                                x_**5, x_**4*y_, x_**3*y_**2, x_**2*y_**3,x_*y_**4,y_**5])
-            out[i,j] = data_vec @ beta
-
-    return out
 
 def runTerrain(polydegree, lambda_values, num_data, num_iterations,seed, method):
     if seed == 'True' or seed == 'true':
