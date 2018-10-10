@@ -6,6 +6,7 @@ from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.ticker import LinearLocator, FormatStrFormatter 
+import re
 
 def retrive_data_from_file(filename, num_degree, numb_of_lambda):
     infile = open(filename, 'r')
@@ -72,8 +73,6 @@ def plotMSE_Lasso(mse):
     plt.ylabel('MSE')
     plt.semilogx()
     plt.show()
-
-mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('results_franke_Lasso_n20.txt', 5, 6)
 
 
 def plotR2_Ridge_OLS(r2, r2_OLS):
@@ -202,12 +201,17 @@ def plotRidge(mse, r2, bias, var):
     plt.show()
 
 def plotLasso(mse, r2, bias, var):
-    poly = [i+1 for i in range(len(mse))]
-
-    mse_list = [float(mse[1]), float(mse[32]), float(mse[68]), float(mse[104]), float(mse[139])]
-    r2_list = [float(r2[1]), float(r2[32]), float(r2[67]), float(r2[93]), float(r2[123])]
-    bias_list = [float(bias[2]), float(bias[33]), float(bias[76]), float(bias[112]), float(bias[148])]
-    var_list = [float(var[1]), float(var[33]), float(var[68]), float(var[93]), float(var[123])]
+    #poly = [i+1 for i in range(len(mse))]
+    poly = [1, 2, 3, 4]
+    
+    mse_list = [float(mse[2]), float(mse[7]), float(mse[12]), float(mse[17])]
+    r2_list = [float(r2[1]), float(r2[5]), float(r2[9]), float(r2[13])]
+    bias_list = [float(bias[2]), float(bias[8]), float(bias[14]), float(bias[20])]
+    var_list = [float(var[1]), float(var[6]), float(var[12]), float(var[17])]
+    print(mse_list)
+    print(r2_list)
+    print(bias_list)
+    print(var_list)
 
     plt.plot(poly,mse_list)
     plt.plot(poly, r2_list)
@@ -218,6 +222,7 @@ def plotLasso(mse, r2, bias, var):
     plt.xlabel('Polynomial degree')
     plt.ylabel('Statistics')
     plt.show()
+
 
 def surface_plot(surface,title1, title2, surface1=None):
     ''' Made by Kristine '''

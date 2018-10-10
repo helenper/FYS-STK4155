@@ -6,7 +6,7 @@
 
 
 from functions import *
-from plotfunctions import *
+#from plotfunctions import *
 import sys
 
 n = 100
@@ -15,7 +15,7 @@ lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
 method = ['OLS', 'Ridge', 'Lasso']
 seed= input('Do you want to run the program with a set seed on random numbers? If yes => true, if no => false [true/false]: ' )
 
-
+"""
 # To run Franke function:
 for m in method:
     print('The next method to run is: %s' %m)
@@ -50,7 +50,7 @@ for m in method:
     if answer == 'n' or answer == 'N':
         print('Moving on')
 
-
+"""
 # To run terrain data:
 for m in method:
     print('The next method to run is: %s' %m)

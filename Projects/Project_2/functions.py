@@ -14,7 +14,7 @@ from time import time
 from imageio import imread
 from sklearn.model_selection import train_test_split
 from sklearn.utils import safe_indexing, indexable
-from plotfunctions import *
+#from plotfunctions import *
 import re
 
 def FrankeFunction(x,y):
