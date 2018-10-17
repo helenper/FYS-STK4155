@@ -48,7 +48,12 @@ if dim == '1' or dim == 'one':
 			print('Moving on')
 
 
-#elif dim == '2' or dim == 'two':
+methods = []
+
+elif dim == '2' or dim == 'two':
+	for m in methods:
+		print('The next method to run is: %s' %m)
+		
 
 
 else:
