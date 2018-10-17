@@ -14,6 +14,7 @@ from time import time
 from imageio import imread
 from sklearn.model_selection import train_test_split
 from sklearn.utils import safe_indexing, indexable
+import pandas as pd
 #from plotfunctions import *
 import re
 
@@ -88,11 +89,18 @@ def ising_energies(states,L):
 
 def OneDim(L, iterations, lambda_values, method):
 
-    states=np.random.choice([-1, 1], size=(10000,L)) # Make 10000 random states.
+    n = 100
+    states=np.random.choice([-1, 1], size=(n,L)) # Make 10000 random states.
+
+    X = np.zeros((n,L*L))
+
+    for i in range(n):
+        X[i] = np.outer(states[i],states[i]).ravel()
     
+
     energies=ising_energies(states,L) # Calculate the energies of the states.
 
-    X_train, X_test, E_train, E_test = train_test_split(states, energies, train_size = 0.7)
+    X_train, X_test, E_train, E_test = train_test_split(X, energies, train_size = 0.7)
 
 
     mse = np.zeros(iterations)
@@ -117,7 +125,7 @@ def OneDim(L, iterations, lambda_values, method):
             print(i)
             mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,E_train, X_test, E_test)
             beta_list.append(beta)
-
+            print(beta.shape)
             if mse[i] < mse_min: 
                 mse_min = mse[i]
                 r2_for_min_mse = r2score[i]
@@ -188,9 +196,9 @@ def OneDim(L, iterations, lambda_values, method):
 
 
 
-def TwoDim(L, iterations, lambda_values, method):
+def TwoDim(X_train, X_test, Y_train, Y_test):
 
-    data = open("")
+
 
 
 
