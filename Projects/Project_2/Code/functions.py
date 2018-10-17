@@ -184,6 +184,16 @@ def OneDim(L, iterations, lambda_values, method):
         file.close()
 
 
-
     return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), mse_min, r2_for_min_mse 
 
+
+
+def TwoDim(L, iterations, lambda_values, method):
+
+    data = open("")
+
+
+
+
+
+    return 0
