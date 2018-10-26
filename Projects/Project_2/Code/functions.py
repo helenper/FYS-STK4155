@@ -122,10 +122,10 @@ def OneDim(L, iterations, lambda_values, method):
         
         for i in range(iterations):
             X_train, E_train = bootstrap(X_train,E_train)
-            print(i)
+            #print(i)
             mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,E_train, X_test, E_test)
             beta_list.append(beta)
-            print(beta.shape)
+            #print(beta.shape)
             if mse[i] < mse_min: 
                 mse_min = mse[i]
                 r2_for_min_mse = r2score[i]
@@ -166,7 +166,7 @@ def OneDim(L, iterations, lambda_values, method):
             if method == 'Lasso':
                 for i in range(iterations):
                     X_train, E_train = bootstrap(X_train,E_train)
-                    print(i)
+                    #print(i)
                     mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,E_train,X_test,E_test,lambda_value)
                     beta_list.append(beta)
 
@@ -177,10 +177,10 @@ def OneDim(L, iterations, lambda_values, method):
 
             mse_min.append(min(mse))
             iteration_best.append(np.where(mse == mse_min[l]))
-            print(mse)
+            #print(mse)
             r2_for_min_mse.append(r2score[iteration_best[l]])
-        print(r2_for_min_mse)
-
+        #print(r2_for_min_mse)
+        
         [file.write('The results from running with lamda = %f \n' % lamb) for lamb in lambda_values]
         [file.write('MSE_average:        %f \n' %mse_ave) for mse_ave in mse_average]
         [file.write('R2_score_average:   %f \n' %r2score_ave) for r2score_ave in r2score_average]
@@ -189,10 +189,11 @@ def OneDim(L, iterations, lambda_values, method):
         [file.write('Min_MSE_value:      %f \n' %mse_min_val) for mse_min_val in mse_min]
         [file.write('R2_for_Min_MSE_value:       %f \n' %r2_min) for r2_min in r2_for_min_mse]
         file.write('\n')
+
         file.close()
-
-
-    return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), mse_min, r2_for_min_mse 
+        
+    return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), mse_min, r2_for_min_mse
+    #return X
 
 
 
