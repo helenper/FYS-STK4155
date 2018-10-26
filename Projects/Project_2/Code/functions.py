@@ -8,8 +8,8 @@
 import numpy as np
 from random import random, seed
 from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression, Ridge, Lasso
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, SGDClassifier
+from sklearn.metrics import mean_squared_error, r2_score, accuracy_score
 from time import time
 from imageio import imread
 from sklearn.model_selection import train_test_split
@@ -113,8 +113,8 @@ def OneDim(L, iterations, lambda_values, method):
 
 
     file = open('results_OneDim_%s.txt' %method,  'w')
-    if method == 'OLS':
-        beta= 0
+    if method == 'OLS'
+:        beta= 0
         best_beta = 0
         mse_min = 1000
         r2_for_min_mse = 0
@@ -196,12 +196,39 @@ def OneDim(L, iterations, lambda_values, method):
 
 
 
+def sigmoid(X, Y):
+    theta = gradient(X,Y)
+    p = 1./(1+np.exp(X @ theta))
+    return p
+
 def TwoDim(X_train, X_test, Y_train, Y_test):
 
+    Niterations = 10
+    theta = 1e-6*np.random.randn(1600)
 
 
+    for i in range(Niterations):
+        p1 = 1./(1+np.exp(-X_train @ theta))
+        p0 = 1 - p1
 
+        p = np.choose(Y_train, [p0,p1])
+        dC = -X_train.T @ (Y_train - p)
+        theta = theta - dC
+        correct = p > 0.5
 
+        print(np.mean(correct))
 
-
+    del theta, X_train, X_test, Y_train, Y_tes
     return 0
+
+def gradient(X,Y):
+
+    eta = 0.1
+    Niterations = 100
+    
+    for iter in range(Niterations):
+        gradients = 2.0*X.T @ (X @ theta - Y)
+        theta = theta - eta*gradients
+
+    return theta
+
