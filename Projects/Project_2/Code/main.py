@@ -26,13 +26,15 @@ methods = ['OLS', 'Ridge', 'Lasso']
 lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
 dim = input('Which dimension do you want to run for? If one => write 1 or one, if two => write 2 or two.')
 
+
 if dim == '1' or dim == 'one':
+	NN = input('Do you want to run the Neural Network? [y/n].')
 	for m in methods:
 		print('The next method to run is: %s' %m)
 		answer = input('Do you want to run for %s [y/n] ?' %m)
 		if answer == 'y' or answer == 'Y':
 			#file = open('results_OneDim_%s.txt' %m,  'w')
-			mse_average, r2score_average, bias_average, var_average, beta, mse_min, R2_for_Min_MSE_value = OneDim(L, iterations, lambda_values, method=m)
+			mse_average, r2score_average, bias_average, var_average, beta, mse_min, R2_for_Min_MSE_value = OneDim(L, iterations, lambda_values, NN, method=m)
 
 			"""
 			file.write('The results from running with lamda = %f \n' % lambda_values)
@@ -53,9 +55,10 @@ if dim == '1' or dim == 'one':
 
 
 elif dim == '2' or dim == 'two':
+	NN = input('Do you want to run the Neural Network? [y/n].')
 	num_classes = 2
 	train_to_test_ratio = 0.7 # Training samples
-
+	m = 'log'
 	# path to data directory
 	path_to_data = 'IsingData/'
 	file_name = "Ising2DFM_reSample_L40_T=All.pkl" # This file contains 16*10000 samples taken in the T=0.25 to T=4.00 temp range
@@ -88,7 +91,7 @@ elif dim == '2' or dim == 'two':
 
 
 
-	twodim = TwoDim(X_train,X_test,Y_train,Y_test)
+	twodim = TwoDim(X_train,X_test,Y_train,Y_test, NN, num_classes, m)
 #	for m in methods:
 #		print('The next method to run is: %s' %m)
 
