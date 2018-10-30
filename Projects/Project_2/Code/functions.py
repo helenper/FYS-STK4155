@@ -1,5 +1,5 @@
 ####################
-# Project 1 - functions 
+# Project 2 - functions 
 # FYS-STK 3155/4155
 # Fall 2018 
 ####################
@@ -17,28 +17,37 @@ from sklearn.utils import safe_indexing, indexable
 import pandas as pd
 #from plotfunctions import *
 import re
+from Neural_Network_test import *
 
 
-def OLS(X, z, X_test, E_test):
+def OLS(X_train, E_train, X_test, E_test, num_classes, m, NN):
     '''Calculate and return the z and Epredict value by 
     ordinary least squares method'''
-    beta = (np.linalg.pinv(X.T @ X)@ X.T @ z)
+    if NN == 'y':
+        print("A")
+        beta, probs = Neural_Network(X_train, E_train, num_classes, m)
+    elif NN == 'n':
+        print("B")
+        beta = (np.linalg.pinv(X_train.T @ X_train)@ X_train.T @ E_train) 
     Epredict = X_test @ beta
-    mse, R2, bias, variance = quality(E_test, Epredict) 
+    mse, R2, bias, variance = quality(E_test, Epredict)
+    boof 
     return mse, R2, bias, variance, beta
 
 
-
-def ridge(X, z, X_test, E_test, lambda_value):
+def ridge(X_train, E_train, X_test, E_test, num_classes, m, NN, lambda_value):
     ''' A function that implementes the Rigde method'''
-    IX = np.eye(X.shape[1])
-    beta_ridge = (np.linalg.pinv( X.T @ X + lambda_value*IX) @ X.T @ z) 
-    pred_ridge =  X_test @ beta_ridge 
+    if NN == 'y':
+        beta = Neural_Network(X_train, E_train, num_classes, m, lambda_value)
+    else:
+        IX = np.eye(X_train.shape[1])
+        beta = (np.linalg.pinv( X_train.T @ X_train + lambda_value*IX) @ X_train.T @ E_train) 
+    pred_ridge =  X_test @ beta
     mse, R2, bias, variance = quality(E_test, pred_ridge)
-    return mse, R2, bias, variance, beta_ridge
+    return mse, R2, bias, variance, beta
 
 
-def lasso(X,z,X_test, E_test, lambda_value):
+def lasso(X,z,X_test, E_test, m, NN, lambda_value):
     ''' A function that implements the Lasso method'''
 
     lasso=Lasso(lambda_value, max_iter=1e7, normalize = True, fit_intercept = False)
@@ -56,6 +65,7 @@ def quality(E_test,Epredict):
 
     # Mean squared error:
     mse = (1.0/(np.size(E_test))) *np.sum((E_test - Epredict)**2)
+    print("mse: ", mse)
     # Explained R2 score: 1 is perfect prediction 
     R2 = 1- ((np.sum((E_test-Epredict)**2))/(np.sum((E_test-np.mean(E_test))**2)))
     # Bias:
@@ -87,7 +97,7 @@ def ising_energies(states,L):
 
 
 
-def OneDim(L, iterations, lambda_values, method):
+def OneDim(L, iterations, lambda_values, NN, method):
 
     n = 100
     states=np.random.choice([-1, 1], size=(n,L)) # Make 10000 random states.
@@ -102,7 +112,6 @@ def OneDim(L, iterations, lambda_values, method):
 
     X_train, X_test, E_train, E_test = train_test_split(X, energies, train_size = 0.7)
 
-
     mse = np.zeros(iterations)
     r2score = np.zeros(iterations)
     bias = np.zeros(iterations)
@@ -110,11 +119,11 @@ def OneDim(L, iterations, lambda_values, method):
     beta_list = [] 
 
     beta= 0
-
+    num_classes = 1
 
     file = open('results_OneDim_%s.txt' %method,  'w')
-    if method == 'OLS'
-:        beta= 0
+    if method == 'OLS':
+        beta= 0
         best_beta = 0
         mse_min = 1000
         r2_for_min_mse = 0
@@ -122,10 +131,10 @@ def OneDim(L, iterations, lambda_values, method):
         
         for i in range(iterations):
             X_train, E_train = bootstrap(X_train,E_train)
-            #print(i)
-            mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,E_train, X_test, E_test)
+            print(i)
+            mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,E_train, X_test, E_test, num_classes, method, NN)
             beta_list.append(beta)
-            #print(beta.shape)
+            
             if mse[i] < mse_min: 
                 mse_min = mse[i]
                 r2_for_min_mse = r2score[i]
@@ -160,14 +169,14 @@ def OneDim(L, iterations, lambda_values, method):
             if method == 'Ridge':
                 for i in range(iterations):
                     X_train, E_train = bootstrap(X_train,E_train)
-                    mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,E_train,X_test,E_test,lambda_value)
+                    mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,E_train,X_test,E_test, num_classes, method, NN, lambda_value)
                     beta_list.append(beta)
 
             if method == 'Lasso':
                 for i in range(iterations):
                     X_train, E_train = bootstrap(X_train,E_train)
-                    #print(i)
-                    mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,E_train,X_test,E_test,lambda_value)
+                    print(i)
+                    mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,E_train,X_test,E_test, method, NN, lambda_value)
                     beta_list.append(beta)
 
             mse_average.append(np.mean(mse))
@@ -177,10 +186,10 @@ def OneDim(L, iterations, lambda_values, method):
 
             mse_min.append(min(mse))
             iteration_best.append(np.where(mse == mse_min[l]))
-            #print(mse)
+            print(mse)
             r2_for_min_mse.append(r2score[iteration_best[l]])
-        #print(r2_for_min_mse)
-        
+        print(r2_for_min_mse)
+
         [file.write('The results from running with lamda = %f \n' % lamb) for lamb in lambda_values]
         [file.write('MSE_average:        %f \n' %mse_ave) for mse_ave in mse_average]
         [file.write('R2_score_average:   %f \n' %r2score_ave) for r2score_ave in r2score_average]
@@ -189,11 +198,10 @@ def OneDim(L, iterations, lambda_values, method):
         [file.write('Min_MSE_value:      %f \n' %mse_min_val) for mse_min_val in mse_min]
         [file.write('R2_for_Min_MSE_value:       %f \n' %r2_min) for r2_min in r2_for_min_mse]
         file.write('\n')
-
         file.close()
-        
-    return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), mse_min, r2_for_min_mse
-    #return X
+
+
+    return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), mse_min, r2_for_min_mse 
 
 
 
@@ -202,10 +210,24 @@ def sigmoid(X, Y):
     p = 1./(1+np.exp(X @ theta))
     return p
 
-def TwoDim(X_train, X_test, Y_train, Y_test):
+def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
 
-    Niterations = 10
+    Niterations = 100
     theta = 1e-6*np.random.randn(1600)
+
+    if NN == 'y':
+        
+
+        weights_hidden, probs = Neural_Network(X_train, Y_train, 2, m)
+        p1 = probs
+        p0 = 1 - p1
+
+        p = np.choose(Y_train, [p0,p1])
+        dC = -X_train.T @ (Y_train - p)
+        theta = theta - dC
+        correct = p > 0.5
+
+        print(np.mean(correct))
 
 
     for i in range(Niterations):
@@ -219,12 +241,12 @@ def TwoDim(X_train, X_test, Y_train, Y_test):
 
         print(np.mean(correct))
 
-    del theta, X_train, X_test, Y_train, Y_tes
+    del theta, X_train, X_test, Y_train, Y_test
     return 0
 
 def gradient(X,Y):
 
-    eta = 0.1
+    eta = 0.01
     Niterations = 100
     
     for iter in range(Niterations):
