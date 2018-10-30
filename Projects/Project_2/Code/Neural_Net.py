@@ -50,7 +50,7 @@ test_size = 1 - train_size
 X_train, X_test, Y_train, Y_test = train_test_split(inputs, labels, train_size=train_size,
                                                     test_size=test_size)
 
-
+print(Y_train, len(Y_train))
 
 # building our neural network
 
@@ -63,7 +63,8 @@ n_categories = 10
 # weights and bias in the hidden layer
 hidden_weights = np.random.randn(n_features, n_hidden_neurons)
 hidden_bias = np.zeros(n_hidden_neurons) + 0.01
-
+print(hidden_weights.shape)
+print(X_train.shape)
 # weights and bias in the output layer
 output_weights = np.random.randn(n_hidden_neurons, n_categories)
 output_bias = np.zeros(n_categories) + 0.01
@@ -91,22 +92,25 @@ Y_train_onehot, Y_test_onehot = to_categorical_numpy(Y_train), to_categorical_nu
 def feed_forward_train(X):
     # weighted sum of inputs to the hidden layer
     z_h = np.matmul(X, hidden_weights) + hidden_bias
+
     # activation in the hidden layer
     a_h = sigmoid(z_h)
     
     # weighted sum of inputs to the output layer
     z_o = np.matmul(a_h, output_weights) + output_bias
+
     # softmax output
     # axis 0 holds each input and axis 1 the probabilities of each category
     exp_term = np.exp(z_o)
     probabilities = exp_term / np.sum(exp_term, axis=1, keepdims=True)
+    print("probs ", probabilities.shape)   
     
     # for backpropagation need activations in hidden and output layers
     return a_h, probabilities
 
 def backpropagation(X, Y):
     a_h, probabilities = feed_forward_train(X)
-    
+    print(a_h.shape)
     # error in the output layer
     error_output = probabilities - Y
     # error in the hidden layer
@@ -122,7 +126,7 @@ def backpropagation(X, Y):
 
     return output_weights_gradient, output_bias_gradient, hidden_weights_gradient, hidden_bias_gradient
 
-print("Old accuracy on training data: " + str(accuracy_score(predict(X_train), Y_train)))
+#print("Old accuracy on training data: " + str(accuracy_score(predict(X_train), Y_train)))
 
 eta = 0.01
 lmbd = 0.01
@@ -140,4 +144,4 @@ for i in range(1000):
     hidden_weights -= eta * dWh
     hidden_bias -= eta * dBh
 
-print("New accuracy on training data: " + str(accuracy_score(predict(X_train), Y_train)))
+#print("New accuracy on training data: " + str(accuracy_score(predict(X_train), Y_train)))
