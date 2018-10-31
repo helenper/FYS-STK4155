@@ -20,31 +20,30 @@ import re
 from Neural_Network import *
 
 
+def OneDimNetwork(X_train, E_train, X_test, E_test):
+    weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network(X_train, E_train)
+    Epredict = feed_forward(X_test, weights_hidden, bias_hidden,weights_output, bias_output)
+    mse, R2, bias, variance = quality(E_test, Epredict)
+    return mse, R2, variance, bias
+
+
 def OLS(X_train, E_train, X_test, E_test, num_classes, m, NN):
     '''Calculate and return the z and Epredict value by 
     ordinary least squares method'''
-    if NN == 'y':
-        print("A")
-        weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network(X_train, E_train, m)
-        Epredict = feed_forward(X_test, weights_hidden, bias_hidden,weights_output, bias_output)
-    elif NN == 'n':
-        print("B")
-        beta = (np.linalg.pinv(X_train.T @ X_train)@ X_train.T @ E_train) 
-        Epredict = X_test @ beta
+    beta = (np.linalg.pinv(X_train.T @ X_train)@ X_train.T @ E_train) 
+    Epredict = X_test @ beta
     mse, R2, bias, variance = quality(E_test, Epredict)
-    boof 
+    
     return mse, R2, bias, variance, beta
 
 
 def ridge(X_train, E_train, X_test, E_test, num_classes, m, NN, lambda_value):
     ''' A function that implementes the Rigde method'''
-    if NN == 'y':
-        beta = Neural_Network(X_train, E_train, num_classes, m, lambda_value)
-    else:
-        IX = np.eye(X_train.shape[1])
-        beta = (np.linalg.pinv( X_train.T @ X_train + lambda_value*IX) @ X_train.T @ E_train) 
-    pred_ridge =  X_test @ beta
-    mse, R2, bias, variance = quality(E_test, pred_ridge)
+
+    IX = np.eye(X_train.shape[1])
+    beta = (np.linalg.pinv( X_train.T @ X_train + lambda_value*IX) @ X_train.T @ E_train) 
+    Epredict =  X_test @ beta
+    mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, bias, variance, beta
 
 
@@ -121,7 +120,7 @@ def OneDim(L, iterations, lambda_values, NN, method):
 
     beta= 0
     num_classes = 1
-
+    OneDimNetwork(X_train, E_train, X_test, E_test)
     file = open('results_OneDim_%s.txt' %method,  'w')
     if method == 'OLS':
         beta= 0
