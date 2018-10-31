@@ -17,7 +17,7 @@ from sklearn.utils import safe_indexing, indexable
 import pandas as pd
 #from plotfunctions import *
 import re
-from Neural_Network_test import *
+from Neural_Network import *
 
 
 def OLS(X_train, E_train, X_test, E_test, num_classes, m, NN):
@@ -25,11 +25,12 @@ def OLS(X_train, E_train, X_test, E_test, num_classes, m, NN):
     ordinary least squares method'''
     if NN == 'y':
         print("A")
-        beta, probs = Neural_Network(X_train, E_train, num_classes, m)
+        weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network(X_train, E_train, m)
+        Epredict = feed_forward(X_test, weights_hidden, bias_hidden,weights_output, bias_output)
     elif NN == 'n':
         print("B")
         beta = (np.linalg.pinv(X_train.T @ X_train)@ X_train.T @ E_train) 
-    Epredict = X_test @ beta
+        Epredict = X_test @ beta
     mse, R2, bias, variance = quality(E_test, Epredict)
     boof 
     return mse, R2, bias, variance, beta
@@ -231,7 +232,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
 
 
     for i in range(Niterations):
-        p1 = 1./(1+np.exp(-X_train @ theta))
+        p1 = 1./(1+np.exp(-X_train @ theta)) #theta = beta
         p0 = 1 - p1
 
         p = np.choose(Y_train, [p0,p1])
