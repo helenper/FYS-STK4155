@@ -72,14 +72,14 @@ elif dim == '2' or dim == 'two':
 	labels = pickle.load(open(path_to_data+file_name,'rb'))
 
 	# divide data into ordered, critical and disordered
-	X_ordered = data[:7000,:]
-	Y_ordered = labels[:7000]
+	X_ordered = data[:70000,:]
+	Y_ordered = labels[:70000]
 
 	X_critical = data[70000:100000,:]
 	Y_critical = labels[70000:100000]
 
-	X_disordered = data[100000:107000,:]
-	Y_disordered = labels[100000:107000]
+	X_disordered = data[100000:,:]
+	Y_disordered = labels[100000:]
 
 	del data, labels
 
