@@ -22,9 +22,9 @@ def feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_outp
 
 
 def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_output, bias_output):
-	activation_hidden, probs, activation_output, z_output = feed_forward(X_train, weights_hidden, bias_hidden, weights_otput, bias_output)
+	activation_hidden, activation_output, z_output = feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_output)
 	error_output = activation_output - E_train
-	print(z_output, E_train)
+	print(z_output.shape, weights_output.shape)
 
 	error_hidden = np.matmul(error_output,weights_output.T) * activation_hidden * (1 - activation_hidden)
 
@@ -37,7 +37,7 @@ def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_ou
 	return output_gradient_weights, output_gradient_bias, 	hidden_gradient_weights, hidden_gradient_bias
 
 
-def Neural_Network(X_train, E_train, m, lmbd=1):
+def Neural_Network(X_train, E_train, lmbd=1):
 	n_inputs, n_features = X_train.shape
 	n_h_neurons = 50
 	n_categories = 1
@@ -54,11 +54,6 @@ def Neural_Network(X_train, E_train, m, lmbd=1):
 		# calculate gradients
 		dWo, dBo, dWh, dBh = backwardpropagation(X_train, E_train, weights_hidden, bias_hidden, weights_output, bias_output)
 
-		# regularization term gradients 
-		if m == 'Ridge':
-			dWo += lmdb * o_weights
-			dWh += lmdb * h_weights
-
 		#update weights and biases
 		weights_output -= eta * dWo
 		weights_hidden -= eta * dWh
@@ -70,7 +65,7 @@ def Neural_Network(X_train, E_train, m, lmbd=1):
 def Neural_Network_Classification():
 	n_inputs, n_features = X_train.shape
 	n_h_neurons = 50
-	n_categories = 
+	n_categories = 1
 
 	h_weights = np.random.randn(n_features, n_h_neurons)
 	h_bias = np.zeros(n_h_neurons) + 0.01
