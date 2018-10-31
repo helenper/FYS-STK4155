@@ -22,7 +22,7 @@ from Neural_Network import *
 
 def OneDimNetwork(X_train, E_train, X_test, E_test):
     weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network(X_train, E_train)
-    Epredict = feed_forward(X_test, weights_hidden, bias_hidden,weights_output, bias_output)
+    a_h, a_o, Epredict = feed_forward(X_test, weights_hidden, bias_hidden,weights_output, bias_output)
     mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, variance, bias
 
@@ -150,6 +150,18 @@ def OneDim(L, iterations, lambda_values, NN, method):
         file.write('R2_score_average:   %f \n' %r2score_average)
         file.write('Bias_average:       %f \n' %bias_average)
         file.write('Variance_average:   %f \n' %var_average)
+        file.write('Min_MSE_value:      %f \n' %mse_min)
+        file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
+        file.write('\n') 
+        file.close()
+
+    elif method == 'NN':
+        mse, r2_score, bias, var = OneDimNetwork(X_train, E_train, X_test, E_test)
+
+        file.write('MSE_average:        %f \n' %mse)
+        file.write('R2_score_average:   %f \n' %r2score)
+        file.write('Bias_average:       %f \n' %bias)
+        file.write('Variance_average:   %f \n' %var)
         file.write('Min_MSE_value:      %f \n' %mse_min)
         file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
         file.write('\n') 
