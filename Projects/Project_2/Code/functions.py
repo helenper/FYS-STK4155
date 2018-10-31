@@ -64,6 +64,8 @@ def quality(E_test,Epredict):
     the function will print out the values'''
 
     # Mean squared error:
+    E_test = E_test.ravel()
+    Epredict = Epredict.ravel()
     mse = (1.0/(np.size(E_test))) *np.sum((E_test - Epredict)**2)
     print("mse: ", mse)
     # Explained R2 score: 1 is perfect prediction 
@@ -120,7 +122,7 @@ def OneDim(L, iterations, lambda_values, NN, method):
 
     beta= 0
     num_classes = 1
-    OneDimNetwork(X_train, E_train, X_test, E_test)
+    #OneDimNetwork(X_train, E_train, X_test, E_test)
     file = open('results_OneDim_%s.txt' %method,  'w')
     if method == 'OLS':
         beta= 0
@@ -234,8 +236,9 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
     if NN == 'y':
         
 
-        weights_hidden, probs = Neural_Network(X_train, Y_train, 2, m)
-        p1 = probs
+        weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network_Classification(X_train, Y_train, m)
+        
+        p1 = weights_output
         p0 = 1 - p1
 
         p = np.choose(Y_train, [p0,p1])

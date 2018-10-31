@@ -23,7 +23,7 @@ def feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_outp
 
 def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_output, bias_output):
 	activation_hidden, activation_output, z_output = feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_output)
-	error_output = activation_output - E_train.reshape(-1,1)
+	error_output = z_output - E_train.reshape(-1,1)
 
 	error_hidden = np.matmul(error_output,weights_output.T) * activation_hidden * (1 - activation_hidden)
 
@@ -36,7 +36,7 @@ def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_ou
 	return output_gradient_weights, output_gradient_bias, 	hidden_gradient_weights, hidden_gradient_bias
 
 
-def Neural_Network(X_train, E_train, lmbd=1):
+def Neural_Network(X_train, E_train, m, lmbd=1):
 	n_inputs, n_features = X_train.shape
 	n_h_neurons = 50
 	n_categories = 1
@@ -47,9 +47,9 @@ def Neural_Network(X_train, E_train, lmbd=1):
 	weights_output = np.random.randn(n_h_neurons, n_categories)
 	bias_output = np.zeros(n_categories) + 0.01
 	
-	eta = 0.01
+	eta = 0.0001
 	print(E_train)
-	for i in range(1000):
+	for i in range(10):
 		# calculate gradients
 		dWo, dBo, dWh, dBh = backwardpropagation(X_train, E_train, weights_hidden, bias_hidden, weights_output, bias_output)
 
@@ -61,7 +61,7 @@ def Neural_Network(X_train, E_train, lmbd=1):
 
 	return weights_output, weights_hidden, bias_output, bias_hidden
 
-def Neural_Network_Classification(X_train, E_train):
+def Neural_Network_Classification(X_train, E_train, m):
 	n_inputs, n_features = X_train.shape
 	n_h_neurons = 50
 	n_categories = 1
@@ -73,7 +73,7 @@ def Neural_Network_Classification(X_train, E_train):
 	o_bias = np.zeros(n_categories) + 0.01
 	
 	eta = 0.01
-	for i in range(1000):
+	for i in range(10):
 		# calculate gradients
 		dWo, dBo, dWh, dBh = backwardpropagation(X_train, E_train, h_weights, h_bias, o_weights, o_bias)
 
@@ -88,5 +88,5 @@ def Neural_Network_Classification(X_train, E_train):
 		o_bias -= eta * dBo
 		h_bias -= eta * dBh
 
-	return 
+	return 0
 	
