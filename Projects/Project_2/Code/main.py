@@ -60,16 +60,18 @@ elif dim == '2' or dim == 'two':
 	train_to_test_ratio = 0.7 # Training samples
 	m = 'log'
 	# path to data directory
-	path_to_data = 'IsingData/'
+	path_to_data = 'IsingData'
 	file_name = "Ising2DFM_reSample_L40_T=All.pkl" # This file contains 16*10000 samples taken in the T=0.25 to T=4.00 temp range
-	
-	data = pickle.load(open(path_to_data+file_name,'rb')) # pickle reads the file, and returns the Python object (1D array,compressed bits)
+	path = os.join("..",path_to_data, file_name)
+
+	data = pickle.load(open(path,'rb')) # pickle reads the file, and returns the Python object (1D array,compressed bits)
 	data = np.unpackbits(data).reshape(-1,1600) # Decompress array and reshape for convenience as a 40x40 lattice
 	data = data.astype('int')
 	data[np.where(data==0)] = -1 # map 0 state to -1 (Ising variable can take values +/-1)
 	
 	file_name = "Ising2DFM_reSample_L40_T=All_labels.pkl" # This file contains 16*10000 samples taken in the above range
-	labels = pickle.load(open(path_to_data+file_name,'rb'))
+	path = os.join("..",path_to_data, file_name)
+	labels = pickle.load(open(path,'rb'))
 
 	# divide data into ordered, critical and disordered
 	X_ordered = data[:70000,:]
