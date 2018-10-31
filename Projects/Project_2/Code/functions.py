@@ -138,7 +138,6 @@ def OneDim(L, iterations, lambda_values, NN, method):
             if mse[i] < mse_min: 
                 mse_min = mse[i]
                 r2_for_min_mse = r2score[i]
-                best_beta = beta
                 iteration_best = i
 
         mse_average = np.mean(mse)
@@ -150,20 +149,20 @@ def OneDim(L, iterations, lambda_values, NN, method):
         file.write('R2_score_average:   %f \n' %r2score_average)
         file.write('Bias_average:       %f \n' %bias_average)
         file.write('Variance_average:   %f \n' %var_average)
+        file.write('\n') 
         file.write('Min_MSE_value:      %f \n' %mse_min)
         file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
-        file.write('\n') 
         file.close()
 
     elif method == 'NN':
         mse, r2_score, bias, var = OneDimNetwork(X_train, E_train, X_test, E_test)
 
-        file.write('MSE_average:        %f \n' %mse)
-        file.write('R2_score_average:   %f \n' %r2score)
-        file.write('Bias_average:       %f \n' %bias)
-        file.write('Variance_average:   %f \n' %var)
-        file.write('Min_MSE_value:      %f \n' %mse_min)
-        file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
+        #file.write('MSE_average:        %f \n' %mse)
+        #file.write('R2_score_average:   %f \n' %r2score)
+        #file.write('Bias_average:       %f \n' %bias)
+        #file.write('Variance_average:   %f \n' %var)
+        #file.write('Min_MSE_value:      %f \n' %mse_min)
+        #file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
         file.write('\n') 
         file.close()
 
@@ -183,6 +182,11 @@ def OneDim(L, iterations, lambda_values, NN, method):
                     X_train, E_train = bootstrap(X_train,E_train)
                     mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,E_train,X_test,E_test, num_classes, method, NN, lambda_value)
                     beta_list.append(beta)
+                    if mse[i] < mse_min: 
+                        mse_min = mse[i]
+                        r2_for_min_mse = r2score[i]
+                        best_beta = beta
+                        iteration_best = i
 
             if method == 'Lasso':
                 for i in range(iterations):
@@ -190,30 +194,30 @@ def OneDim(L, iterations, lambda_values, NN, method):
                     print(i)
                     mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,E_train,X_test,E_test, method, NN, lambda_value)
                     beta_list.append(beta)
+                    if mse[i] < mse_min: 
+                        mse_min = mse[i]
+                        r2_for_min_mse = r2score[i]
+                        best_beta = beta
+                        iteration_best = i
 
             mse_average.append(np.mean(mse))
             r2score_average.append(np.mean(r2score))
             bias_average.append(np.mean(bias)) 
             var_average.append(np.mean(var))
 
-            mse_min.append(min(mse))
-            iteration_best.append(np.where(mse == mse_min[l]))
-            print(mse)
-            r2_for_min_mse.append(r2score[iteration_best[l]])
-        print(r2_for_min_mse)
 
-        [file.write('The results from running with lamda = %f \n' % lamb) for lamb in lambda_values]
-        [file.write('MSE_average:        %f \n' %mse_ave) for mse_ave in mse_average]
-        [file.write('R2_score_average:   %f \n' %r2score_ave) for r2score_ave in r2score_average]
-        [file.write('Bias_average:       %f \n' %bias_ave) for bias_ave in bias_average]
-        [file.write('Variance_average:   %f \n' %var_ave) for var_ave in var_average]
-        [file.write('Min_MSE_value:      %f \n' %mse_min_val) for mse_min_val in mse_min]
-        [file.write('R2_for_Min_MSE_value:       %f \n' %r2_min) for r2_min in r2_for_min_mse]
+            file.write('The results from running with lamda = %f \n' % lamb)
+            file.write('MSE_average:        %f \n' %mse_ave)
+            file.write('R2_score_average:   %f \n' %r2score_ave)
+            file.write('Bias_average:       %f \n' %bias_ave) 
+            file.write('Variance_average:   %f \n' %var_ave)
         file.write('\n')
+        file.write('Min_MSE_value:      %f \n' %mse_min_val) 
+        file.write('R2_for_Min_MSE_value:       %f \n' %r2_min)
         file.close()
 
 
-    return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), mse_min, r2_for_min_mse 
+    #return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), mse_min, r2_for_min_mse 
 
 
 
@@ -239,16 +243,16 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
         theta = theta - dC
         correct = p > 0.5
 
-        print(np.mean(correct))
+        #print(np.mean(correct))
 
 
     for i in range(Niterations):
         p1 = 1./(1+np.exp(-X_train @ theta)) #theta = beta
         p0 = 1 - p1
-
+        eta = 0.0001
         p = np.choose(Y_train, [p0,p1])
         dC = -X_train.T @ (Y_train - p)
-        theta = theta - dC
+        theta = (theta - dC)*eta
         correct = p > 0.5
 
         print(np.mean(correct))

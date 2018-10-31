@@ -34,8 +34,8 @@ if dim == '1' or dim == 'one':
 		answer = input('Do you want to run for %s [y/n] ?' %m)
 		if answer == 'y' or answer == 'Y':
 			#file = open('results_OneDim_%s.txt' %m,  'w')
-			mse_average, r2score_average, bias_average, var_average, beta, mse_min, R2_for_Min_MSE_value = OneDim(L, iterations, lambda_values, NN, method=m)
-
+			#mse_average, r2score_average, bias_average, var_average, beta, mse_min, R2_for_Min_MSE_value = OneDim(L, iterations, lambda_values, NN, method=m)
+			OneDim(L, iterations, lambda_values, NN, method=m)
 			"""
 			file.write('The results from running with lamda = %f \n' % lambda_values)
 			file.write('MSE_average:        %f \n' %mse_average )
@@ -62,7 +62,7 @@ elif dim == '2' or dim == 'two':
 	# path to data directory
 	path_to_data = 'IsingData'
 	file_name = "Ising2DFM_reSample_L40_T=All.pkl" # This file contains 16*10000 samples taken in the T=0.25 to T=4.00 temp range
-	path = os.join("..",path_to_data, file_name)
+	path = os.path.join("..",path_to_data, file_name)
 
 	data = pickle.load(open(path,'rb')) # pickle reads the file, and returns the Python object (1D array,compressed bits)
 	data = np.unpackbits(data).reshape(-1,1600) # Decompress array and reshape for convenience as a 40x40 lattice
@@ -70,7 +70,7 @@ elif dim == '2' or dim == 'two':
 	data[np.where(data==0)] = -1 # map 0 state to -1 (Ising variable can take values +/-1)
 	
 	file_name = "Ising2DFM_reSample_L40_T=All_labels.pkl" # This file contains 16*10000 samples taken in the above range
-	path = os.join("..",path_to_data, file_name)
+	path = os.path.join("..",path_to_data, file_name)
 	labels = pickle.load(open(path,'rb'))
 
 	# divide data into ordered, critical and disordered
