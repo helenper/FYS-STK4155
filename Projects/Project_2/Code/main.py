@@ -22,7 +22,7 @@ np.random.seed(12)
 # system size
 L=40
 iterations = 100
-methods = ['OLS', 'Ridge', 'Lasso']
+methods = ['OLS', 'NN', 'Ridge', 'Lasso']
 lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
 dim = input('Which dimension do you want to run for? If one => write 1 or one, if two => write 2 or two.')
 
