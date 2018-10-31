@@ -23,15 +23,14 @@ def feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_outp
 
 def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_output, bias_output):
 	activation_hidden, activation_output, z_output = feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_output)
-	error_output = activation_output - E_train
-	print(z_output.shape, weights_output.shape)
+	error_output = activation_output - E_train.reshape(-1,1)
 
 	error_hidden = np.matmul(error_output,weights_output.T) * activation_hidden * (1 - activation_hidden)
 
 	output_gradient_weights = np.matmul(activation_hidden.T, error_output)
 	output_gradient_bias = np.sum(error_output, axis=0)
 
-	hidden_gradient_weights = np.matmul(X.T, error_hidden)
+	hidden_gradient_weights = np.matmul(X_train.T, error_hidden)
 	hidden_gradient_bias = np.sum(error_hidden, axis=0)
 
 	return output_gradient_weights, output_gradient_bias, 	hidden_gradient_weights, hidden_gradient_bias
@@ -49,7 +48,7 @@ def Neural_Network(X_train, E_train, lmbd=1):
 	bias_output = np.zeros(n_categories) + 0.01
 	
 	eta = 0.01
-
+	print(E_train)
 	for i in range(1000):
 		# calculate gradients
 		dWo, dBo, dWh, dBh = backwardpropagation(X_train, E_train, weights_hidden, bias_hidden, weights_output, bias_output)
@@ -62,7 +61,7 @@ def Neural_Network(X_train, E_train, lmbd=1):
 
 	return weights_output, weights_hidden, bias_output, bias_hidden
 
-def Neural_Network_Classification():
+def Neural_Network_Classification(X_train, E_train):
 	n_inputs, n_features = X_train.shape
 	n_h_neurons = 50
 	n_categories = 1
