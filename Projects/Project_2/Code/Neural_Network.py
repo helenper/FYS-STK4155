@@ -5,18 +5,17 @@ from sklearn.metrics import accuracy_score
 np.random.seed(0)
 
 
-def sigmoid(X):
-	return 1/(1 + np.exp(-X))
-
-
+def sigmoid(z):
+	return 1/(1 + np.exp(-z))  # Ok :)
 
 def feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_output):
+	# 
 	# weighted sum of inputs to the hidden layer
-	z_hidden = np.matmul(X_train,weights_hidden) + bias_hidden
-	activation_hidden = sigmoid(z_hidden)
+	z_hidden = np.matmul(X_train,weights_hidden) + bias_hidden #hidden layer
+	activation_hidden = sigmoid(z_hidden) #Sigmoid layer hidden
 	
-	z_output = np.matmul(activation_hidden, weights_output) + bias_output
-	activation_output = sigmoid(z_output)
+	z_output = np.matmul(activation_hidden, weights_output) + bias_output #layer
+	activation_output = sigmoid(z_output) # Sigmoid layer 
 
 	return activation_hidden, activation_output, z_output
 
