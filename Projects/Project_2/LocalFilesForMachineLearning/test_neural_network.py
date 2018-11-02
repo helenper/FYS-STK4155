@@ -31,8 +31,8 @@ def sigmoid(x):
 
 
 def feedforward(inputs, weigths, bias):
-	layer = inputs @ weigths[0] + bias[0]
-	sigmoid_layer = sigmoid(layer)
+	layer = inputs @ weigths[0] + bias[0] #z_hidden
+	sigmoid_layer = sigmoid(layer) #Activation
 	E = np.dot(sigmoid_layer, weigths[1]) + bias[1]
 
 	return E, sigmoid_layer
@@ -72,7 +72,7 @@ def quality(E_test,Epredict):
     return mse
 
 for i in range(10000):
-	index = np.random.randint(7000, size = batch)
+	index = np.random.randint(len(train_states), size = batch)
 	E, sigmoid_layer = feedforward(train_states[index], weigths, bias)
 	weigths, bias = backpropagation(train_energies[index], E, weigths, sigmoid_layer, bias, eta, train_states[index])
 	mse.append(quality(energies[index], E))

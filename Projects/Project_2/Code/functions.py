@@ -208,11 +208,11 @@ def OneDim(L, iterations, lambda_values, NN, method):
             var_average.append(np.mean(var))
 
 
-            file.write('The results from running with lamda = %f \n' % lamb)
-            file.write('MSE_average:        %f \n' %mse_ave)
-            file.write('R2_score_average:   %f \n' %r2score_ave)
-            file.write('Bias_average:       %f \n' %bias_ave) 
-            file.write('Variance_average:   %f \n' %var_ave)
+            file.write('The results from running with lamda = %f \n' % lambda_value)
+            file.write('MSE_average:        %f \n' %mse_average)
+            file.write('R2_score_average:   %f \n' %r2score_average)
+            file.write('Bias_average:       %f \n' %bias_average) 
+            file.write('Variance_average:   %f \n' %var_average)
         file.write('\n')
         file.write('Min_MSE_value:      %f \n' %mse_min_val) 
         file.write('R2_for_Min_MSE_value:       %f \n' %r2_min)
@@ -231,36 +231,36 @@ def sigmoid(X, Y):
 def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
 
     Niterations = 100
-    theta = 1e-6*np.random.randn(1600)
+    beta = 1e-6*np.random.randn(1600)
 
     if NN == 'y':
         
 
         weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network_Classification(X_train, Y_train, m)
-        
+
         p1 = weights_output
         p0 = 1 - p1
 
         p = np.choose(Y_train, [p0,p1])
         dC = -X_train.T @ (Y_train - p)
-        theta = theta - dC
+        beta = beta - dC
         correct = p > 0.5
 
         #print(np.mean(correct))
 
 
     for i in range(Niterations):
-        p1 = 1./(1+np.exp(-X_train @ theta)) #theta = beta
+        p1 = 1./(1+np.exp(-X_train @ beta)) #theta = beta
         p0 = 1 - p1
         eta = 0.0001
         p = np.choose(Y_train, [p0,p1])
         dC = -X_train.T @ (Y_train - p)
-        theta = (theta - dC)*eta
-        correct = p > 0.5
+        beta = beta - dC*eta # beta is the same as weights in one dim.
+        correct = p >= 0.5
 
         print(np.mean(correct))
 
-    del theta, X_train, X_test, Y_train, Y_test
+    del beta, X_train, X_test, Y_train, Y_test
     return 0
 
 def gradient(X,Y):
