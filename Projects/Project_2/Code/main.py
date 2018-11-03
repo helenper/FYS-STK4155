@@ -28,14 +28,13 @@ dim = input('Which dimension do you want to run for? If one => write 1 or one, i
 
 
 if dim == '1' or dim == 'one':
-	NN = input('Do you want to run the Neural Network? [y/n].')
 	for m in methods:
 		print('The next method to run is: %s' %m)
 		answer = input('Do you want to run for %s [y/n] ?' %m)
 		if answer == 'y' or answer == 'Y':
 			#file = open('results_OneDim_%s.txt' %m,  'w')
 			#mse_average, r2score_average, bias_average, var_average, beta, mse_min, R2_for_Min_MSE_value = OneDim(L, iterations, lambda_values, NN, method=m)
-			OneDim(L, iterations, lambda_values, NN, method=m)
+			OneDim(L, iterations, lambda_values, method=m)
 			"""
 			file.write('The results from running with lamda = %f \n' % lambda_values)
 			file.write('MSE_average:        %f \n' %mse_average )

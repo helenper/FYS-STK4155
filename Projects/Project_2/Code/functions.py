@@ -27,7 +27,7 @@ def OneDimNetwork(X_train, E_train, X_test, E_test):
     return mse, R2, variance, bias
 
 
-def OLS(X_train, E_train, X_test, E_test, num_classes, m, NN):
+def OLS(X_train, E_train, X_test, E_test, num_classes, m):
     '''Calculate and return the z and Epredict value by 
     ordinary least squares method'''
     beta = (np.linalg.pinv(X_train.T @ X_train)@ X_train.T @ E_train) 
@@ -37,7 +37,7 @@ def OLS(X_train, E_train, X_test, E_test, num_classes, m, NN):
     return mse, R2, bias, variance, beta
 
 
-def ridge(X_train, E_train, X_test, E_test, num_classes, m, NN, lambda_value):
+def ridge(X_train, E_train, X_test, E_test, num_classes, m, lambda_value):
     ''' A function that implementes the Rigde method'''
 
     IX = np.eye(X_train.shape[1])
@@ -47,7 +47,7 @@ def ridge(X_train, E_train, X_test, E_test, num_classes, m, NN, lambda_value):
     return mse, R2, bias, variance, beta
 
 
-def lasso(X,z,X_test, E_test, m, NN, lambda_value):
+def lasso(X,z,X_test, E_test, m, lambda_value):
     ''' A function that implements the Lasso method'''
 
     lasso=Lasso(lambda_value, max_iter=1e7, normalize = True, fit_intercept = False)
@@ -99,7 +99,7 @@ def ising_energies(states,L):
 
 
 
-def OneDim(L, iterations, lambda_values, NN, method):
+def OneDim(L, iterations, lambda_values, method):
 
     n = 10000
     states=np.random.choice([-1, 1], size=(n,L)) # Make 10000 random states.
@@ -134,7 +134,7 @@ def OneDim(L, iterations, lambda_values, NN, method):
         for i in range(iterations):
             X_train, E_train = bootstrap(X_train,E_train)
             print(i)
-            mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,E_train, X_test, E_test, num_classes, method, NN)
+            mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,E_train, X_test, E_test, num_classes, method)
             beta_list.append(beta)
             
             if mse[i] < mse_min: 
@@ -182,7 +182,7 @@ def OneDim(L, iterations, lambda_values, NN, method):
             if method == 'Ridge':
                 for i in range(iterations):
                     X_train, E_train = bootstrap(X_train,E_train)
-                    mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,E_train,X_test,E_test, num_classes, method, NN, lambda_value)
+                    mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,E_train,X_test,E_test, num_classes, method, lambda_value)
                     beta_list.append(beta)
                     if mse[i] < mse_min: 
                         mse_min = mse[i]
@@ -194,7 +194,7 @@ def OneDim(L, iterations, lambda_values, NN, method):
                 for i in range(iterations):
                     X_train, E_train = bootstrap(X_train,E_train)
                     print(i)
-                    mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,E_train,X_test,E_test, method, NN, lambda_value)
+                    mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,E_train,X_test,E_test, method, lambda_value)
                     beta_list.append(beta)
                     if mse[i] < mse_min: 
                         mse_min = mse[i]
