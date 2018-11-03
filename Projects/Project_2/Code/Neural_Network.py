@@ -8,6 +8,10 @@ np.random.seed(0)
 def sigmoid(z):
 	return 1/(1 + np.exp(-z))  # Ok :)
 
+def sigmoid_derivative(X):
+    return X * (1 - X)
+
+
 def feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_output):
 	# 
 	# weighted sum of inputs to the hidden layer

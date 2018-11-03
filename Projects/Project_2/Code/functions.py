@@ -101,7 +101,7 @@ def ising_energies(states,L):
 
 def OneDim(L, iterations, lambda_values, NN, method):
 
-    n = 100
+    n = 10000
     states=np.random.choice([-1, 1], size=(n,L)) # Make 10000 random states.
 
     X = np.zeros((n,L*L))
