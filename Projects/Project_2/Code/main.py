@@ -17,7 +17,7 @@ import os
 #Comment this to turn on warnings
 warnings.filterwarnings('ignore')
 
-np.random.seed(12)
+#np.random.seed(12)
 
 # system size
 L=40
