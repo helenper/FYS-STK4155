@@ -232,7 +232,7 @@ def sigmoid(X, Y):
 def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
 
     Niterations = 1000
-    beta = 1e-6*np.random.randn(1600)
+    beta = 1e-3*np.random.randn(1600)
 
     if NN == 'y':
         
