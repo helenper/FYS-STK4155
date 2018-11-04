@@ -18,6 +18,7 @@ import pandas as pd
 #from plotfunctions import *
 import re
 from Neural_Network import *
+from Neural_Network_TwoDim import *
 
 
 def OneDimNetwork(X_train, E_train, X_test, E_test):
@@ -230,38 +231,27 @@ def sigmoid(X, Y):
 
 def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
 
-    Niterations = 100
+    Niterations = 1000
     beta = 1e-6*np.random.randn(1600)
 
     if NN == 'y':
         
+        Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test, m)
 
-        weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network_Classification(X_train, Y_train, m)
-
-        p1 = weights_output
-        p0 = 1 - p1
-
-        p = np.choose(Y_train, [p0,p1])
-        dC = -X_train.T @ (Y_train - p)
-        beta = beta - dC
-        correct = p > 0.5
-
-        #print(np.mean(correct))
-
-
-    for i in range(Niterations):
-        p1 = 1./(1+np.exp(-X_train @ beta)) #theta = beta
-        p0 = 1 - p1
-        eta = 0.0001
-        p = np.choose(Y_train, [p0,p1])
-        dC = -X_train.T @ (Y_train - p)
-        beta = beta - dC*eta # beta is the same as weights in one dim.
-        correct = p >= 0.5
-
-        print(np.mean(correct))
+    else:
+        eta = 0.01
+        for i in range(Niterations):
+            p1 = 1./(1+np.exp(-X_train @ beta)) #theta = beta
+            p0 = 1 - p1
+            p = np.choose(Y_train, [p0,p1])
+            dC = -X_train.T @ (Y_train - p1)
+            beta = beta - dC*eta # beta is the same as weights in one dim.
+            correct = p >= 0.5
+            Error = p1 - Y_train
+            Accuracy(Error)
 
     del beta, X_train, X_test, Y_train, Y_test
-    return 0
+        
 
 def gradient(X,Y):
 
