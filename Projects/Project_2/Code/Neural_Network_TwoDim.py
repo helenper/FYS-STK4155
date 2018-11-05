@@ -50,7 +50,7 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, m, lmbd=1):
 	bias_output = np.zeros(n_categories) + 0.01
 	
 	eta = 1e-1
-	batch = 100
+	batch = 200
 	
 	activation_hidden, activation_output = feed_forward(X_test, weights_hidden, bias_hidden, weights_output, bias_output)
 	error_output = 	activation_output - E_test.reshape(-1,1)
@@ -60,6 +60,7 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, m, lmbd=1):
 	for i in range(3000):
 		# calculate gradients
 		index = np.random.randint(len(X_train), size = batch)
+
 		activation_hidden, activation_output = feed_forward(X_train[index], weights_hidden, bias_hidden, weights_output, bias_output)
 		dWo, dBo, dWh, dBh = backwardpropagation(X_train[index], E_train[index], weights_hidden, bias_hidden, weights_output, bias_output, activation_hidden, activation_output)
 
