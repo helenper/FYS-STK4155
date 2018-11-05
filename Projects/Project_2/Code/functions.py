@@ -231,25 +231,32 @@ def sigmoid(X, Y):
 
 def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
 
-    Niterations = 10
-    beta = 1e-6*np.random.randn(1600)
-    print(X_train.shape, beta.shape)
     
     if NN == 'y':
         
         Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test, m)
 
     else:
-        eta = 0.001
+        Niterations = 1000
+        beta = 1e-6*np.random.randn(1600)
+        p1 = 1./(1 + np.exp(-X_test @ beta))
+        Error = p1 - Y_test
+        Accuracy(Error)
+        eta = 0.01
+        batch = 200
         for i in range(Niterations):
-            p1 = 1./(1+np.exp(-X_train @ beta)) #theta = beta
+            index = np.random.randint(len(X_train), size = batch)
+            p1 = 1./(1+np.exp(-X_train[index] @ beta)) #theta = beta
             p0 = 1 - p1
             #p = np.choose(Y_train, [p0,p1])
-            dC = np.matmul(-X_train.T,  (Y_train - p1)) / len(Y_train)
+            dC = np.matmul(-X_train[index].T,  (Y_train[index] - p1))# / len(Y_train[index])
             beta = beta - dC*eta # beta is the same as weights in one dim.
             #correct = p >= 0.5
-            Error = p1 - Y_train
+            Error = p1 - Y_train[index]
             Accuracy(Error)
+        p1 = 1./(1 + np.exp(-X_test @ beta))
+        Error = p1 - Y_test
+        Accuracy(Error)
 
     del beta, X_train, X_test, Y_train, Y_test
         
