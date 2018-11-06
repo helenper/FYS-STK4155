@@ -27,7 +27,7 @@ def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_ou
 	
 	error_hidden = np.matmul(error_output,weights_output.T) * activation_hidden * (1 - activation_hidden)
 	
-	Accuracy(error_output)
+	acc_during = Accuracy(error_output)
 	
 	output_gradient_weights = np.matmul(activation_hidden.T, error_output)
 	output_gradient_bias = np.sum(error_output, axis=0)
@@ -35,12 +35,12 @@ def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_ou
 	hidden_gradient_weights = np.matmul(X_train.T, error_hidden)
 	hidden_gradient_bias = np.sum(error_hidden, axis=0)
 
-	return output_gradient_weights, output_gradient_bias, 	hidden_gradient_weights, hidden_gradient_bias
+	return output_gradient_weights, output_gradient_bias, hidden_gradient_weights, hidden_gradient_bias, acc_during
 
 
 def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, m, lmbd=1):
 	n_inputs, n_features = X_train.shape
-	n_h_neurons = 50
+	n_h_neurons = 100
 	n_categories = 1
 
 	weights_hidden = np.random.randn(n_features, n_h_neurons)
@@ -54,16 +54,16 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, m, lmbd=1):
 	
 	activation_hidden, activation_output = feed_forward(X_test, weights_hidden, bias_hidden, weights_output, bias_output)
 	error_output = 	activation_output - E_test.reshape(-1,1)
-	Accuracy(error_output)
-
+	Acc_before_train = Accuracy(error_output)
+	Acc_training = []
 		
 	for i in range(3000):
 		# calculate gradients
 		index = np.random.randint(len(X_train), size = batch)
 
 		activation_hidden, activation_output = feed_forward(X_train[index], weights_hidden, bias_hidden, weights_output, bias_output)
-		dWo, dBo, dWh, dBh = backwardpropagation(X_train[index], E_train[index], weights_hidden, bias_hidden, weights_output, bias_output, activation_hidden, activation_output)
-
+		dWo, dBo, dWh, dBh, acc = backwardpropagation(X_train[index], E_train[index], weights_hidden, bias_hidden, weights_output, bias_output, activation_hidden, activation_output)
+		Acc_training.append(acc)
 #		dWo, dBo, dWh, dBh = backwardpropagation(X_train, E_train, weights_hidden, bias_hidden, weights_output, bias_output)
 		
 		#update weights and biases
@@ -74,7 +74,9 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, m, lmbd=1):
 
 	activation_hidden, activation_output = feed_forward(X_test, weights_hidden, bias_hidden, weights_output, bias_output)
 	error_output = 	activation_output - E_test.reshape(-1,1)
-	Accuracy(error_output)
+	Acc_after_train = Accuracy(error_output)
+
+	Plot_Accuracy(Acc_training)
 
 
 
@@ -87,7 +89,15 @@ def Accuracy(error_output):
 		if error_output[i] < 0.5:
 			correct += 1.0
 
+	Acc = correct/(len(error_output))*100
+	print("Accuracy percentage: ", Acc)
+	return Acc
 
-	print("Accuracy percentage: ", correct/(len(error_output))*100)
 
+def Plot_Accuracy(acc):
 
+	plt.plot(np.linspace(0,len(acc)-1, len(acc)) , acc, 'bo')
+	plt.title("Accuracy for the neural network training on two dimensional Ising-model.")
+	plt.xlabel("Number of iterations")
+	plt.ylabel("Percentage of correct predictions")
+	plt.show()

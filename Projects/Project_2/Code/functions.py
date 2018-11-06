@@ -263,7 +263,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
         Error = p1 - Y_test
         Accuracy(Error)
 
-    del beta, X_train, X_test, Y_train, Y_test
+    del X_train, X_test, Y_train, Y_test
         
 
 def gradient(X,Y):
