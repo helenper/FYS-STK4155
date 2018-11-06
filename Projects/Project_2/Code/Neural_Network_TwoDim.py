@@ -38,7 +38,7 @@ def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_ou
 	return output_gradient_weights, output_gradient_bias, hidden_gradient_weights, hidden_gradient_bias, acc_during
 
 
-def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, m, lmbd=1):
+def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, eta, lmbd=1):
 	n_inputs, n_features = X_train.shape
 	n_h_neurons = 100
 	n_categories = 1
@@ -49,7 +49,6 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, m, lmbd=1):
 	weights_output = np.random.randn(n_h_neurons, n_categories)
 	bias_output = np.zeros(n_categories) + 0.01
 	
-	eta = 1e-1
 	batch = 200
 	
 	activation_hidden, activation_output = feed_forward(X_test, weights_hidden, bias_hidden, weights_output, bias_output)
@@ -97,10 +96,11 @@ def Accuracy(error_output):
 def Plot_Accuracy(acc, accbt, accat):
 
 	xaxis = np.linspace(0,len(acc)-1, len(acc))
-	plt.plot(xaxis , acc, 'bo', markersize=2)
-	plt.plot(xaxis[0], accbt, 'r+', markersize=10)
-	plt.plot(xaxis[-1], accat, 'c+', markersize=10)
+	plt.plot(xaxis , acc, 'bo', markersize=2, label='Training accuracy')
+	plt.plot(xaxis[0], accbt, 'r+', markersize=10, label='Accuracy before training')
+	plt.plot(xaxis[-1], accat, 'c+', markersize=10, label='Accuracy after training')
 	plt.title("Accuracy for the neural network training on two dimensional Ising-model.")
 	plt.xlabel("Number of iterations")
 	plt.ylabel("Percentage of correct predictions")
+	plt.legend()
 	plt.show()
