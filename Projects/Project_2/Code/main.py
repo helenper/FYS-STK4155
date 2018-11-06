@@ -57,7 +57,7 @@ elif dim == '2' or dim == 'two':
 	NN = input('Do you want to run the Neural Network? [y/n].')
 	num_classes = 2
 	train_to_test_ratio = 0.7 # Training samples
-	m = 'log'
+	
 	# path to data directory
 	path_to_data = 'IsingData'
 	file_name = "Ising2DFM_reSample_L40_T=All.pkl" # This file contains 16*10000 samples taken in the T=0.25 to T=4.00 temp range
@@ -92,7 +92,7 @@ elif dim == '2' or dim == 'two':
 
 
 
-	twodim = TwoDim(X_train,X_test,Y_train,Y_test, NN, num_classes, m)
+	twodim = TwoDim(X_train,X_test,Y_train,Y_test, NN, num_classes)
 #	for m in methods:
 #		print('The next method to run is: %s' %m)
 

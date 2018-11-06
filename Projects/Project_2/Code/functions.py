@@ -229,51 +229,39 @@ def OneDim(L, iterations, lambda_values, method):
 
 
 
-def sigmoid(X, Y):
-    theta = gradient(X,Y)
-    p = 1./(1+np.exp(X @ theta))
-    return p
+def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
 
-def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes, m):
+    etas = [1e-3,1e-2,1e-1,1e0,1e1]
 
-    
-    if NN == 'y':
+    for eta in etas:
         
-        Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test, m)
+        if NN == 'y':
+            
+            Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test)
 
-    else:
-        Niterations = 1000
-        beta = 1e-6*np.random.randn(1600)
-        p1 = 1./(1 + np.exp(-X_test @ beta))
-        Error = p1 - Y_test
-        Accuracy(Error)
-        eta = 0.01
-        batch = 200
-        for i in range(Niterations):
-            index = np.random.randint(len(X_train), size = batch)
-            p1 = 1./(1+np.exp(-X_train[index] @ beta)) #theta = beta
-            p0 = 1 - p1
-            #p = np.choose(Y_train, [p0,p1])
-            dC = np.matmul(-X_train[index].T,  (Y_train[index] - p1))# / len(Y_train[index])
-            beta = beta - dC*eta # beta is the same as weights in one dim.
-            #correct = p >= 0.5
-            Error = p1 - Y_train[index]
-            Accuracy(Error)
-        p1 = 1./(1 + np.exp(-X_test @ beta))
-        Error = p1 - Y_test
-        Accuracy(Error)
+        else:
+            Niterations = 30
+            beta = 1e-6*np.random.randn(1600)
+            p1 = 1./(1 + np.exp(-X_test @ beta))
+            Error = p1 - Y_test
+            Acc_before_train = Accuracy(Error)
+            eta = 0.01
+            batch = 200
+            Acc_training = []
+            for i in range(Niterations):
+                index = np.random.randint(len(X_train), size = batch)
+                p1 = 1./(1+np.exp(-X_train[index] @ beta)) #theta = beta
+                p0 = 1 - p1
+                #p = np.choose(Y_train, [p0,p1])
+                dC = np.matmul(-X_train[index].T,  (Y_train[index] - p1))# / len(Y_train[index])
+                beta = beta - dC*eta # beta is the same as weights in one dim.
+                #correct = p >= 0.5
+                Error = p1 - Y_train[index]
+                Acc_training.append(Accuracy(Error))
+            p1 = 1./(1 + np.exp(-X_test @ beta))
+            Error = p1 - Y_test
+            Acc_after_train = Accuracy(Error)
+            Plot_Accuracy(Acc_training, Acc_before_train, Acc_after_train)
 
     del X_train, X_test, Y_train, Y_test
         
-
-def gradient(X,Y):
-
-    eta = 0.01
-    Niterations = 100
-    
-    for iter in range(Niterations):
-        gradients = 2.0*X.T @ (X @ theta - Y)
-        theta = theta - eta*gradients
-
-    return theta
-
