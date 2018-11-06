@@ -1,0 +1,39 @@
+The results from running with lamda = 0.000000 
+MSE_average:        [66.40193101929037] 
+R2_score_average:   [-0.7435223120417798] 
+Bias_average:       [42.17303666577423] 
+Variance_average:   [32.21780189221915] 
+Min_MSE_value:      3.008250198339166e-08 
+R2_for_Min_MSE_value:       0.9999999992101206 
+
+The results from running with lamda = 0.000001 
+MSE_average:        [66.40040015314494] 
+R2_score_average:   [-0.7434821159324148] 
+Bias_average:       [42.17301865291299] 
+Variance_average:   [32.21649419877283] 
+Min_MSE_value:      2.0906206494387763e-07 
+R2_for_Min_MSE_value:       0.9999999945106359 
+
+The results from running with lamda = 0.000010 
+MSE_average:        [67.03251776578267] 
+R2_score_average:   [-0.6925427893154001] 
+Bias_average:       [40.68603025026615] 
+Variance_average:   [30.94337557245736] 
+Min_MSE_value:      1.3762732192200674e-07 
+R2_for_Min_MSE_value:       0.9999999965249682 
+
+The results from running with lamda = 0.000100 
+MSE_average:        [67.03251776578267, 81.19582788327982] 
+R2_score_average:   [-0.6925427893154001, -1.0501603935946828] 
+Bias_average:       [40.68603025026615, 49.76313371916792] 
+Variance_average:   [30.94337557245736, 28.21570380354638] 
+Min_MSE_value:      68.16092249709322 
+R2_for_Min_MSE_value:       -0.7210345326523027 
+
+The results from running with lamda = 0.001000 
+MSE_average:        [67.03251776578267, 81.19582788327982, 60.03307674098202] 
+R2_score_average:   [-0.6925427893154001, -1.0501603935946828, -0.5158098568428549] 
+Bias_average:       [40.68603025026615, 49.76313371916792, 39.62457292849066] 
+Variance_average:   [30.94337557245736, 28.21570380354638, 20.608508023931027] 
+Min_MSE_value:      51.054496094825986 
+R2_for_Min_MSE_value:       -0.2891044840260897 
