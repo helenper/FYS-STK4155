@@ -1,0 +1,8 @@
+The results from running with lamda = 0.000010 
+MSE_average:        [72.75926245372801] 
+R2_score_average:   [-0.7898676536387852] 
+Bias_average:       [45.21092889174179] 
+Variance_average:   [34.90318616359478] 
+Min_MSE_value:      1.9678829426991635e-07 
+R2_for_Min_MSE_value:       0.9999999951590356 
+
