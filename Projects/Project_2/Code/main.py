@@ -1,5 +1,5 @@
 ####################
-# Project 1 - main program
+# Project 2 - main program
 # FYS-STK 3155/4155
 # Fall 2018 
 ####################
@@ -23,7 +23,7 @@ np.random.seed(4555)
 L=40
 iterations = 1000
 methods = ['OLS', 'NN', 'Ridge', 'Lasso']
-lambda_values = [1e-5, 1e-4, 1e-3, 1e-2, 1e-1]#, 1e1]
+lambda_values = [1e-7]#, 1e1]
 dim = input('Which dimension do you want to run for? If one => write 1 or one, if two => write 2 or two.')
 
 
