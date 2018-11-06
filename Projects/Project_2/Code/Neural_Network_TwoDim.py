@@ -76,7 +76,7 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, m, lmbd=1):
 	error_output = 	activation_output - E_test.reshape(-1,1)
 	Acc_after_train = Accuracy(error_output)
 
-	Plot_Accuracy(Acc_training)
+	Plot_Accuracy(Acc_training, Acc_before_train, Acc_after_train)
 
 
 
@@ -94,9 +94,12 @@ def Accuracy(error_output):
 	return Acc
 
 
-def Plot_Accuracy(acc):
+def Plot_Accuracy(acc, accbt, accat):
 
-	plt.plot(np.linspace(0,len(acc)-1, len(acc)) , acc, 'bo', markersize=2)
+	xaxis = np.linspace(0,len(acc)-1, len(acc))
+	plt.plot(xaxis , acc, 'bo', markersize=2)
+	plt.plot(xaxis[0], accbt, 'r+', markersize=10)
+	plt.plot(xaxis[-1], accat, 'c+', markersize=10)
 	plt.title("Accuracy for the neural network training on two dimensional Ising-model.")
 	plt.xlabel("Number of iterations")
 	plt.ylabel("Percentage of correct predictions")
