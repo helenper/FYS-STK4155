@@ -96,7 +96,7 @@ def Accuracy(error_output):
 
 def Plot_Accuracy(acc):
 
-	plt.plot(np.linspace(0,len(acc)-1, len(acc)) , acc, 'bo')
+	plt.plot(np.linspace(0,len(acc)-1, len(acc)) , acc, 'bo', markersize=2)
 	plt.title("Accuracy for the neural network training on two dimensional Ising-model.")
 	plt.xlabel("Number of iterations")
 	plt.ylabel("Percentage of correct predictions")
