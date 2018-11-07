@@ -93,14 +93,3 @@ def Accuracy(error_output):
 	return Acc
 
 
-def Plot_Accuracy(acc, accbt, accat):
-
-	xaxis = np.linspace(0,len(acc)-1, len(acc))
-	plt.plot(xaxis , acc, 'bo', markersize=2, label='Training accuracy')
-	plt.plot(xaxis[0], accbt, 'r+', markersize=10, label='Accuracy before training')
-	plt.plot(xaxis[-1], accat, 'c+', markersize=10, label='Accuracy after training')
-	plt.title("Accuracy for the neural network training on two dimensional Ising-model.")
-	plt.xlabel("Number of iterations")
-	plt.ylabel("Percentage of correct predictions")
-	plt.legend()
-	plt.show()
