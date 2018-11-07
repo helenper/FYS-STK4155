@@ -182,29 +182,29 @@ def OneDim(L, iterations, lambda_values, method):
         for l, lambda_value in enumerate(lambda_values):
             print(lambda_values)
             if method == 'Ridge':
-                mse_min = 1000
+                mse_min_value = 1000
                 for i in range(iterations):
                     X_train, E_train = bootstrap(X_train,E_train)
                     mse[i], r2score[i], bias[i], var[i], beta = ridge(X_train,E_train,X_test,E_test, num_classes, method, lambda_value)
                     beta_list.append(beta)
-                    if mse[i] < mse_min: 
-                        mse_min = mse[i]
-                        r2_for_min_mse = r2score[i]
+                    if mse[i] < mse_min_value: 
+                        mse_min_value = mse[i]
+                        R2_for_Min_MSE_value = r2score[i]
                         best_beta = beta
                         iteration_best = i
                         #print('mse_min:', mse_min)
 
             if method == 'Lasso':
-                mse_min = 1000
+                mse_min_value = 1000
                 for i in range(iterations):
                     X_train, E_train = bootstrap(X_train,E_train)
                     #print(i)
                     mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,E_train,X_test,E_test, method, lambda_value)
                     beta_list.append(beta)
-                    if mse[i] < mse_min: 
+                    if mse[i] < mse_min_value: 
                         #print('hei')
-                        mse_min = mse[i]
-                        r2_for_min_mse = r2score[i]
+                        mse_min_value = mse[i]
+                        R2_for_Min_MSE_value = r2score[i]
                         best_beta = beta
                         iteration_best = i
                         #print('mse_min:', mse_min)
@@ -212,9 +212,11 @@ def OneDim(L, iterations, lambda_values, method):
             r2score_average.append(np.mean(r2score))
             bias_average.append(np.mean(bias)) 
             var_average.append(np.mean(var))
+            mse_min.append(mse_min_value)
+            r2_for_min_mse.append(R2_for_Min_MSE_value)
 
 
-        file.write('The results from running with lamda = %f \n' % lambda_value)
+        file.write('The results from running with lamda = %s \n' % lambda_values)
         file.write('MSE_average:        %s \n' %mse_average)
         file.write('R2_score_average:   %s \n' %r2score_average)
         file.write('Bias_average:       %s \n' %bias_average) 
