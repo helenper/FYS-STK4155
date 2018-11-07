@@ -263,12 +263,12 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
         else:
             
             Niterations = 3000
-            beta = 1e-8*np.random.randn(1600)
+            beta = 1e-6*np.random.randn(1600)
             p1 = 1./(1 + np.exp(-X_test @ beta))
             Error = p1 - Y_test
             Acc_before_train = Accuracy(Error)
-            
-            batch = 100
+            eta = 0.01
+            batch = 200
             Acc_training = []
             for i in range(Niterations):
                 #index = np.random.randint(len(X_train), size = batch)
