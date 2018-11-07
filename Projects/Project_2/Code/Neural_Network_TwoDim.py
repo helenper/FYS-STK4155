@@ -74,7 +74,7 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, eta, lmbd=1):
 	error_output = 	activation_output - E_test.reshape(-1,1)
 	Acc_after_train = Accuracy(error_output)
 
-	return Acc_after_train, Acc_before_train
+	return Acc_training, Acc_after_train, Acc_before_train
 
 
 
