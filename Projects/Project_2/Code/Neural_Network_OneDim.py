@@ -51,7 +51,7 @@ def Neural_Network_OneDim(X_train, E_train, m, lmbd=1):
 	bias_output = np.zeros(n_categories) + 0.01
 	
 	eta = 0.0001
-	print(E_train)
+	
 	for i in range(10):
 		# calculate gradients
 		dWo, dBo, dWh, dBh = backwardpropagation(X_train, E_train, weights_hidden, bias_hidden, weights_output, bias_output)
