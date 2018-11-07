@@ -57,7 +57,13 @@ def plotMSE_Ridge_OLS(mse, mse_OLS):
     plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
     plt.show()
 
-
+#mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_franke_OLS.txt', 5, 6)
+mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge = retrive_data_from_file('results_OneDim_Ridge_all.txt', 5, 6)
+mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('results_OneDim_Lasso_all.txt', 5, 6)
+#plotMSE_Ridge_OLS(mse_Ridge, mse_OLS)
+#plotMSE_Lasso(mse_Lasso)
+#plotR2_Ridge_OLS(r2_Ridge, r2_OLS)
+#plotR2_Lasso(r2_Lasso)
 
 
 def plotMSE_Lasso(mse):
