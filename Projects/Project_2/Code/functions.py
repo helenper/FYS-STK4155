@@ -17,12 +17,12 @@ from sklearn.utils import safe_indexing, indexable
 import pandas as pd
 #from plotfunctions import *
 import re
-from Neural_Network import *
+from Neural_Network_OneDim import *
 from Neural_Network_TwoDim import *
 
 
 def OneDimNetwork(X_train, E_train, X_test, E_test):
-    weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network(X_train, E_train)
+    weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network_OneDim(X_train, E_train)
     a_h, a_o, Epredict = feed_forward(X_test, weights_hidden, bias_hidden,weights_output, bias_output)
     mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, variance, bias
@@ -160,12 +160,20 @@ def OneDim(L, iterations, lambda_values, method):
     elif method == 'NN':
         mse, r2_score, bias, var = OneDimNetwork(X_train, E_train, X_test, E_test)
 
-        #file.write('MSE_average:        %f \n' %mse)
-        #file.write('R2_score_average:   %f \n' %r2score)
-        #file.write('Bias_average:       %f \n' %bias)
-        #file.write('Variance_average:   %f \n' %var)
-        #file.write('Min_MSE_value:      %f \n' %mse_min)
-        #file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
+        mse_average = np.mean(mse)
+        r2score_average = np.mean(r2score)
+        bias_average = np.mean(bias)    
+        var_average = np.mean(var)
+
+        mse_min = np.min(mse)
+        r2_for_min_mse = r2score_average.index(mse_min)
+
+        file.write('MSE_average:        %f \n' %mse_average)
+        file.write('R2_score_average:   %f \n' %r2score_average)
+        file.write('Bias_average:       %f \n' %bias_average)
+        file.write('Variance_average:   %f \n' %var_average)
+        file.write('Min_MSE_value:      %f \n' %mse_min)
+        file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
         file.write('\n') 
         file.close()
 
@@ -256,7 +264,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
             p1 = 1./(1 + np.exp(-X_test @ beta))
             Error = p1 - Y_test
             Acc_before_train = Accuracy(Error)
-            eta = 0.01
+            
             batch = 200
             Acc_training = []
             for i in range(Niterations):
