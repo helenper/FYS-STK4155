@@ -239,7 +239,16 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
         
         if NN == 'y':
             
-            Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test)
+            Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test)
+            print("------------------")
+            print("The accuracy before the training: ", Acc_before_train)
+            print("The accuracy after the training: ", Acc_after_train)
+            print("------------------")
+
+            input(r"Do you want to plot the training accuracies for $\eta$ = %.4f? [y/n]" % eta)
+            if input == "y":
+                print("Y")
+                Plot_Accuracy(Acc_training, eta)
 
         else:
             Niterations = 30
@@ -263,7 +272,30 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
             p1 = 1./(1 + np.exp(-X_test @ beta))
             Error = p1 - Y_test
             Acc_after_train = Accuracy(Error)
-            Plot_Accuracy(Acc_training, Acc_before_train, Acc_after_train)
+            
+            print("------------------")
+            print("The accuracy before the training: ", Acc_before_train)
+            print("The accuracy after the training: ", Acc_after_train)
+            print("------------------")
+            
+            input(r"Do you want to plot the training accuracies for $\eta$ = %.4f? [y/n]" % eta)
+            
+            if input == "y":
+                print("Y")
+                Plot_Accuracy(Acc_training, eta)
+
 
     del X_train, X_test, Y_train, Y_test
         
+
+
+
+def Plot_Accuracy(acc, eta): # TO BE REMOVED!
+
+    xaxis = np.linspace(0,len(acc)-1, len(acc))
+    plt.plot(xaxis , acc, 'bo', markersize=2, label='Training accuracy')
+    plt.title("Accuracy for the neural network training on two dimensional Ising-model with eta=%f." % eta)
+    plt.xlabel("Number of iterations")
+    plt.ylabel("Percentage of correct predictions")
+    plt.legend()
+    plt.show()
