@@ -15,7 +15,7 @@ import pickle
 import os
 
 #Comment this to turn on warnings
-warnings.filterwarnings('ignore')
+#warnings.filterwarnings('ignore')
 
 np.random.seed(4555)
 
@@ -32,25 +32,9 @@ if dim == '1' or dim == 'one':
 		print('The next method to run is: %s' %m)
 		answer = input('Do you want to run for %s [y/n] ?' %m)
 		if answer == 'y' or answer == 'Y':
-			#file = open('results_OneDim_%s.txt' %m,  'w')
-			#mse_average, r2score_average, bias_average, var_average, beta, mse_min, R2_for_Min_MSE_value = OneDim(L, iterations, lambda_values, NN, method=m)
 			OneDim(L, iterations, lambda_values, method=m)
-			"""
-			file.write('The results from running with lamda = %f \n' % lambda_values)
-			file.write('MSE_average:        %f \n' %mse_average )
-			file.write('R2_score_average:   %f \n' %r2score_average)
-			file.write('Bias_average:       %f \n' %bias_average)
-			file.write('Variance_average:   %f \n' %var_average)
-			file.write('Min_MSE_value:      %f \n' %mse_min)
-			file.write('R2_for_Min_MSE_value:       %f \n' %r2_min)
-			file.write('The_best_beta_parameters:   %s \n' %the_beta_values)
-			file.write('\n')
-			file.close()
-			"""
 		if answer == 'n' or answer == 'N':
 			print('Moving on')
-
-
 
 
 elif dim == '2' or dim == 'two':
