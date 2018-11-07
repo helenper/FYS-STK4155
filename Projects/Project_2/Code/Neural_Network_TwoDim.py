@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 
-#np.random.seed(0)
 
 
 def sigmoid(z):
@@ -75,7 +74,7 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, eta, lmbd=1):
 	error_output = 	activation_output - E_test.reshape(-1,1)
 	Acc_after_train = Accuracy(error_output)
 
-	Plot_Accuracy(Acc_training, Acc_before_train, Acc_after_train)
+	return Acc_after_train, Acc_before_train
 
 
 
@@ -91,5 +90,6 @@ def Accuracy(error_output):
 	Acc = correct/(len(error_output))*100
 	print("Accuracy percentage: ", Acc)
 	return Acc
+
 
 
