@@ -76,9 +76,8 @@ elif dim == '2' or dim == 'two':
 
 
 
-	twodim = TwoDim(X_train,X_test,Y_train,Y_test, NN, num_classes)
-#	for m in methods:
-#		print('The next method to run is: %s' %m)
+	TwoDim(X_train,X_test,Y_train,Y_test, NN, num_classes)
+
 
 
 
