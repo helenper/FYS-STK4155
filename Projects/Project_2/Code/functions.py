@@ -158,15 +158,17 @@ def OneDim(L, iterations, lambda_values, method):
         file.close()
 
     elif method == 'NN':
-        mse, r2_score, bias, var = OneDimNetwork(X_train, E_train, X_test, E_test)
+        etas = [1e-4,1e-3,1e-2,1e-1,1e0,1e1]
+        for eta in etas:
+            mse, r2_score, bias, var = OneDimNetwork(X_train, E_train, X_test, E_test)
 
-        mse_average = np.mean(mse)
-        r2score_average = np.mean(r2score)
-        bias_average = np.mean(bias)    
-        var_average = np.mean(var)
+            mse_average = np.mean(mse)
+            r2score_average = np.mean(r2score)
+            bias_average = np.mean(bias)    
+            var_average = np.mean(var)
 
-        mse_min = np.min(mse)
-        r2_for_min_mse = r2score_average.index(mse_min)
+            mse_min = np.min(mse)
+            r2_for_min_mse = r2score_average.index(mse_min)
 
         file.write('MSE_average:        %f \n' %mse_average)
         file.write('R2_score_average:   %f \n' %r2score_average)
@@ -241,42 +243,44 @@ def OneDim(L, iterations, lambda_values, method):
 
 def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
 
-    etas = [1e-3,1e-2,1e-1,1e0,1e1]
+    etas = [1e-4,1e-3,1e-2,1e-1,1e0,1e1]
 
     for eta in etas:
         
         if NN == 'y':
             
-            Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test)
+            Acc_training, Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test)
             print("------------------")
             print("The accuracy before the training: ", Acc_before_train)
             print("The accuracy after the training: ", Acc_after_train)
             print("------------------")
 
-            input(r"Do you want to plot the training accuracies for $\eta$ = %.4f? [y/n]" % eta)
-            if input == "y":
+            answer = input(r"Do you want to plot the training accuracies for $\eta$ = %.4f? [y/n]" % eta)
+            if answer == 'y':
                 print("Y")
                 Plot_Accuracy(Acc_training, eta)
 
         else:
-            Niterations = 30
-            beta = 1e-6*np.random.randn(1600)
+            
+            Niterations = 3000
+            beta = 1e-8*np.random.randn(1600)
             p1 = 1./(1 + np.exp(-X_test @ beta))
             Error = p1 - Y_test
             Acc_before_train = Accuracy(Error)
             
-            batch = 200
+            batch = 100
             Acc_training = []
             for i in range(Niterations):
-                index = np.random.randint(len(X_train), size = batch)
-                p1 = 1./(1+np.exp(-X_train[index] @ beta)) #theta = beta
+                #index = np.random.randint(len(X_train), size = batch)
+                p1 = 1./(1+np.exp(-X_train @ beta)) 
                 p0 = 1 - p1
                 #p = np.choose(Y_train, [p0,p1])
-                dC = np.matmul(-X_train[index].T,  (Y_train[index] - p1))# / len(Y_train[index])
+                dC = np.matmul(-X_train.T,  (Y_train - p1))# / len(Y_train[index])
                 beta = beta - dC*eta # beta is the same as weights in one dim.
                 #correct = p >= 0.5
-                Error = p1 - Y_train[index]
+                Error = p1 - Y_train
                 Acc_training.append(Accuracy(Error))
+                
             p1 = 1./(1 + np.exp(-X_test @ beta))
             Error = p1 - Y_test
             Acc_after_train = Accuracy(Error)
@@ -286,9 +290,9 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
             print("The accuracy after the training: ", Acc_after_train)
             print("------------------")
             
-            input(r"Do you want to plot the training accuracies for $\eta$ = %.4f? [y/n]" % eta)
+            answer = input(r"Do you want to plot the training accuracies for $\eta$ = %.4f? [y/n]" % eta)
             
-            if input == "y":
+            if answer == 'y':
                 print("Y")
                 Plot_Accuracy(Acc_training, eta)
 
