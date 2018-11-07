@@ -214,14 +214,14 @@ def OneDim(L, iterations, lambda_values, method):
             var_average.append(np.mean(var))
 
 
-            file.write('The results from running with lamda = %f \n' % lambda_value)
-            file.write('MSE_average:        %s \n' %mse_average)
-            file.write('R2_score_average:   %s \n' %r2score_average)
-            file.write('Bias_average:       %s \n' %bias_average) 
-            file.write('Variance_average:   %s \n' %var_average)
-            file.write('Min_MSE_value:      %s \n' %mse_min) 
-            file.write('R2_for_Min_MSE_value:       %s \n' %r2_for_min_mse)
-            file.write('\n')
+        file.write('The results from running with lamda = %f \n' % lambda_value)
+        file.write('MSE_average:        %s \n' %mse_average)
+        file.write('R2_score_average:   %s \n' %r2score_average)
+        file.write('Bias_average:       %s \n' %bias_average) 
+        file.write('Variance_average:   %s \n' %var_average)
+        file.write('Min_MSE_value:      %s \n' %mse_min) 
+        file.write('R2_for_Min_MSE_value:       %s \n' %r2_for_min_mse)
+        file.write('\n')
         file.close()
 
 
