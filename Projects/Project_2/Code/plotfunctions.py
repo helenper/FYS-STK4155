@@ -235,7 +235,7 @@ def Plot_Accuracy(acc, eta):
 
     xaxis = np.linspace(0,len(acc)-1, len(acc))
     plt.plot(xaxis , acc, 'bo', markersize=2, label='Training accuracy')
-    plt.title(r"Accuracy for the neural network training on two dimensional Ising-model with $\eta$ = %1.1e." % eta)
+    plt.title(r"Accuracy for training on the two dimensional Ising-model with $\eta$ = %1.1e." % eta)
     plt.xlabel("Number of iterations")
     plt.ylabel("Percentage of correct predictions")
     plt.legend()
