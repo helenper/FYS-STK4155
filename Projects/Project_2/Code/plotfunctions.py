@@ -2,7 +2,7 @@
 # Importing necessary packages for plotting
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
-from matplotlib import cm
+from matplotlib import cm, rc
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.ticker import LinearLocator, FormatStrFormatter 
