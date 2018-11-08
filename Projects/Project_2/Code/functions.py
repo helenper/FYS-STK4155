@@ -21,9 +21,9 @@ from Neural_Network_OneDim import *
 from Neural_Network_TwoDim import *
 
 
-def OneDimNetwork(X_train, E_train, X_test, E_test):
-    weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network_OneDim(X_train, E_train)
-    a_h, a_o, Epredict = feed_forward(X_test, weights_hidden, bias_hidden,weights_output, bias_output)
+def OneDimNetwork(X_train, E_train, X_test, E_test, eta):
+    weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network_OneDim(X_train, E_train, eta)
+    a_h, a_o, Epredict = feed_forward_OneDim(X_test, weights_hidden, bias_hidden,weights_output, bias_output)
     mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, variance, bias
 
@@ -160,9 +160,9 @@ def OneDim(L, iterations, lambda_values, method):
     elif method == 'NN':
         etas = [1e-4,1e-3,1e-2,1e-1,1e0,1e1]
         for eta in etas:
-            mse, r2_score, bias, var = OneDimNetwork(X_train, E_train, X_test, E_test)
+            mse, r2_score, bias, var = OneDimNetwork(X_train, E_train, X_test, E_test, eta)
 
-            mse_average = np.mean(mse)
+            mse_average = np.mean(mse) # Needed? We should just get one number.
             r2score_average = np.mean(r2score)
             bias_average = np.mean(bias)    
             var_average = np.mean(var)
@@ -309,7 +309,7 @@ def Plot_Accuracy(acc, eta): # TO BE REMOVED!
 
     xaxis = np.linspace(0,len(acc)-1, len(acc))
     plt.plot(xaxis , acc, 'bo', markersize=2, label='Training accuracy')
-    plt.title("Accuracy for the neural network training on two dimensional Ising-model with eta=%f." % eta)
+    plt.title(r"Accuracy for the training on two dimensional Ising-model with $\eta$ = %1.1e" % eta)
     plt.xlabel("Number of iterations")
     plt.ylabel("Percentage of correct predictions")
     plt.legend()
