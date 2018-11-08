@@ -70,13 +70,13 @@ def plot_MSE_Bias_Var(mse, bias, var, m):
 #mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_OneDim_OLS.txt', 5)
 #print(mse_OLS)
 
-mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge = retrive_data_from_file('Ridge_results_seed4555.txt', 5)
-mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('Lasso_results_seed4555.txt', 5)
+#mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge = retrive_data_from_file('Ridge_results_seed4555.txt', 5)
+#mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('Lasso_results_seed4555.txt', 5)
 
-m = 'Ridge'
-plot_MSE_Bias_Var(mse_Ridge, bias_Ridge, var_Ridge, m)
-m = 'Lasso'
-plot_MSE_Bias_Var(mse_Lasso, bias_Lasso, var_Lasso, m)
+#m = 'Ridge'
+#plot_MSE_Bias_Var(mse_Ridge, bias_Ridge, var_Ridge, m)
+#m = 'Lasso'
+#plot_MSE_Bias_Var(mse_Lasso, bias_Lasso, var_Lasso, m)
 #plotMSE_Lasso(mse_Lasso)
 #plotR2_Ridge_OLS(r2_Ridge, r2_OLS)
 #plotR2_Lasso(r2_Lasso)
@@ -251,8 +251,8 @@ def Plot_Accuracy(acc, eta):
 
     xaxis = np.linspace(0,len(acc)-1, len(acc))
     plt.plot(xaxis , acc, 'bo', markersize=2, label='Training accuracy')
-    plt.title(r"Accuracy for training on the two dimensional Ising-model with $\eta$ = %1.1e." % eta)
-    plt.xlabel("Number of iterations")
-    plt.ylabel("Percentage of correct predictions")
-    plt.legend()
+    plt.title(r"Accuracy for training on the 2D Ising-model with $\eta$ = %1.1e." % eta, fontsize=20)
+    plt.xlabel("Number of iterations", fontsize=18)
+    plt.ylabel("Percentage of correct predictions", fontsize=18)
+    plt.legend(fontsize=18)
     plt.show()
