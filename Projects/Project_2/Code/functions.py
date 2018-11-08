@@ -243,12 +243,13 @@ def OneDim(L, iterations, lambda_values, method):
 
 def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
 
-    etas = [1e-4,1e-3,1e-2,1e-1,1e0,1e1]
 
-    for eta in etas:
         
-        if NN == 'y':
+    if NN == 'y':
             
+        etas = [1e-4,1e-3,1e-2,1e-1,1e0,1e1]
+        for eta in etas:
+    
             Acc_training, Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test)
             print("------------------")
             print("The accuracy before the training: ", Acc_before_train)
@@ -260,8 +261,10 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
                 print("Y")
                 Plot_Accuracy(Acc_training, eta)
 
-        else:
-            
+    else:
+        etas = [1e-11,1e-10,1e-9,1e-8,1e-7,1e-6,1e-5]
+        for eta in etas:
+
             Niterations = 3000
             beta = 1e-6*np.random.randn(1600)
             p1 = 1./(1 + np.exp(-X_test @ beta))
