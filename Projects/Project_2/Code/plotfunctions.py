@@ -7,8 +7,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.ticker import LinearLocator, FormatStrFormatter 
 import re
+import pylab
 
-def retrive_data_from_file(filename, num_degree, numb_of_lambda):
+def retrive_data_from_file(filename, numb_of_lambda):
     infile = open(filename, 'r')
 
     MSE_average = []
@@ -16,20 +17,35 @@ def retrive_data_from_file(filename, num_degree, numb_of_lambda):
     Bias_average = []
     Variance_average =[]
 
+    i = 0
+
     for lines in infile: 
         line = lines.split()
-        if len(line) == 2:
+        if len(line) == 12: # 12 for Ridge og Lasso!
             if line[0] == 'MSE_average:' :
-                MSE_average.append(float(line[1]))
+                for i in range(10):
+                    i += 2
+                    if int(i)%2 == 0:
+                        MSE_average.append(float(line[i]))
+                    #print(MSE_average)
             
             if line[0] == 'R2_score_average:':
-                R2_average.append(float(line[1]))
+                for i in range(10):
+                    i+=2
+                    if int(i)%2 == 0:
+                        R2_average.append(float(line[i]))
 
             if line[0] == 'Bias_average:' :
-                Bias_average.append(float(line[1]))
+                for i in range(10):
+                    i+=2
+                    if int(i)%2 == 0:
+                        Bias_average.append(float(line[i]))
 
             if line[0] == 'Variance_average:':
-                Variance_average.append(float(line[1]))
+                for i in range(10):
+                    i+=2
+                    if int(i)%2 == 0:
+                        Variance_average.append(float(line[i]))
             
 
 
@@ -37,30 +53,30 @@ def retrive_data_from_file(filename, num_degree, numb_of_lambda):
 
     return MSE_average, R2_average, Bias_average, Variance_average
 
-def plotMSE_Ridge_OLS(mse, mse_OLS):
-    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
-    plt.plot(lambda_values, mse[0:6], 'b')
-    plt.plot(lambda_values, mse[6:12], 'c')
-    plt.plot(lambda_values, mse[12:18], 'g')
-    plt.plot(lambda_values, mse[18:24], 'r')
-    plt.plot(lambda_values, mse[24:30], 'm')
-    plt.plot( lambda_values, mse_OLS[0:6], 'bo')
-    plt.plot(lambda_values, mse_OLS[6:12], 'co')
-    plt.plot(lambda_values, mse_OLS[12:18], 'go')
-    plt.plot(lambda_values, mse_OLS[18:24], 'ro')
-    plt.plot(lambda_values, mse_OLS[24:30], 'mo')
-
-    plt.title('MSE calculated by Ridge and OLS')
-    plt.xlabel(r'$\lambda$')
-    plt.ylabel('MSE')
+def plot_MSE_Bias_Var(mse, bias, var, m):
+    lambda_values = [1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
+    plt.plot(lambda_values, mse)
+    plt.plot(lambda_values, bias)
+    plt.plot(lambda_values, var)
+    plt.title('Metrics calculated by %s' %m, fontsize=20)
+    plt.xlabel(r'$\lambda$', fontsize=18)
+    plt.ylabel('Metrics', fontsize=18)
+    pylab.xticks(fontsize=14)
+    pylab.yticks(fontsize=14)
     plt.semilogx()
-    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
+    plt.legend(['MSE', 'Bias', 'Variance'], fontsize=18)
     plt.show()
 
-#mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_franke_OLS.txt', 5, 6)
-mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge = retrive_data_from_file('results_OneDim_Ridge_all.txt', 5, 6)
-mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('results_OneDim_Lasso_all.txt', 5, 6)
-#plotMSE_Ridge_OLS(mse_Ridge, mse_OLS)
+#mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_OneDim_OLS.txt', 5)
+#print(mse_OLS)
+
+mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge = retrive_data_from_file('Ridge_results_seed4555.txt', 5)
+mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('Lasso_results_seed4555.txt', 5)
+
+m = 'Ridge'
+plot_MSE_Bias_Var(mse_Ridge, bias_Ridge, var_Ridge, m)
+m = 'Lasso'
+plot_MSE_Bias_Var(mse_Lasso, bias_Lasso, var_Lasso, m)
 #plotMSE_Lasso(mse_Lasso)
 #plotR2_Ridge_OLS(r2_Ridge, r2_OLS)
 #plotR2_Lasso(r2_Lasso)
