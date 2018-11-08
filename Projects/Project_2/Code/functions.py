@@ -15,7 +15,7 @@ from imageio import imread
 from sklearn.model_selection import train_test_split
 from sklearn.utils import safe_indexing, indexable
 import pandas as pd
-#from plotfunctions import *
+from plotfunctions import *
 import re
 from Neural_Network_OneDim import *
 from Neural_Network_TwoDim import *
@@ -284,7 +284,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
         etas = [1e-4,1e-3,1e-2,1e-1,1e0,1e1]
         for eta in etas:
     
-            Acc_training, Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test)
+            Acc_training, Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test, eta)
             print("------------------")
             print("The accuracy before the training: ", Acc_before_train)
             print("The accuracy after the training: ", Acc_after_train)
@@ -338,7 +338,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
         
 
 
-
+"""
 def Plot_Accuracy(acc, eta): # TO BE REMOVED!
 
     xaxis = np.linspace(0,len(acc)-1, len(acc))
@@ -348,3 +348,4 @@ def Plot_Accuracy(acc, eta): # TO BE REMOVED!
     plt.ylabel("Percentage of correct predictions")
     plt.legend()
     plt.show()
+"""
