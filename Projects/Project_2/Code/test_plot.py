@@ -66,7 +66,7 @@ train_errors_lasso = []
 test_errors_lasso = []
 
 # set refularisations trength values
-lmbdas = np.logspace(-4, 5, 10) #1 = 10
+lmbdas = np.logspace(-4, 5, 1) #1 = 10
 
 #Initialize coeffficients for ridge regression and Lasso
 coefs_leastsq = []
@@ -105,29 +105,36 @@ for lmbda in lmbdas:
 
     cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
 
-    fig, axarr = plt.subplots(nrows=1, ncols=3)
+    fig, axarr = plt.subplots(nrows=1, ncols=1)
 
     #print(axarr[0,0])
 
     
-    axarr[0].imshow(J_leastsq,**cmap_args)
-    axarr[0].set_title('$\\mathrm{OLS}$',fontsize=16)
-    axarr[0].tick_params(labelsize=16)
-    
-    axarr[1].imshow(J_ridge,**cmap_args)
-    axarr[1].set_title('$\\mathrm{Ridge},\ \\lambda=%.4f$' %(lmbda),fontsize=16)
-    axarr[1].tick_params(labelsize=16)
-    
-    im=axarr[2].imshow(J_lasso,**cmap_args)
-    axarr[2].set_title('$\\mathrm{LASSO},\ \\lambda=%.4f$' %(lmbda),fontsize=16)
-    axarr[2].tick_params(labelsize=16)
-    
-    divider = make_axes_locatable(axarr[2])
+    im = axarr.imshow(J_leastsq,**cmap_args)
+    axarr.set_title('$\\mathrm{OLS}$',fontsize=16)
+    axarr.tick_params(labelsize=16)
+    divider = make_axes_locatable(axarr)
     cax = divider.append_axes("right", size="5%", pad=0.05)
+
     cbar=fig.colorbar(im, cax=cax)
-    
+
     cbar.ax.set_yticklabels(np.arange(-1.0, 1.0+0.25, 0.25),fontsize=14)
     cbar.set_label('$J_{i,j}$',labelpad=-40, y=1.12,fontsize=16,rotation=0)
+    
+    #axarr[1].imshow(J_ridge,**cmap_args)
+    #axarr[1].set_title('$\\mathrm{Ridge},\ \\lambda=%.4f$' %(lmbda),fontsize=16)
+    #axarr[1].tick_params(labelsize=16)
+    
+    #im=axarr[2].imshow(J_lasso,**cmap_args)
+    #axarr[2].set_title('$\\mathrm{LASSO},\ \\lambda=%.4f$' %(lmbda),fontsize=16)
+    #axarr[2].tick_params(labelsize=16)
+    
+    #divider = make_axes_locatable(axarr[2])
+    #cax = divider.append_axes("right", size="5%", pad=0.05)
+    #cbar=fig.colorbar(im, cax=cax)
+    
+    #cbar.ax.set_yticklabels(np.arange(-1.0, 1.0+0.25, 0.25),fontsize=14)
+    #cbar.set_label('$J_{i,j}$',labelpad=-40, y=1.12,fontsize=16,rotation=0)
     
     #fig.subplots_adjust(right=2.0)
     
