@@ -12,21 +12,21 @@ def sigmoid_derivative(X):
     return X * (1 - X)
 
 
-def feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_output):
-	# 
+def feed_forward_OneDim(X_train, weights_hidden, bias_hidden, weights_output, bias_output):
+	print("HOT0!")
 	# weighted sum of inputs to the hidden layer
 	z_hidden = np.matmul(X_train,weights_hidden) + bias_hidden #hidden layer
 	activation_hidden = sigmoid(z_hidden) #Sigmoid layer hidden
-	
+	print("HOT1!")
 	z_output = np.matmul(activation_hidden, weights_output) + bias_output #layer
 	activation_output = sigmoid(z_output) # Sigmoid layer 
-
+	print("HOT2!")
 	return activation_hidden, activation_output, z_output
 
 
 def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_output, bias_output):
-	activation_hidden, activation_output, z_output = feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_output)
-	error_output = z_output - E_train.reshape(-1,1)
+	activation_hidden, activation_output, z_output = feed_forward_OneDim(X_train, weights_hidden, bias_hidden, weights_output, bias_output)
+	error_output = z_output - E_train.reshape(-1,1)# * activation_output * (1 - activation_output)
 
 	error_hidden = np.matmul(error_output,weights_output.T) * activation_hidden * (1 - activation_hidden)
 
@@ -39,7 +39,7 @@ def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_ou
 	return output_gradient_weights, output_gradient_bias, 	hidden_gradient_weights, hidden_gradient_bias
 
 
-def Neural_Network_OneDim(X_train, E_train, m, lmbd=1):
+def Neural_Network_OneDim(X_train, E_train, eta, lmbd=1):
 	n_inputs, n_features = X_train.shape
 	n_h_neurons = 50
 	n_categories = 1
@@ -50,12 +50,11 @@ def Neural_Network_OneDim(X_train, E_train, m, lmbd=1):
 	weights_output = np.random.randn(n_h_neurons, n_categories)
 	bias_output = np.zeros(n_categories) + 0.01
 	
-	eta = 0.0001
 	
-	for i in range(10):
+	for i in range(1000):
 		# calculate gradients
 		dWo, dBo, dWh, dBh = backwardpropagation(X_train, E_train, weights_hidden, bias_hidden, weights_output, bias_output)
-
+	
 		#update weights and biases
 		weights_output -= eta * dWo
 		weights_hidden -= eta * dWh
