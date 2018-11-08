@@ -265,20 +265,20 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
         etas = [1e-11,1e-10,1e-9,1e-8,1e-7,1e-6,1e-5]
         for eta in etas:
 
-            Niterations = 3000
+            Niterations = 30
             beta = 1e-6*np.random.randn(1600)
             p1 = 1./(1 + np.exp(-X_test @ beta))
             Error = p1 - Y_test
             Acc_before_train = Accuracy(Error)
-            eta = 0.01
-            batch = 200
+            #eta = 0.01
+            #batch = 200
             Acc_training = []
             for i in range(Niterations):
                 #index = np.random.randint(len(X_train), size = batch)
                 p1 = 1./(1+np.exp(-X_train @ beta)) 
                 p0 = 1 - p1
                 #p = np.choose(Y_train, [p0,p1])
-                dC = np.matmul(-X_train.T,  (Y_train - p1))# / len(Y_train[index])
+                dC = -X_train.T @ (Y_train - p1)# / len(Y_train[index])
                 beta = beta - dC*eta # beta is the same as weights in one dim.
                 #correct = p >= 0.5
                 Error = p1 - Y_train
@@ -293,7 +293,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
             print("The accuracy after the training: ", Acc_after_train)
             print("------------------")
             
-            answer = input(r"Do you want to plot the training accuracies for $\eta$ = %.4f? [y/n]" % eta)
+            answer = input("Do you want to plot the training accuracies for eta = %1.1e? [y/n]" % eta)
             
             if answer == 'y':
                 print("Y")
