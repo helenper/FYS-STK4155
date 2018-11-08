@@ -38,6 +38,9 @@ def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_ou
 
 
 def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, eta, lmbd=1):
+	
+	np.random.seed(12)
+
 	n_inputs, n_features = X_train.shape
 	n_h_neurons = 100
 	n_categories = 1
@@ -54,7 +57,7 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, eta, lmbd=1):
 	error_output = 	activation_output - E_test.reshape(-1,1)
 	Acc_before_train = Accuracy(error_output)
 	Acc_training = []
-		
+	
 	for i in range(3000):
 		# calculate gradients
 		index = np.random.randint(len(X_train), size = batch)
