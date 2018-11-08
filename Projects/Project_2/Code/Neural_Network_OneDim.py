@@ -8,9 +8,6 @@ np.random.seed(0)
 def sigmoid(z):
 	return 1/(1 + np.exp(-z))  # Ok :)
 
-def sigmoid_derivative(X):
-    return X * (1 - X)
-
 
 def feed_forward_OneDim(X_train, weights_hidden, bias_hidden, weights_output, bias_output):
 	print("HOT0!")
@@ -54,7 +51,7 @@ def Neural_Network_OneDim(X_train, E_train, eta, lmbd=1):
 	for i in range(1000):
 		# calculate gradients
 		dWo, dBo, dWh, dBh = backwardpropagation(X_train, E_train, weights_hidden, bias_hidden, weights_output, bias_output)
-	
+
 		#update weights and biases
 		weights_output -= eta * dWo
 		weights_hidden -= eta * dWh
