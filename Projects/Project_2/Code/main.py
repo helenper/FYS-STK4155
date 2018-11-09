@@ -39,7 +39,7 @@ if dim == '1' or dim == 'one':
 
 elif dim == '2' or dim == 'two':
 	NN = input('Do you want to run the Neural Network? [y/n].')
-	num_classes = 2
+	num_classes = 1
 	train_to_test_ratio = 0.7 # Training samples
 	
 	# path to data directory
