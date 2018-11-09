@@ -8,6 +8,7 @@ import numpy as np
 from matplotlib.ticker import LinearLocator, FormatStrFormatter 
 import re
 import pylab
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def retrive_data_from_file(filename, numb_of_lambda):
     infile = open(filename, 'r')
@@ -111,6 +112,41 @@ def plot_R2score(R2_OLS, R2_Ridge, R2_Lasso):
     plt.show()
 
 plot_R2score(r2_OLS, r2_Ridge, r2_Lasso)
+
+
+def plot_Jstates(J, method, lambda_value, L):
+    J_leastsq=np.array(J).reshape((L,L))
+    cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
+    fig, axarr = plt.subplots(nrows=1, ncols=1)
+
+    im = axarr.imshow(J_leastsq,**cmap_args)
+    axarr.set_title(r'%s $\lambda =$ %s'%(method, lambda_value),fontsize=16)
+    axarr.tick_params(labelsize=16)
+    divider = make_axes_locatable(axarr)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+
+    cbar=fig.colorbar(im, cax=cax)
+
+    cbar.ax.set_yticklabels(np.arange(-1.0, 1.0+0.25, 0.25),fontsize=14)
+    cbar.set_label('$J_{i,j}$',labelpad=-40, y=1.12,fontsize=16,rotation=0)
+    plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def plotR2_Ridge_OLS(r2, r2_OLS):
     lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
