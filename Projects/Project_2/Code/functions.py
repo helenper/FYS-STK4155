@@ -15,7 +15,7 @@ from imageio import imread
 from sklearn.model_selection import train_test_split
 from sklearn.utils import safe_indexing, indexable
 import pandas as pd
-from plotfunctions import *
+#from plotfunctions import *
 import re
 from Neural_Network_OneDim import *
 from Neural_Network_TwoDim import *
@@ -43,7 +43,7 @@ def ridge(X_train, E_train, X_test, E_test, num_classes, m, lambda_value):
     ''' A function that implementes the Rigde method'''
 
     IX = np.eye(X_train.shape[1])
-    beta = (np.linalg.pinv( X_train.T @ X_train + lambda_value*IX) @ X_train.T @ E_train) 
+    beta = (np.linalg.pinv( X_train.T @ X_train + lambda_value*IX) @ X_train.T @ E_train).flatten()
     Epredict =  X_test @ beta
     mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, bias, variance, beta
@@ -66,17 +66,23 @@ def quality(E_test,Epredict):
     the function will print out the values'''
 
     # Mean squared error:
-    E_test = E_test.ravel()
-    Epredict = Epredict.ravel()
+    #E_test = E_test.ravel()
+    #Epredict = Epredict.ravel()
+    print(np.ndim(Epredict), np.shape(Epredict), np.size(E_test))
     mse = (1.0/(np.size(E_test))) *np.sum((E_test - Epredict)**2)
     print("mse: ", mse)
     # Explained R2 score: 1 is perfect prediction 
     R2 = 1- ((np.sum((E_test-Epredict)**2))/(np.sum((E_test-np.mean(E_test))**2)))
     # Bias:
-    bias = np.mean((E_test - np.mean(Epredict, keepdims=True))**2)
+    bias = np.mean((E_test - np.mean(Epredict, axis=0, keepdims=True))**2)
+    print('bias:', bias)
     # Variance:
-    variance = np.mean(np.var(Epredict, keepdims=True))
+    variance = np.mean(np.var(Epredict, axis=0, keepdims=True))
+
+    #covariance = 
     
+    #variance = np.mean(Epredict-np.mean(Epredict, keepdims=True))
+    print('var:', variance)
     return mse, R2, bias, variance
 
 def bootstrap(x,y):
@@ -96,7 +102,26 @@ def ising_energies(states,L):
     for i in range(L):
         J[i,(i+1)%L]-=1.0
     # compute energies
+    J_leastsq=np.array(J).reshape((L,L))
+    cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
+    fig, axarr = plt.subplots(nrows=1, ncols=1)
+    
+    im = axarr.imshow(J_leastsq,**cmap_args)
+    
+    axarr.set_title('J-states',fontsize=16)
+    axarr.tick_params(labelsize=16)
+    divider = make_axes_locatable(axarr)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+
+    cbar=fig.colorbar(im, cax=cax)
+
+    cbar.ax.set_yticklabels(np.arange(-1.0, 1.0+0.25, 0.25),fontsize=14)
+    cbar.set_label('$J_{i,j}$',labelpad=-40, y=1.12,fontsize=16,rotation=0)
+
+    plt.show()
+
     E = np.einsum('...i,ij,...j->...',states,J,states)
+    print(np.shape(E))
     return E 
 
 
@@ -284,15 +309,15 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
         etas = [1e-4,1e-3,1e-2,1e-1,1e0,1e1]
         for eta in etas:
     
-            Acc_training, Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test, eta)
+            Acc_training, Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test)
             print("------------------")
             print("The accuracy before the training: ", Acc_before_train)
             print("The accuracy after the training: ", Acc_after_train)
             print("------------------")
 
-            answer = input(r"Do you want to plot the training accuracies for $\eta$ = %1.1e? [y/n]" % eta)
+            answer = input(r"Do you want to plot the training accuracies for $\eta$ = %.4f? [y/n]" % eta)
             if answer == 'y':
-                
+                print("Y")
                 Plot_Accuracy(Acc_training, eta)
 
     else:
@@ -301,25 +326,25 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
 
             Niterations = 30
             beta = 1e-6*np.random.randn(1600)
-            p = 1./(1 + np.exp(-X_test @ beta))
-            Error = p - Y_test
+            p1 = 1./(1 + np.exp(-X_test @ beta))
+            Error = p1 - Y_test
             Acc_before_train = Accuracy(Error)
             #eta = 0.01
             #batch = 200
             Acc_training = []
             for i in range(Niterations):
                 #index = np.random.randint(len(X_train), size = batch)
-                p = 1./(1+np.exp(-X_train @ beta)) 
-                
+                p1 = 1./(1+np.exp(-X_train @ beta)) 
+                p0 = 1 - p1
                 #p = np.choose(Y_train, [p0,p1])
-                dC = -X_train.T @ (Y_train - p)# / len(Y_train[index])
+                dC = -X_train.T @ (Y_train - p1)# / len(Y_train[index])
                 beta = beta - dC*eta # beta is the same as weights in one dim.
                 #correct = p >= 0.5
-                Error = p - Y_train
+                Error = p1 - Y_train
                 Acc_training.append(Accuracy(Error))
                 
-            p = 1./(1 + np.exp(-X_test @ beta))
-            Error = p - Y_test
+            p1 = 1./(1 + np.exp(-X_test @ beta))
+            Error = p1 - Y_test
             Acc_after_train = Accuracy(Error)
             
             print("------------------")
@@ -330,7 +355,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
             answer = input("Do you want to plot the training accuracies for eta = %1.1e? [y/n]" % eta)
             
             if answer == 'y':
-                
+                print("Y")
                 Plot_Accuracy(Acc_training, eta)
 
 
@@ -338,7 +363,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
         
 
 
-"""
+
 def Plot_Accuracy(acc, eta): # TO BE REMOVED!
 
     xaxis = np.linspace(0,len(acc)-1, len(acc))
@@ -348,4 +373,3 @@ def Plot_Accuracy(acc, eta): # TO BE REMOVED!
     plt.ylabel("Percentage of correct predictions")
     plt.legend()
     plt.show()
-"""

@@ -46,6 +46,19 @@ def retrive_data_from_file(filename, numb_of_lambda):
                     i+=2
                     if int(i)%2 == 0:
                         Variance_average.append(float(line[i]))
+        elif len(line) == 2:
+            if line[0] == 'MSE_average:':
+                for i in range(5):
+                    MSE_average.append(float(line[1]))
+            if line[0] == 'R2_score_average:':
+                for i in range(5):
+                    R2_average.append(float(line[1]))
+            if line[0] == 'Bias_average:':
+                for i in range(5):
+                    Bias_average.append(float(line[1]))
+            if line[0] == 'Variance_average:':
+                for i in range(5):
+                    Variance_average.append(float(line[1]))
             
 
 
@@ -64,38 +77,40 @@ def plot_MSE_Bias_Var(mse, bias, var, m):
     pylab.xticks(fontsize=14)
     pylab.yticks(fontsize=14)
     plt.semilogx()
-    plt.legend(['MSE', 'Bias', 'Variance'], fontsize=18)
+    plt.legend(['MSE', r'Bias$^2$', 'Variance'], fontsize=18)
     plt.show()
 
-#mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_OneDim_OLS.txt', 5)
-#print(mse_OLS)
 
-#mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge = retrive_data_from_file('Ridge_results_seed4555.txt', 5)
-#mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('Lasso_results_seed4555.txt', 5)
+# Getting the data from file:
+mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge = retrive_data_from_file('Ridge_results_seed4555.txt', 5)
+mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('Lasso_results_seed4555.txt', 5)
+mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_OneDim_OLS_1000iterations.txt', 5)
 
-#m = 'Ridge'
-#plot_MSE_Bias_Var(mse_Ridge, bias_Ridge, var_Ridge, m)
-#m = 'Lasso'
-#plot_MSE_Bias_Var(mse_Lasso, bias_Lasso, var_Lasso, m)
-#plotMSE_Lasso(mse_Lasso)
-#plotR2_Ridge_OLS(r2_Ridge, r2_OLS)
-#plotR2_Lasso(r2_Lasso)
+m = 'Ridge'
+plot_MSE_Bias_Var(mse_Ridge, bias_Ridge, var_Ridge, m)
+m = 'Lasso'
+plot_MSE_Bias_Var(mse_Lasso, bias_Lasso, var_Lasso, m)
+m = 'OLS'
+plot_MSE_Bias_Var(mse_OLS, bias_OLS, var_OLS, m)
 
 
-def plotMSE_Lasso(mse):
-    lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
-    plt.plot(lambda_values, mse[0:6])
-    plt.plot(lambda_values, mse[6:12])
-    plt.plot(lambda_values, mse[12:18])
-    plt.plot(lambda_values, mse[18:24])
-    plt.plot(lambda_values, mse[24:30])
-    plt.legend(['Deg = 1', 'Deg = 2', 'Deg = 3', 'Deg = 4', 'Deg = 5'])
-    plt.title('MSE calculated by Lasso')
-    plt.xlabel(r'$\lambda$')
-    plt.ylabel('MSE')
+
+
+def plot_R2score(R2_OLS, R2_Ridge, R2_Lasso):
+    lambda_values = [1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
+    plt.plot(lambda_values, R2_OLS)
+    plt.plot(lambda_values, R2_Ridge)
+    plt.plot(lambda_values, R2_Lasso)
+    plt.legend(['OLS', 'Ridge', 'Lasso'], fontsize=18)
+    plt.title(r'R$^2$-score calculated by different methods', fontsize=20)
+    plt.xlabel(r'$\lambda$', fontsize=18)
+    plt.ylabel(r'R$^2$-score',fontsize=18)
+    pylab.xticks(fontsize=12)
+    pylab.yticks(fontsize=12)
     plt.semilogx()
     plt.show()
 
+plot_R2score(r2_OLS, r2_Ridge, r2_Lasso)
 
 def plotR2_Ridge_OLS(r2, r2_OLS):
     lambda_values = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1]
@@ -251,8 +266,8 @@ def Plot_Accuracy(acc, eta):
 
     xaxis = np.linspace(0,len(acc)-1, len(acc))
     plt.plot(xaxis , acc, 'bo', markersize=2, label='Training accuracy')
-    plt.title(r"Accuracy for training on the 2D Ising-model with $\eta$ = %1.1e." % eta, fontsize=20)
-    plt.xlabel("Number of iterations", fontsize=18)
-    plt.ylabel("Percentage of correct predictions", fontsize=18)
-    plt.legend(fontsize=18)
+    plt.title(r"Accuracy for training on the two dimensional Ising-model with $\eta$ = %1.1e." % eta)
+    plt.xlabel("Number of iterations")
+    plt.ylabel("Percentage of correct predictions")
+    plt.legend()
     plt.show()
