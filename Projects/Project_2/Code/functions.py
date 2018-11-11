@@ -80,7 +80,7 @@ def quality(E_test,Epredict):
     print('bias:', bias)
     # Variance:
     variance = np.mean(np.var(Epredict, axis=0, keepdims=True))
-
+    
     #covariance = 
     
     #variance = np.mean(Epredict-np.mean(Epredict, keepdims=True))
