@@ -295,7 +295,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
         etas = [1e-4,1e-3,1e-2,1e-1,1e0,1e1]
         for eta in etas:
     
-            Acc_training, Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test)
+            Acc_training, Acc_after_train, Acc_before_train = Neural_Network_TwoDim(X_train, Y_train, X_test, Y_test, eta)
             print("------------------")
             print("The accuracy before the training: ", Acc_before_train)
             print("The accuracy after the training: ", Acc_after_train)
