@@ -21,6 +21,7 @@ from Neural_Network_OneDim import *
 from Neural_Network_TwoDim import *
 from plotfunctions import *
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from numba import jit
 
 
 def OneDimNetwork(X_train, E_train, X_test, E_test, eta):
@@ -30,7 +31,7 @@ def OneDimNetwork(X_train, E_train, X_test, E_test, eta):
     mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, variance, bias
 
-
+@jit
 def OLS(X_train, E_train, X_test, E_test, num_classes, m):
     '''Calculate and return the z and Epredict value by 
     ordinary least squares method'''
@@ -40,7 +41,7 @@ def OLS(X_train, E_train, X_test, E_test, num_classes, m):
     
     return mse, R2, bias, variance, beta
 
-
+@jit
 def ridge(X_train, E_train, X_test, E_test, num_classes, m, lambda_value):
     ''' A function that implementes the Rigde method'''
 
@@ -50,7 +51,7 @@ def ridge(X_train, E_train, X_test, E_test, num_classes, m, lambda_value):
     mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, bias, variance, beta
 
-
+@jit
 def lasso(X,z,X_test, E_test, m, lambda_value):
     ''' A function that implements the Lasso method'''
 
@@ -87,7 +88,8 @@ def quality(E_test,Epredict):
     #variance = np.mean(Epredict-np.mean(Epredict, keepdims=True))
     print('var:', variance)
     return mse, R2, bias, variance
-
+    
+@jit
 def bootstrap(x,y):
 
     indices = np.random.choice(len(y),len(y))
