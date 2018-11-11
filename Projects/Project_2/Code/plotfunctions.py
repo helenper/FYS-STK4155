@@ -82,7 +82,7 @@ def plot_MSE_Bias_Var(mse, bias, var, m):
     plt.show()
 
 
-# Getting the data from file:
+ #Getting the data from file:
 mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge = retrive_data_from_file('Ridge_results_seed4555.txt', 5)
 mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('Lasso_results_seed4555.txt', 5)
 mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_OneDim_OLS_1000iterations.txt', 5)
@@ -111,7 +111,7 @@ def plot_R2score(R2_OLS, R2_Ridge, R2_Lasso):
     plt.semilogx()
     plt.show()
 
-plot_R2score(r2_OLS, r2_Ridge, r2_Lasso)
+#plot_R2score(r2_OLS, r2_Ridge, r2_Lasso)
 
 
 def plot_Jstates(J, method, lambda_value, L):
@@ -305,5 +305,7 @@ def Plot_Accuracy(acc, eta):
     plt.title(r"Accuracy for training on the 2D Ising-model with $\eta$ = %1.1e" % eta, fontsize=20)
     plt.xlabel("Number of iterations", fontsize=18)
     plt.ylabel("Percentage of correct predictions", fontsize=18)
+    pylab.xticks(fontsize=14)
+    pylab.yticks(fontsize=14)
     plt.legend(fontsize=18)
     plt.show()
