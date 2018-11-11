@@ -75,12 +75,13 @@ def quality(E_test,Epredict):
     print("mse: ", mse)
     # Explained R2 score: 1 is perfect prediction 
     R2 = 1- ((np.sum((E_test-Epredict)**2))/(np.sum((E_test-np.mean(E_test))**2)))
+    print('r2: ', R2)
     # Bias:
     bias = np.mean((E_test - np.mean(Epredict, axis=0, keepdims=True))**2)
     print('bias:', bias)
     # Variance:
     variance = np.mean(np.var(Epredict, axis=0, keepdims=True))
-    
+
     #covariance = 
     
     #variance = np.mean(Epredict-np.mean(Epredict, keepdims=True))
