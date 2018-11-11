@@ -214,12 +214,13 @@ def OneDim(L, iterations, lambda_values, method):
         for eta in etas:
             mse, r2_score, bias, var = OneDimNetwork(X_train, E_train, X_test, E_test, eta)
             
-            mse_average.append(mse)
-            r2score_average.append(np.mean(r2score))
+            mse_average.append(mse) 
+            r2score_average.append(r2_score)
             bias_average.append(bias) 
             var_average.append(var)
             #mse_min.append(mse_min_value)
             #r2_for_min_mse.append(R2_for_Min_MSE_value)
+        
         file.write('Etas: %s' % etas)
         file.write('MSE_average:        %s \n' %mse_average)
         file.write('R2_score_average:   %s \n' %r2score_average)
