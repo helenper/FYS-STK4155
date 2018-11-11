@@ -26,6 +26,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 def OneDimNetwork(X_train, E_train, X_test, E_test, eta):
     weights_output, weights_hidden, bias_output, bias_hidden = Neural_Network_OneDim(X_train, E_train, eta)
     a_h, a_o, Epredict = feed_forward_OneDim(X_test, weights_hidden, bias_hidden,weights_output, bias_output)
+    Epredict = Epredict.ravel()
     mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, variance, bias
 
@@ -202,24 +203,29 @@ def OneDim(L, iterations, lambda_values, method):
         file.close()
 
     elif method == 'NN':
-        etas = [1e-4,1e-3,1e-2,1e-1,1e0,1e1]
+        mse_average = []
+        r2score_average = []
+        bias_average = []    
+        var_average = []  
+
+        etas = [1e-9,1e-8,1e-7,1e-6,1e-5,1e-4,1e-3]
+
         for eta in etas:
             mse, r2_score, bias, var = OneDimNetwork(X_train, E_train, X_test, E_test, eta)
-
-            mse_average = np.mean(mse) # Needed? We should just get one number.
-            r2score_average = np.mean(r2score)
-            bias_average = np.mean(bias)    
-            var_average = np.mean(var)
-
-            mse_min = np.min(mse)
-            r2_for_min_mse = r2score_average.index(mse_min)
-
-        file.write('MSE_average:        %f \n' %mse_average)
-        file.write('R2_score_average:   %f \n' %r2score_average)
-        file.write('Bias_average:       %f \n' %bias_average)
-        file.write('Variance_average:   %f \n' %var_average)
-        file.write('Min_MSE_value:      %f \n' %mse_min)
-        file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
+            
+            mse_average.append(mse)
+            r2score_average.append(np.mean(r2score))
+            bias_average.append(bias) 
+            var_average.append(var)
+            #mse_min.append(mse_min_value)
+            #r2_for_min_mse.append(R2_for_Min_MSE_value)
+        file.write('Etas: %s' % etas)
+        file.write('MSE_average:        %s \n' %mse_average)
+        file.write('R2_score_average:   %s \n' %r2score_average)
+        file.write('Bias_average:       %s \n' %bias_average)
+        file.write('Variance_average:   %s \n' %var_average)
+        #file.write('Min_MSE_value:      %s \n' %mse_min)
+        #file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
         file.write('\n') 
         file.close()
 
