@@ -111,7 +111,7 @@ def plot_R2score(R2_OLS, R2_Ridge, R2_Lasso):
     plt.semilogx()
     plt.show()
 
-#plot_R2score(r2_OLS, r2_Ridge, r2_Lasso)
+plot_R2score(r2_OLS, r2_Ridge, r2_Lasso)
 
 
 def plot_Jstates(J, method, lambda_value, L):
