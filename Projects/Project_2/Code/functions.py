@@ -88,7 +88,7 @@ def quality(E_test,Epredict):
     #variance = np.mean(Epredict-np.mean(Epredict, keepdims=True))
     print('var:', variance)
     return mse, R2, bias, variance
-    
+
 @jit
 def bootstrap(x,y):
 
@@ -107,23 +107,9 @@ def ising_energies(states,L):
     for i in range(L):
         J[i,(i+1)%L]-=1.0
     # compute energies
-    J_leastsq=np.array(J).reshape((L,L))
-    cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
-    fig, axarr = plt.subplots(nrows=1, ncols=1)
-    
-    im = axarr.imshow(J_leastsq,**cmap_args)
-    
-    axarr.set_title('J-states',fontsize=16)
-    axarr.tick_params(labelsize=16)
-    divider = make_axes_locatable(axarr)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-
-    cbar=fig.colorbar(im, cax=cax)
-
-    cbar.ax.set_yticklabels(np.arange(-1.0, 1.0+0.25, 0.25),fontsize=14)
-    cbar.set_label('$J_{i,j}$',labelpad=-40, y=1.12,fontsize=16,rotation=0)
-
-    plt.show()
+    method = 'J-states'
+    lambda_value = 0
+    plot_Jstates(J, method, lambda_value, L)
 
     E = np.einsum('...i,ij,...j->...',states,J,states)
     print(np.shape(E))
@@ -179,22 +165,7 @@ def OneDim(L, iterations, lambda_values, method):
         bias_average = np.mean(bias)    
         var_average = np.mean(var)
 
-        #L = 40
-        J_leastsq=np.array(beta).reshape((L,L))
-        cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
-        fig, axarr = plt.subplots(nrows=1, ncols=1)
-    
-        im = axarr.imshow(J_leastsq,**cmap_args)
-        axarr.set_title('$\\mathrm{OLS}$',fontsize=16)
-        axarr.tick_params(labelsize=16)
-        divider = make_axes_locatable(axarr)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-
-        cbar=fig.colorbar(im, cax=cax)
-
-        cbar.ax.set_yticklabels(np.arange(-1.0, 1.0+0.25, 0.25),fontsize=14)
-        cbar.set_label('$J_{i,j}$',labelpad=-40, y=1.12,fontsize=16,rotation=0)
-        plt.show()
+        plot_Jstates(beta, method, lambda_value, L)
 
         file.write('MSE_average:        %f \n' %mse_average)
         file.write('R2_score_average:   %f \n' %r2score_average)
@@ -204,6 +175,7 @@ def OneDim(L, iterations, lambda_values, method):
         file.write('Min_MSE_value:      %f \n' %mse_min)
         file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
         file.close()
+        
 
     elif method == 'NN':
         mse_average = []

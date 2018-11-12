@@ -33,6 +33,9 @@ if dim == '1' or dim == 'one':
 		answer = input('Do you want to run for %s [y/n] ?' %m)
 		if answer == 'y' or answer == 'Y':
 			OneDim(L, iterations, lambda_values, method=m)
+			#answer = input('Do you want to plot your results [y/n]?')
+			#if answer == 'y' or answer == 'Y':
+
 		if answer == 'n' or answer == 'N':
 			print('Moving on')
 
@@ -77,9 +80,6 @@ elif dim == '2' or dim == 'two':
 
 
 	TwoDim(X_train,X_test,Y_train,Y_test, NN, num_classes)
-
-
-
 
 else:
 	print("Must be 1 or 2 dimensions.")
