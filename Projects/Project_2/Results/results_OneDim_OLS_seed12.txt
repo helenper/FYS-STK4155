@@ -1,0 +1,6 @@
+MSE_average:        38.562858 
+R2_score_average:   0.080514 
+Bias_average:       42.289862 
+Variance_average:   3.540686 
+Min_MSE_value:      0.000000 
+R2_for_Min_MSE_value:       1.000000 

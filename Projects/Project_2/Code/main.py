@@ -6,7 +6,6 @@
 
 
 from functions import *
-#from plotfunctions import *
 import sys
 import numpy as np
 import scipy.sparse as sp
@@ -21,9 +20,9 @@ np.random.seed(12)
 
 # system size
 L=40
-iterations = 30
+iterations = 1
 methods = ['OLS', 'NN', 'Ridge', 'Lasso']
-lambda_values = [1e-2]#, 1e-6]#, 1e1]
+lambda_values = [1e-2, 1e-3]
 dim = input('Which dimension do you want to run for? If one => write 1 or one, if two => write 2 or two.')
 
 
@@ -33,8 +32,6 @@ if dim == '1' or dim == 'one':
 		answer = input('Do you want to run for %s [y/n] ?' %m)
 		if answer == 'y' or answer == 'Y':
 			OneDim(L, iterations, lambda_values, method=m)
-			#answer = input('Do you want to plot your results [y/n]?')
-			#if answer == 'y' or answer == 'Y':
 
 		if answer == 'n' or answer == 'N':
 			print('Moving on')

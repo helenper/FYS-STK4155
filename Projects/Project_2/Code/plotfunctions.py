@@ -10,138 +10,56 @@ import re
 import pylab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-def retrive_data_from_file(filename, numb_of_lambda):
+def retrive_data_from_file(filename):
     infile = open(filename, 'r')
 
+    lambda_values = []
+    eta_values = []
     MSE_average = []
     R2_average = []
     Bias_average = []
     Variance_average =[]
 
-    i = 0
-
     for lines in infile: 
-        line = lines.split()
-        if len(line) == 14: # 12 for Ridge og Lasso!
-            if line[0] == 'MSE_average:' :
-                for i in range(12):
-                    i += 2
-                    if int(i)%2 == 0:
-                        MSE_average.append(float(line[i]))
-                    #print(MSE_average)
-            
-            if line[0] == 'R2_score_average:':
-                for i in range(12):
-                    i+=2
-                    if int(i)%2 == 0:
-                        R2_average.append(float(line[i]))
+        line = lines.replace(':',' ').replace('[', ' ').replace(',', ' ').replace(']', ' ')
+        l=line.split()
+        if l[0] == 'The_results_from_running_with_lamda':
+            lambda_values =np.float_(l[1::])
+        if l[0] == 'Etas':
+            eta_values =np.float_(l[1::])
+        if l[0] == 'MSE_average':
+            MSE_average =np.float_(l[1::])
+        if l[0] == 'R2_score_average':
+            R2_average =np.float_(l[1::])
+        if l[0] == 'Bias_average':
+            Bias_average =np.float_(l[1::])
+        if l[0] == 'Variance_average':
+            Variance_average =np.float_(l[1::])
 
-            if line[0] == 'Bias_average:' :
-                for i in range(12):
-                    i+=2
-                    if int(i)%2 == 0:
-                        Bias_average.append(float(line[i]))
-
-            if line[0] == 'Variance_average:':
-                for i in range(12):
-                    i+=2
-                    if int(i)%2 == 0:
-                        Variance_average.append(float(line[i]))
-        elif len(line) == 2:
-            if line[0] == 'MSE_average:':
-                for i in range(6):
-                    MSE_average.append(float(line[1]))
-            if line[0] == 'R2_score_average:':
-                for i in range(6):
-                    R2_average.append(float(line[1]))
-            if line[0] == 'Bias_average:':
-                for i in range(6):
-                    Bias_average.append(float(line[1]))
-            if line[0] == 'Variance_average:':
-                for i in range(6):
-                    Variance_average.append(float(line[1]))
-
-        elif len(line) == 16:
-            if line[0] == 'MSE_average:' :
-                for i in range(14):
-                    i += 2
-                    if int(i)%2 == 0:
-                        MSE_average.append(float(line[i]))
-                    #print(MSE_average)
-            
-            if line[0] == 'R2_score_average:':
-                for i in range(14):
-                    i+=2
-                    if int(i)%2 == 0:
-                        R2_average.append(float(line[i]))
-
-            if line[0] == 'Bias_average:' :
-                for i in range(14):
-                    i+=2
-                    if int(i)%2 == 0:
-                        Bias_average.append(float(line[i]))
-
-            if line[0] == 'Variance_average:':
-                for i in range(14):
-                    i+=2
-                    if int(i)%2 == 0:
-                        Variance_average.append(float(line[i]))
-
-            
+    return MSE_average, R2_average, Bias_average, Variance_average, lambda_values, eta_values
 
 
-    infile.close()
-
-    return MSE_average, R2_average, Bias_average, Variance_average
-
-def plot_MSE_Bias_Var(mse, bias, var, m):
+def plot_MSE_Bias_Var(mse, bias, var,lambda_values, eta_values, m):
     if m=='Ridge' or m=='Lasso' or m=='OLS':
-        lambda_values = [1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
         plt.plot(lambda_values, mse)
         plt.plot(lambda_values, bias)
         plt.plot(lambda_values, var)
         plt.xlabel(r'$\lambda$', fontsize=18)
 
-    elif m== 'neural network':
-        eta_values = [1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
+    elif m== 'NN':
         plt.plot(eta_values, mse)
         plt.plot(eta_values, bias)
         plt.plot(eta_values, var)
         plt.xlabel(r'$\eta$', fontsize=18)
 
     plt.title('Metrics calculated by %s' %m, fontsize=20)
-    plt.ylabel('Metrics', fontsize=18)
     pylab.xticks(fontsize=14)
     pylab.yticks(fontsize=14)
     plt.semilogx()
     plt.legend(['MSE', r'Bias$^2$', 'Variance'], fontsize=18)
     plt.show()
 
-
- #Getting the data from file:
-mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge = retrive_data_from_file('Ridge_seed12.txt', 5)
-print(mse_Ridge)
-mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso = retrive_data_from_file('Lasso_seed12.txt', 5)
-print(mse_Lasso, r2_Lasso)
-mse_OLS, r2_OLS, bias_OLS, var_OLS = retrive_data_from_file('results_OneDim_OLS_1000iterations.txt', 5)
-print('mse', mse_OLS)
-mse_NN, r2_NN, bias_NN, var_NN = retrive_data_from_file('results_OneDim_NN.txt', 5)
-print(mse_NN)
-
-m = 'Ridge'
-#plot_MSE_Bias_Var(mse_Ridge, bias_Ridge, var_Ridge, m)
-m = 'Lasso'
-#plot_MSE_Bias_Var(mse_Lasso, bias_Lasso, var_Lasso, m)
-m = 'OLS'
-#plot_MSE_Bias_Var(mse_OLS, bias_OLS, var_OLS, m)
-m = 'neural network'
-plot_MSE_Bias_Var(mse_NN, bias_NN, var_NN, m)
-
-
-
-
-def plot_R2score(R2_OLS, R2_Ridge, R2_Lasso):
-    lambda_values = [1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
+def plot_R2score(R2_OLS, R2_Ridge, R2_Lasso, lambda_values):
     plt.plot(lambda_values, R2_OLS, 'o')
     plt.plot(lambda_values, R2_Ridge)
     plt.plot(lambda_values, R2_Lasso)
@@ -154,11 +72,7 @@ def plot_R2score(R2_OLS, R2_Ridge, R2_Lasso):
     plt.semilogx()
     plt.show()
 
-#plot_R2score(r2_OLS, r2_Ridge, r2_Lasso)
-
-
-def plot_R2score_NN(R2):
-    eta_values = [1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
+def plot_R2score_NN(R2, eta_values):
     plt.plot(eta_values, R2)
     plt.title(r'R$^2$-score calculated by neural network', fontsize=20)
     plt.xlabel(r'$\eta$', fontsize=18)
@@ -167,8 +81,6 @@ def plot_R2score_NN(R2):
     pylab.yticks(fontsize=12)
     plt.semilogx()
     plt.show()
-
-plot_R2score_NN(r2_NN)
 
 def plot_Jstates(J, method, lambda_value, L):
     J_leastsq=np.array(J).reshape((L,L))
