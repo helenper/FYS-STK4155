@@ -50,7 +50,7 @@ def Neural_Network_OneDim(X_train, E_train, eta, lmbd=1):
 	
 	batch = 200
 	
-	for i in range(10000):
+	for i in range(20000):
 		# calculate gradients
 		index = np.random.randint(len(X_train), size=batch)
 		dWo, dBo, dWh, dBh = backwardpropagation(X_train[index], E_train[index], weights_hidden, bias_hidden, weights_output, bias_output)
