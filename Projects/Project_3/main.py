@@ -1,5 +1,5 @@
 ####################
-# Project 2 - main program
+# Project 3 - main program
 # FYS-STK 3155/4155
 # Fall 2018 
 ####################
