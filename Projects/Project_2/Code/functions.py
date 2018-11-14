@@ -313,7 +313,7 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
         etas = [1e-11,1e-10,1e-9,1e-8,1e-7,1e-6,1e-5]
         for eta in etas:
 
-            Niterations = 30
+            Niterations = 200
             beta = 1e-6*np.random.randn(1600)
             p1 = 1./(1 + np.exp(-X_test @ beta))
             Error = p1 - Y_test
