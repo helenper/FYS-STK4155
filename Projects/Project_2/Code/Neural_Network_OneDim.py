@@ -6,17 +6,16 @@ np.random.seed(0)
 
 
 def sigmoid(z):
-	return 1/(1 + np.exp(-z))  # Ok :)
+	return 1/(1 + np.exp(-z)) 
 
 
 def feed_forward_OneDim(X_train, weights_hidden, bias_hidden, weights_output, bias_output):
-	
 	# weighted sum of inputs to the hidden layer
-	z_hidden = np.matmul(X_train,weights_hidden) + bias_hidden #hidden layer
-	activation_hidden = sigmoid(z_hidden) #Sigmoid layer hidden
+	z_hidden = np.matmul(X_train,weights_hidden) + bias_hidden 
+	activation_hidden = sigmoid(z_hidden) 
 	
-	z_output = np.matmul(activation_hidden, weights_output) + bias_output #layer
-	activation_output = sigmoid(z_output) # Sigmoid layer 
+	z_output = np.matmul(activation_hidden, weights_output) + bias_output 
+	activation_output = sigmoid(z_output) 
 	
 	return activation_hidden, activation_output, z_output
 
@@ -24,7 +23,7 @@ def feed_forward_OneDim(X_train, weights_hidden, bias_hidden, weights_output, bi
 def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_output, bias_output):
 	activation_hidden, activation_output, z_output = feed_forward_OneDim(X_train, weights_hidden, bias_hidden, weights_output, bias_output)
 
-	error_output = (z_output - E_train.reshape(-1,1))# * activation_output * (1 - activation_output)
+	error_output = (z_output - E_train.reshape(-1,1))
 	
 	error_hidden = np.matmul(error_output,weights_output.T) * activation_hidden * (1 - activation_hidden)
 
@@ -61,7 +60,7 @@ def Neural_Network_OneDim(X_train, E_train, eta, lmbd=1):
 		weights_hidden -= eta * dWh
 		bias_output -= eta * dBo
 		bias_hidden -= eta * dBh
-		#print(weights_output, weights_hidden)
+
 	return weights_output, weights_hidden, bias_output, bias_hidden
 
 

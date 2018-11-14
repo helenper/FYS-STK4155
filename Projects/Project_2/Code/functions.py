@@ -15,12 +15,13 @@ from imageio import imread
 from sklearn.model_selection import train_test_split
 from sklearn.utils import safe_indexing, indexable
 import pandas as pd
-#from plotfunctions import *
+from plotfunctions import *
 import re
 from Neural_Network_OneDim import *
 from Neural_Network_TwoDim import *
 from plotfunctions import *
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from numba import jit
 
 
 def OneDimNetwork(X_train, E_train, X_test, E_test, eta):
@@ -30,7 +31,7 @@ def OneDimNetwork(X_train, E_train, X_test, E_test, eta):
     mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, variance, bias
 
-
+@jit
 def OLS(X_train, E_train, X_test, E_test, num_classes, m):
     '''Calculate and return the z and Epredict value by 
     ordinary least squares method'''
@@ -40,7 +41,7 @@ def OLS(X_train, E_train, X_test, E_test, num_classes, m):
     
     return mse, R2, bias, variance, beta
 
-
+@jit
 def ridge(X_train, E_train, X_test, E_test, num_classes, m, lambda_value):
     ''' A function that implementes the Rigde method'''
 
@@ -50,7 +51,7 @@ def ridge(X_train, E_train, X_test, E_test, num_classes, m, lambda_value):
     mse, R2, bias, variance = quality(E_test, Epredict)
     return mse, R2, bias, variance, beta
 
-
+@jit
 def lasso(X,z,X_test, E_test, m, lambda_value):
     ''' A function that implements the Lasso method'''
 
@@ -68,26 +69,17 @@ def quality(E_test,Epredict):
     the function will print out the values'''
 
     # Mean squared error:
-    #E_test = E_test.ravel()
-    #Epredict = Epredict.ravel()
-    print(np.ndim(Epredict), np.shape(Epredict), np.size(E_test))
     mse = (1.0/(np.size(E_test))) *np.sum((E_test - Epredict)**2)
-    print("mse: ", mse)
     # Explained R2 score: 1 is perfect prediction 
     R2 = 1- ((np.sum((E_test-Epredict)**2))/(np.sum((E_test-np.mean(E_test))**2)))
-    print('r2: ', R2)
     # Bias:
     bias = np.mean((E_test - np.mean(Epredict, axis=0, keepdims=True))**2)
-    print('bias:', bias)
     # Variance:
     variance = np.mean(np.var(Epredict, axis=0, keepdims=True))
 
-    #covariance = 
-    
-    #variance = np.mean(Epredict-np.mean(Epredict, keepdims=True))
-    print('var:', variance)
     return mse, R2, bias, variance
 
+@jit
 def bootstrap(x,y):
 
     indices = np.random.choice(len(y),len(y))
@@ -105,26 +97,11 @@ def ising_energies(states,L):
     for i in range(L):
         J[i,(i+1)%L]-=1.0
     # compute energies
-    J_leastsq=np.array(J).reshape((L,L))
-    cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
-    fig, axarr = plt.subplots(nrows=1, ncols=1)
-    
-    im = axarr.imshow(J_leastsq,**cmap_args)
-    
-    axarr.set_title('J-states',fontsize=16)
-    axarr.tick_params(labelsize=16)
-    divider = make_axes_locatable(axarr)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-
-    cbar=fig.colorbar(im, cax=cax)
-
-    cbar.ax.set_yticklabels(np.arange(-1.0, 1.0+0.25, 0.25),fontsize=14)
-    cbar.set_label('$J_{i,j}$',labelpad=-40, y=1.12,fontsize=16,rotation=0)
-
-    plt.show()
+    method = 'J-states'
+    lambda_value = 0
+    #plot_Jstates(J, method, lambda_value, L)
 
     E = np.einsum('...i,ij,...j->...',states,J,states)
-    print(np.shape(E))
     return E 
 
 
@@ -152,7 +129,7 @@ def OneDim(L, iterations, lambda_values, method):
 
     beta= 0
     num_classes = 1
-    #OneDimNetwork(X_train, E_train, X_test, E_test)
+
     file = open('results_OneDim_%s.txt' %method,  'w')
     if method == 'OLS':
         beta= 0
@@ -163,7 +140,6 @@ def OneDim(L, iterations, lambda_values, method):
         
         for i in range(iterations):
             X_train, E_train = bootstrap(X_train,E_train)
-            print(i)
             mse[i], r2score[i], bias[i], var[i], beta = OLS(X_train,E_train, X_test, E_test, num_classes, method)
             beta_list.append(beta)
             
@@ -177,31 +153,32 @@ def OneDim(L, iterations, lambda_values, method):
         bias_average = np.mean(bias)    
         var_average = np.mean(var)
 
-        #L = 40
-        J_leastsq=np.array(beta).reshape((L,L))
-        cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
-        fig, axarr = plt.subplots(nrows=1, ncols=1)
-    
-        im = axarr.imshow(J_leastsq,**cmap_args)
-        axarr.set_title('$\\mathrm{OLS}$',fontsize=16)
-        axarr.tick_params(labelsize=16)
-        divider = make_axes_locatable(axarr)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
+        #lambda_value = lambda_values[0]
 
-        cbar=fig.colorbar(im, cax=cax)
+        #Uncomment if you want to plot initial Jstates
+        # plot_Jstates(beta, method, lambda_value, L)
 
-        cbar.ax.set_yticklabels(np.arange(-1.0, 1.0+0.25, 0.25),fontsize=14)
-        cbar.set_label('$J_{i,j}$',labelpad=-40, y=1.12,fontsize=16,rotation=0)
-        plt.show()
-
-        file.write('MSE_average:        %f \n' %mse_average)
-        file.write('R2_score_average:   %f \n' %r2score_average)
-        file.write('Bias_average:       %f \n' %bias_average)
-        file.write('Variance_average:   %f \n' %var_average)
-        file.write('\n') 
-        file.write('Min_MSE_value:      %f \n' %mse_min)
-        file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
+        file.write('MSE_average:        %f \n ' %mse_average)
+        file.write('R2_score_average:   %f \n ' %r2score_average)
+        file.write('Bias_average:       %f \n ' %bias_average)
+        file.write('Variance_average:   %f \n ' %var_average)
+        file.write('Min_MSE_value:      %f \n ' %mse_min)
+        file.write('R2_for_Min_MSE_value:  %f ' %r2_for_min_mse)
         file.close()
+
+        answer = input("Do you want to plot the metrics MSE, bias and variance for %s ? [y/n]" %method)
+        if answer == 'y':
+            mse_OLS, r2_OLS, bias_OLS, var_OLS, lambda_val, eta_val = retrive_data_from_file('results_OneDim_OLS.txt')
+            lambda_val = lambda_values
+            MSE_OLS = []
+            BIAS_OLS = []
+            VAR_OLS = []
+            for i in range(len(lambda_val)):
+                MSE_OLS.append(mse_OLS)
+                BIAS_OLS.append(bias_OLS)
+                VAR_OLS.append(var_OLS)
+            plot_MSE_Bias_Var(MSE_OLS, BIAS_OLS, VAR_OLS, lambda_val, eta_val, method)
+
 
     elif method == 'NN':
         mse_average = []
@@ -218,19 +195,19 @@ def OneDim(L, iterations, lambda_values, method):
             r2score_average.append(r2_score)
             bias_average.append(bias) 
             var_average.append(var)
-            #mse_min.append(mse_min_value)
-            #r2_for_min_mse.append(R2_for_Min_MSE_value)
         
         file.write('Etas: %s' % etas)
         file.write('MSE_average:        %s \n' %mse_average)
         file.write('R2_score_average:   %s \n' %r2score_average)
         file.write('Bias_average:       %s \n' %bias_average)
-        file.write('Variance_average:   %s \n' %var_average)
-        #file.write('Min_MSE_value:      %s \n' %mse_min)
-        #file.write('R2_for_Min_MSE_value:       %f \n' %r2_for_min_mse)
-        file.write('\n') 
+        file.write('Variance_average:   %s   ' %var_average)
         file.close()
 
+        answer = input("Do you want to plot the metrics MSE, R2-score, bias and variance for %s ? [y/n]" %method)
+        if answer == 'y':
+            mse_NN, r2_NN, bias_NN, var_NN, lambda_val, eta_val = retrive_data_from_file('results_OneDim_NN.txt')
+            plot_MSE_Bias_Var(mse_NN, bias_NN, var_NN, lambda_val, eta_val, method)
+            plot_R2score_NN(r2_NN, eta_val)
     else:
 
         mse_average = []
@@ -242,7 +219,6 @@ def OneDim(L, iterations, lambda_values, method):
         r2_for_min_mse = []
 
         for l, lambda_value in enumerate(lambda_values):
-            print(lambda_values)
             if method == 'Ridge':
                 mse_min_value = 1000
                 for i in range(iterations):
@@ -254,22 +230,19 @@ def OneDim(L, iterations, lambda_values, method):
                         R2_for_Min_MSE_value = r2score[i]
                         best_beta = beta
                         iteration_best = i
-                        #print('mse_min:', mse_min)
 
             if method == 'Lasso':
                 mse_min_value = 1000
                 for i in range(iterations):
                     X_train, E_train = bootstrap(X_train,E_train)
-                    #print(i)
                     mse[i], r2score[i], bias[i], var[i], beta = lasso(X_train,E_train,X_test,E_test, method, lambda_value)
                     beta_list.append(beta)
                     if mse[i] < mse_min_value: 
-                        #print('hei')
                         mse_min_value = mse[i]
                         R2_for_Min_MSE_value = r2score[i]
                         best_beta = beta
                         iteration_best = i
-                        #print('mse_min:', mse_min)
+
             mse_average.append(np.mean(mse))
             r2score_average.append(np.mean(r2score))
             bias_average.append(np.mean(bias)) 
@@ -277,20 +250,42 @@ def OneDim(L, iterations, lambda_values, method):
             mse_min.append(mse_min_value)
             r2_for_min_mse.append(R2_for_Min_MSE_value)
 
-        plot_Jstates(beta, method, lambda_value, L)
+        #Uncomment if you want to plot initial Jstates
+        #plot_Jstates(beta, method, lambda_value, L)
 
-        file.write('The results from running with lamda = %s \n' % lambda_values)
+        file.write('The_results_from_running_with_lamda: %s \n' % lambda_values)
         file.write('MSE_average:        %s \n' %mse_average)
         file.write('R2_score_average:   %s \n' %r2score_average)
         file.write('Bias_average:       %s \n' %bias_average) 
         file.write('Variance_average:   %s \n' %var_average)
         file.write('Min_MSE_value:      %s \n' %mse_min) 
         file.write('R2_for_Min_MSE_value:       %s \n' %r2_for_min_mse)
-        file.write('\n')
         file.close()
 
+        answer = input("Do you want to plot the metrics MSE, bias and variance for %s ? [y/n]" %method)
+        if answer == 'y':
+            if method == 'Ridge':
+                mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge, lambda_val, eta_val = retrive_data_from_file('results_OneDim_Ridge.txt')
+                plot_MSE_Bias_Var(mse_Ridge, bias_Ridge, var_Ridge, lambda_val, eta_val, method)
+            if method == 'Lasso':
+                mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso, lambda_val, eta_val = retrive_data_from_file('results_OneDim_Lasso.txt')
+                plot_MSE_Bias_Var(mse_Lasso, bias_Lasso, var_Lasso, lambda_val, eta_val, method)
 
-    #return mse_average, r2score_average, bias_average, var_average, np.array(beta_list), mse_min, r2_for_min_mse 
+
+
+        answer = input("If you have ran OLS, Ridge and Lasso you can plot the R2-score. Do you want that? [y/n]")
+            
+        if answer == 'y':
+            mse_Ridge, r2_Ridge, bias_Ridge, var_Ridge, lambda_val, eta_val = retrive_data_from_file('results_OneDim_Ridge.txt')
+            mse_Lasso, r2_Lasso, bias_Lasso, var_Lasso, lambda_val, eta_val = retrive_data_from_file('results_OneDim_Lasso.txt')
+            mse_OLS, r2_OLS, bias_OLS, var_OLS, lambda_val, eta_val = retrive_data_from_file('results_OneDim_OLS.txt')
+
+            lambda_val = lambda_values
+            R2_OLS = []
+            for i in range(len(lambda_val)):
+                R2_OLS.append(r2_OLS)
+
+            plot_R2score(R2_OLS, r2_Ridge, r2_Lasso, lambda_val)
 
 
 
@@ -323,17 +318,11 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
             p1 = 1./(1 + np.exp(-X_test @ beta))
             Error = p1 - Y_test
             Acc_before_train = Accuracy(Error)
-            #eta = 0.01
-            #batch = 200
             Acc_training = []
             for i in range(Niterations):
-                #index = np.random.randint(len(X_train), size = batch)
                 p = 1./(1+np.exp(-X_train @ beta)) 
-                
-                #p = np.choose(Y_train, [p0,p1])
-                dC = -X_train.T @ (Y_train - p)# / len(Y_train[index])
+                dC = -X_train.T @ (Y_train - p)
                 beta = beta - dC*eta # beta is the same as weights in one dim.
-                #correct = p >= 0.5
                 Error = p - Y_train
                 Acc_training.append(Accuracy(Error))
                 
@@ -354,16 +343,8 @@ def TwoDim(X_train, X_test, Y_train, Y_test, NN, num_classes):
 
 
     del X_train, X_test, Y_train, Y_test
-        
 
 
+                
 
-def Plot_Accuracy(acc, eta): # TO BE REMOVED!
 
-    xaxis = np.linspace(0,len(acc)-1, len(acc))
-    plt.plot(xaxis , acc, 'bo', markersize=2, label='Training accuracy')
-    plt.title(r"Accuracy for the training on two dimensional Ising-model with $\eta$ = %1.1e" % eta)
-    plt.xlabel("Number of iterations")
-    plt.ylabel("Percentage of correct predictions")
-    plt.legend()
-    plt.show()

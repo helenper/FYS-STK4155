@@ -8,19 +8,17 @@ def sigmoid(z):
 	return 1/(1 + np.exp(-z))  # Ok :)
 
 def feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_output):
-	# 
 	# weighted sum of inputs to the hidden layer
-	z_hidden = np.matmul(X_train,weights_hidden) + bias_hidden #hidden layer
-	activation_hidden = sigmoid(z_hidden) #Sigmoid layer hidden
+	z_hidden = np.matmul(X_train,weights_hidden) + bias_hidden 
+	activation_hidden = sigmoid(z_hidden) 
 	
-	z_output = np.matmul(activation_hidden, weights_output) + bias_output #layer
-	activation_output = sigmoid(z_output) # Sigmoid layer 
+	z_output = np.matmul(activation_hidden, weights_output) + bias_output 
+	activation_output = sigmoid(z_output) 
 
 	return activation_hidden, activation_output
 
 
 def backwardpropagation(X_train,E_train, weights_hidden, bias_hidden, weights_output, bias_output, activation_hidden, activation_output):
-	#activation_hidden, activation_output = feed_forward(X_train, weights_hidden, bias_hidden, weights_output, bias_output)
 	
 	error_output = activation_output - E_train.reshape(-1,1)
 	
@@ -65,7 +63,6 @@ def Neural_Network_TwoDim(X_train, E_train,X_test, E_test, eta, lmbd=1):
 		activation_hidden, activation_output = feed_forward(X_train[index], weights_hidden, bias_hidden, weights_output, bias_output)
 		dWo, dBo, dWh, dBh, acc = backwardpropagation(X_train[index], E_train[index], weights_hidden, bias_hidden, weights_output, bias_output, activation_hidden, activation_output)
 		Acc_training.append(acc)
-#		dWo, dBo, dWh, dBh = backwardpropagation(X_train, E_train, weights_hidden, bias_hidden, weights_output, bias_output)
 		
 		#update weights and biases
 		weights_output -= eta * dWo
