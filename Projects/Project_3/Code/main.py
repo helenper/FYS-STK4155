@@ -5,7 +5,6 @@
 ####################
 
 
-from functions import *
 import sys
 import numpy as np
 import scipy.sparse as sp
