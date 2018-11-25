@@ -60,6 +60,8 @@ def dataimport(which_set, datatype, derived_feat=True, start=0, stop=np.inf):
 		# Only the 8 low level features
 		X = X[:, 0:8]
 
+	return X, y
+
 
 
 
