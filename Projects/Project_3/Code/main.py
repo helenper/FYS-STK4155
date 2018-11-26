@@ -11,7 +11,9 @@ import scipy.sparse as sp
 import warnings
 import pickle
 import os
-from Classtesting import *
+from Dataimporting import *
+from Neural_Net import *
+
 #Comment this to turn on warnings
 #warnings.filterwarnings('ignore')
 
@@ -22,10 +24,8 @@ np.random.seed(12)
 data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]')
 
 
-X_train, y_train = dataimport(data, train)
-X_validate, y_validate = dataimport(data, validate)
-X_test, y_test = dataimport(data, test)
+X_train, y_train, X_validate, y_validate, X_test, y_test = dataimport(data, 'test',derived_feat='only')
 
-
+Network(X_train,y_train,X_validate,y_validate,X_test,y_test,1,10)
 
 
