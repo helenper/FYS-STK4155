@@ -22,21 +22,9 @@ np.random.seed(12)
 data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]')
 
 
-if data == 'h':
-
-	X_train, y_train = dataimport(data, train)
-	X_validate, y_validate = dataimport(data, validate)
-	X_test, y_test = dataimport(data, test)
-
-elif data == 's':
-
-	X_train, y_train = dataimport(data, train)
-	X_validate, y_validate = dataimport(data, validate)
-	X_test, y_test = dataimport(data, test)
-
-
-else:
-	print("Choose a dataset, Higgs or SUSY.")
+X_train, y_train = dataimport(data, train)
+X_validate, y_validate = dataimport(data, validate)
+X_test, y_test = dataimport(data, test)
 
 
 
