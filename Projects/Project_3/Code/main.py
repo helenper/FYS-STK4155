@@ -21,11 +21,14 @@ np.random.seed(12)
 
 # system size
 
+num_layers = 1
+num_nodes = 100
+
 data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]')
 
 
 X_train, y_train, X_validate, y_validate, X_test, y_test = dataimport(data,derived_feat='only')
 
-Network(X_train,y_train,X_validate,y_validate,X_test,y_test,1,10)
+Network(X_train,y_train,X_validate,y_validate,X_test,y_test,num_layers,num_nodes)
 
 
