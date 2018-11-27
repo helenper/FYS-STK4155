@@ -20,7 +20,7 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	model.compile(optimizer='SGD', loss='binary_crossentropy', metrics=['accuracy'])
 
 
-	model.fit(X_train,y_train,epochs=100,batch_size=32,validation_data=[X_validate,y_validate])
+	model.fit(X_train,y_train,epochs=100,batch_size=100,validation_data=[X_validate,y_validate])
 
 
 	print('Accuracy: ', model.evaluate(X_test, y_test))
