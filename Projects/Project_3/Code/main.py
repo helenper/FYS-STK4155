@@ -24,7 +24,7 @@ np.random.seed(12)
 data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]')
 
 
-X_train, y_train, X_validate, y_validate, X_test, y_test = dataimport(data, 'test',derived_feat='only')
+X_train, y_train, X_validate, y_validate, X_test, y_test = dataimport(data,derived_feat='only')
 
 Network(X_train,y_train,X_validate,y_validate,X_test,y_test,1,10)
 
