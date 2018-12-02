@@ -24,7 +24,7 @@ np.random.seed(12)
 num_layers = 1
 num_nodes = 300
 batch_size = 100
-epochs = 1000
+epochs = 1
 
 data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]')
 
