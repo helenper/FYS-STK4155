@@ -41,7 +41,7 @@ def dataimport(which_set, derived_feat=True, start=0, stop=np.inf):
 	#elif datatype == 'test':
 	X_test = X[ntrain+nvalid:ntrain+nvalid+ntest, :]
 	y_test = y[ntrain+nvalid:ntrain+nvalid+ntest]
-		
+
 	if which_set == 'h' and derived_feat == 'only':
 		# Only the 7 high level features
 		X_train = X_train[:, 21:28]
