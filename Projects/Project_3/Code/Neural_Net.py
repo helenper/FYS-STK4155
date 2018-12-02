@@ -8,9 +8,9 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	model = tf.keras.Sequential()
 
-	input_initializer = tf.keras.initializer.RandomNormal(mean=0.0,stddev=0.1)
-	hidden_initializer = tf.keras.initializer.RandomNormal(mean=0.0,stddev=0.05)
-	output_initializer = tf.keras.initializer.RandomNormal(mean=0.0,stddev=0.001)
+	input_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.1)
+	hidden_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.05)
+	output_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.001)
 
 	model.add(tf.keras.layers.Dense(num_nodes, kernel_initializer=input_initializer, activation='tanh', input_dim=X_train.shape[1]))
 	#model.add(tf.keras.layers.Dropout(0.3))
@@ -23,13 +23,13 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	earlystop = tf.keras.callbacks.EarlyStopping(monitor='val_loss',min_delta=0.00001,patience=10)
 
-	exp_learning_rate = tf.keras.LearningRateScheduler()
+	#exp_learning_rate = tf.keras.callbacks.LearningRateScheduler()
 
 	sgd = tf.keras.optimizers.SGD(lr=0.05,momentum=0.9,decay=0.0000002) # Er dette riktig? I artikkelen er decay=1.0000002 virker det som. Og det er en exponential decay, noe jeg ikke tror Keras bruker. Skal googles.
 	model.compile(optimizer=sgd, loss='binary_crossentropy')
 
 
-	model.fit(X_train,y_train,epochs=epochs,batch_size=batch_size,validation_data=[X_validate,y_validate], callbacks=[earlystop,exp_learning_rate])
+	model.fit(X_train,y_train,epochs=epochs,batch_size=batch_size,validation_data=[X_validate,y_validate], callbacks=[earlystop])#,exp_learning_rate])
 
 
 	ypred = model.predict(X_test, batch_size=batch_size)
@@ -50,7 +50,8 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	#print('Accuracy: ', model.evaluate(X_test, y_test))
 
-
+"""
 def exponential_decay(epoch,lr): # Her skal man kasnkje importerer noe? Jeg skal snakke med knut
 
 	lr = lr/
+"""
