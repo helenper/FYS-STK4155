@@ -8,20 +8,26 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	model = tf.keras.Sequential()
 
-	model.add(tf.keras.layers.Dense(num_nodes, activation='tanh', input_dim=X_train.shape[1]))
+	input_initializer = tf.keras.initializer.RandomNormal(mean=0.0,stddev=0.1)
+	hidden_initializer = tf.keras.initializer.RandomNormal(mean=0.0,stddev=0.05)
+	output_initializer = tf.keras.initializer.RandomNormal(mean=0.0,stddev=0.001)
+
+	model.add(tf.keras.layers.Dense(num_nodes, kernel_initializer=input_initializer, activation='tanh', input_dim=X_train.shape[1]))
 	#model.add(tf.keras.layers.Dropout(0.3))
 	
 	for i in range(num_layers):
-		model.add(tf.keras.layers.Dense(num_nodes, activation='tanh'))
+		model.add(tf.keras.layers.Dense(num_nodes, kernel_initializer=hidden_initializer, activation='tanh'))
 		#model.add(tf.keras.layers.Dropout(0.3))
 
-	model.add(tf.keras.layers.Dense(y_train.shape[1], activation='sigmoid'))
+	model.add(tf.keras.layers.Dense(y_train.shape[1], kernel_initializer=output_initializer, activation='sigmoid'))
 
-	sgd = tf.keras.optimizers.SGD(lr=0.05)
-	model.compile(optimizer='sgd', loss='binary_crossentropy')
+	callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss',min_delta=0.00001,patience=10)
+
+	sgd = tf.keras.optimizers.SGD(lr=0.05,momentum=0.9,decay=0.0000002) # Er dette riktig? I artikkelen er decay=1.0000002 virker det som. Og det er en exponential decay, noe jeg ikke tror Keras bruker. Skal googles.
+	model.compile(optimizer=sgd, loss='binary_crossentropy')
 
 
-	model.fit(X_train,y_train,epochs=epochs,batch_size=batch_size,validation_data=[X_validate,y_validate])
+	model.fit(X_train,y_train,epochs=epochs,batch_size=batch_size,validation_data=[X_validate,y_validate], callbacks=callback)
 
 
 	ypred = model.predict(X_test, batch_size=batch_size)
@@ -33,10 +39,10 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	print('AUC: ', AUC)
 
 	file = open('AUC_result_layers%s_nodes%s_batch%s_%s.txt' % (num_layers,num_nodes,batch_size,data),'w')
-	file.write('AUC: %f' % AUC)
-	file.write('Dataset: %f' % data)
-	file.write('Nodes: %f' % num_nodes)
-	file.write('Batch: %f' % batch_size)
+	file.write('AUC: %f \n' % AUC)
+	file.write('Dataset: %s \n' % data)
+	file.write('Nodes: %f \n' % num_nodes)
+	file.write('Batch: %f \n' % batch_size)
 	file.write('Layers: %f' % num_layers)
 	file.close()
 
