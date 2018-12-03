@@ -4,20 +4,22 @@ import tensorflow as tf
 from sklearn.metrics import roc_auc_score
 
 
-def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data):
+def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data): # input_hidden_activation, output_activation):
 
 	model = tf.keras.Sequential()
 
-	input_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.1)
+	# Weights initializers for the different layers
+
+	input_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.1) 
 	hidden_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.05)
 	output_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.001)
 
 	model.add(tf.keras.layers.Dense(num_nodes, kernel_initializer=input_initializer, activation='tanh', input_dim=X_train.shape[1]))
-	#model.add(tf.keras.layers.Dropout(0.3))
+	if drop == 'True': model.add(tf.keras.layers.Dropout(0.3))
 	
 	for i in range(num_layers):
 		model.add(tf.keras.layers.Dense(num_nodes, kernel_initializer=hidden_initializer, activation='tanh'))
-		#model.add(tf.keras.layers.Dropout(0.3))
+		if drop == 'True': model.add(tf.keras.layers.Dropout(0.3))	
 
 	model.add(tf.keras.layers.Dense(y_train.shape[1], kernel_initializer=output_initializer, activation='sigmoid'))
 
