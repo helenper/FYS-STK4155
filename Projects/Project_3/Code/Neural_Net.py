@@ -4,9 +4,11 @@ import tensorflow as tf
 from sklearn.metrics import roc_auc_score
 
 
-def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data): # input_hidden_activation, output_activation):
+def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data, drop=False): # input_hidden_activation, output_activation):
 
 	model = tf.keras.Sequential()
+
+
 
 	# Weights initializers for the different layers
 
