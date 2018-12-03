@@ -2,13 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from sklearn.metrics import roc_auc_score
-
+import time
 
 def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data, drop=False): # input_hidden_activation, output_activation):
 
 	model = tf.keras.Sequential()
 
-
+	start_time = time.time()
 
 	# Weights initializers for the different layers
 
@@ -50,6 +50,7 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	file.write('Nodes: %f \n' % num_nodes)
 	file.write('Batch: %f \n' % batch_size)
 	file.write('Layers: %f' % num_layers)
+	file.write('Total runtime: %f' % (time.time() - start_time))
 	file.close()
 
 	#print('Accuracy: ', model.evaluate(X_test, y_test))
