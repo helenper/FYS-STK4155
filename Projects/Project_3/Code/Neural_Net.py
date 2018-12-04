@@ -47,7 +47,7 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	print('AUC: ', AUC)
 
-	file = open('AUC_result_layers%s_nodes%s_batch%s_%s.txt' % (num_layers,num_nodes,batch_size,data),'w')
+	file = open('AUC_result_layers%s_nodes%s_batch%s_%s_drop%s.txt' % (num_layers,num_nodes,batch_size,data,drop),'w')
 	file.write('AUC: %f \n' % AUC)
 	file.write('Dataset: %s \n' % data)
 	file.write('Nodes: %f \n' % num_nodes)
@@ -73,5 +73,5 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	plt.xlabel('True positive rate')
 	plt.ylabel('False positive rate')
 	plt.title('ROC Curve')
-	plt.savefig('ROC_dataset_%s_nodes%f_nlayers%f.txt' % (data,num_nodes,num_layers))
+	plt.savefig('ROC_dataset_%s_nodes%f_nlayers%f_%s.txt' % (data,num_nodes,num_layers,drop))
 	
