@@ -30,7 +30,7 @@ batch_size = np.float(sys.argv[3])
 epochs = np.float(sys.argv[4])
 
 data = sys.argv[5]
-data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]') 
+#data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]') 
 
 
 input_and_hidden_activation = sys.argv[6]
