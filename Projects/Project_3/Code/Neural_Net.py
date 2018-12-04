@@ -27,11 +27,11 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	model.add(tf.keras.layers.Dense(y_train.shape[1], kernel_initializer=output_initializer, activation='sigmoid'))
 	
 
-	earlystop = tf.keras.callbacks.EarlyStopping(monitor='val_loss',min_delta=0.01,patience=10)
+	earlystop = tf.keras.callbacks.EarlyStopping(monitor='val_loss',min_delta=0.00001,patience=3, verbose=1)
 
 	#exp_learning_rate = tf.keras.callbacks.LearningRateScheduler()
 
-	sgd = tf.keras.optimizers.SGD(lr=0.05,momentum=0.9)#,decay=0.0000002) # Er dette riktig? I artikkelen er decay=1.0000002 virker det som. Og det er en exponential decay, noe jeg ikke tror Keras bruker. Skal googles.
+	sgd = tf.keras.optimizers.SGD(lr=0.05,momentum=0.95,decay=0.0000002) 
 	model.compile(optimizer=sgd, loss='binary_crossentropy')
 
 
@@ -43,6 +43,7 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	print('Layers: ', num_layers, 'Nodes: ', num_nodes, 'Batch size: ', batch_size)
 
 	AUC = roc_auc_score(y_test,ypred)
+	False_positive_rate, True_positive_rate = roc_curve(y_test,ypred)
 
 	print('AUC: ', AUC)
 
@@ -55,10 +56,14 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	file.write('Total runtime: %f' % (time.time() - start_time))
 	file.close()
 
-	#print('Accuracy: ', model.evaluate(X_test, y_test))
 
-"""
-def exponential_decay(epoch,lr): # Her skal man kasnkje importerer noe? Jeg skal snakke med knut
+	plt.figure()
 
-	lr = lr/
-"""
+	plt.plot(True_positive_rate,False_positive_rate)
+	plt.xlim([0.0,1.0])
+	plt.ylim([0.0,1.0])
+	plt.xlabel('True positive rate')
+	plt.ylabel('False positive rate')
+	plt.title('ROC Curve')
+	plt.show()
+
