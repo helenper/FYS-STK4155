@@ -7,7 +7,6 @@
 
 import sys
 import numpy as np
-import scipy.sparse as sp
 import warnings
 import pickle
 import os
@@ -21,21 +20,26 @@ np.random.seed(12)
 
 # system size
 
-num_layers = 1 # np.float(sys.argv[1])
-num_nodes = 300 # np.float(sys.argv[2])
-batch_size = 100 # np.float(sys.argv[3])
-epochs = 100 # np.float(sys.argv[4])
+#num_layers = 1 
+num_layers = np.float(sys.argv[1])
+#num_nodes = 300 
+num_nodes =  np.float(sys.argv[2])
+#batch_size = 100 
+batch_size = np.float(sys.argv[3])
+#epochs = 100 
+epochs = np.float(sys.argv[4])
 
-data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]') # sys.argv[5]
+data = sys.argv[5]
+data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]') 
 
 
-# input_and_hidden_activation = sys.argv[6]
-# output_activation = sys.argv[7]
+input_and_hidden_activation = sys.argv[6]
+output_activation = sys.argv[7]
 
-# drop = sys.argv[8]
+drop = sys.argv[8]
 
 X_train, y_train, X_validate, y_validate, X_test, y_test = dataimport(data,derived_feat=False)
 
-Network(X_train,y_train,X_validate,y_validate,X_test,y_test,num_layers,num_nodes, batch_size, epochs, data)#input_and_hidden_activation, output_activation, drop)
+Network(X_train,y_train,X_validate,y_validate,X_test,y_test,num_layers,num_nodes, batch_size, epochs, data, input_and_hidden_activation, output_activation, drop)
 
 
