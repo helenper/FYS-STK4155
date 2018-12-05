@@ -40,8 +40,10 @@ drop = sys.argv[8]
 
 derived_feat = sys.argv[9]
 
+optimizer = sys.argv[10]
+
 X_train, y_train, X_validate, y_validate, X_test, y_test = dataimport(data,derived_feat=derived_feat)
 
-Network(X_train,y_train,X_validate,y_validate,X_test,y_test,num_layers,num_nodes, batch_size, epochs, data, input_and_hidden_activation, output_activation, drop, derived_feat)
+Network(X_train,y_train,X_validate,y_validate,X_test,y_test,num_layers,num_nodes, batch_size, epochs, data, input_and_hidden_activation, output_activation, drop, derived_feat, optimizer)
 
 
