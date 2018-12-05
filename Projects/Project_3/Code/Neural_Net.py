@@ -4,7 +4,7 @@ import tensorflow as tf
 from sklearn.metrics import roc_auc_score, roc_curve
 import time
 
-def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data, input_hidden_activation, output_activation, drop, derived_feat):
+def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data, input_hidden_activation, output_activation, drop, derived_feat, optimizer):
 
 	model = tf.keras.Sequential()
 
@@ -32,7 +32,7 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	#exp_learning_rate = tf.keras.callbacks.LearningRateScheduler()
 
 	sgd = tf.keras.optimizers.SGD(lr=0.05,momentum=0.95,decay=0.0000002) 
-	model.compile(optimizer=sgd, loss='binary_crossentropy')
+	model.compile(optimizer=sgd, loss='binary_crossentropy') if optimizer == 'sgd' else model.compile(optimizer=optimizer, loss='binary_crossentropy')
 
 
 	model_info = model.fit(X_train,y_train,epochs=epochs,batch_size=batch_size,validation_data=[X_validate,y_validate], callbacks=[earlystop])#,exp_learning_rate])
@@ -47,7 +47,7 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	print('AUC: ', AUC)
 
-	file = open('AUC_result_layers%s_nodes%s_batch%s_%s_drop%s_Feat%s.txt' % (num_layers,num_nodes,batch_size,data,drop,derived_feat),'w')
+	file = open('AUC_result_layers%s_nodes%s_batch%s_%s_drop-%s_Feat%s_%s.txt' % (num_layers,num_nodes,batch_size,data,drop,derived_feat,optimizer),'w')
 	file.write('AUC: %f \n' % AUC)
 	file.write('Dataset: %s \n' % data)
 	file.write('Nodes: %f \n' % num_nodes)
@@ -73,5 +73,5 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	plt.xlabel('True positive rate')
 	plt.ylabel('False positive rate')
 	plt.title('ROC Curve')
-	plt.savefig('ROC_dataset_%s_nodes%f_nlayers%f_%s_Feat%s.png' % (data,num_nodes,num_layers,drop,derived_feat))
+	plt.savefig('ROC_dataset_%s_nodes%f_nlayers%f_drop-%s_Feat%s_%s.png' % (data,num_nodes,num_layers,drop,derived_feat,optimizer))
 	
