@@ -4,7 +4,7 @@ import tensorflow as tf
 from sklearn.metrics import roc_auc_score, roc_curve
 import time
 
-def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data, drop, input_hidden_activation, output_activation, derived_feat):
+def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data, input_hidden_activation, output_activation, drop, derived_feat):
 
 	model = tf.keras.Sequential()
 
