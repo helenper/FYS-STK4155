@@ -38,8 +38,10 @@ output_activation = sys.argv[7]
 
 drop = sys.argv[8]
 
-X_train, y_train, X_validate, y_validate, X_test, y_test = dataimport(data,derived_feat=False)
+derived_feat = sys.argv[9]
 
-Network(X_train,y_train,X_validate,y_validate,X_test,y_test,num_layers,num_nodes, batch_size, epochs, data, input_and_hidden_activation, output_activation, drop)
+X_train, y_train, X_validate, y_validate, X_test, y_test = dataimport(data,derived_feat=derived_feat)
+
+Network(X_train,y_train,X_validate,y_validate,X_test,y_test,num_layers,num_nodes, batch_size, epochs, data, input_and_hidden_activation, output_activation, drop, derived_feat)
 
 
