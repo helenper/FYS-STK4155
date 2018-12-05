@@ -73,5 +73,5 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	plt.xlabel('True positive rate')
 	plt.ylabel('False positive rate')
 	plt.title('ROC Curve')
-	plt.savefig('ROC_dataset_%s_nodes%f_nlayers%f_%s_Feat%s.txt' % (data,num_nodes,num_layers,drop,derived_feat))
+	plt.savefig('ROC_dataset_%s_nodes%f_nlayers%f_%s_Feat%s.png' % (data,num_nodes,num_layers,drop,derived_feat))
 	
