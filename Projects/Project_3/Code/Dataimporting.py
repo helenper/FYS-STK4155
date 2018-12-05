@@ -5,7 +5,7 @@ import pandas as pd
 
 # Importing data
 
-def dataimport(which_set, derived_feat=True, start=0, stop=np.inf):
+def dataimport(which_set, derived_feat, start=0, stop=np.inf):
 
 	args = locals()
 
@@ -42,12 +42,12 @@ def dataimport(which_set, derived_feat=True, start=0, stop=np.inf):
 	X_test = X[ntrain+nvalid:ntrain+nvalid+ntest, :]
 	y_test = y[ntrain+nvalid:ntrain+nvalid+ntest]
 
-	if which_set == 'h' and derived_feat == 'only':
+	if which_set == 'h' and derived_feat == 'high':
 		# Only the 7 high level features
 		X_train = X_train[:, 21:28]
 		X_validate = X_validate[:, 21:28]
 		X_test = X_test[:, 21:28]
-	elif which_set == 'h' and not derived_feat:
+	elif which_set == 'h' and derived_feat == 'low':
 		# Only the 21 raw features
 		X_train = X_train[:, 0:21]
 		X_validate = X_validate[:, 0:21]
@@ -60,12 +60,12 @@ def dataimport(which_set, derived_feat=True, start=0, stop=np.inf):
 		X_train = X_train[:, 0:21]
 		X_validate = X_validate[:, 0:21]
 		X_test = X_test[:, 0:21]
-	elif which_set == 's' and derived_feat == 'only':
+	elif which_set == 's' and derived_feat == 'high':
 		# Only the 10 high level features
 		X_train = X_train[:, 8:18]
 		X_validate = X_validate[:, 8:18]
 		X_test = X_test[:, 8:18]
-	elif which_set == 's' and not derived_feat:
+	elif which_set == 's' and derived_feat == 'low':
 		# Only the 8 low level features
 		X_train = X_train[:, 0:8]
 		X_validate = X_validate[:, 0:8]
