@@ -3,8 +3,9 @@ import numpy as np
 import tensorflow as tf
 from sklearn.metrics import roc_auc_score, roc_curve
 import time
+import pylab
 
-def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data, input_hidden_activation, output_activation, drop, derived_feat, optimizer):
+def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers, num_nodes, batch_size, epochs, data, input_hidden_activation, output_activation, drop, derived_feat, optimizer, learning_rate):
 
 	model = tf.keras.Sequential()
 
@@ -31,7 +32,7 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	#exp_learning_rate = tf.keras.callbacks.LearningRateScheduler()
 
-	sgd = tf.keras.optimizers.SGD(lr=0.05,momentum=0.95,decay=0.0000002) 
+	sgd = tf.keras.optimizers.SGD(lr=learning_rate,momentum=0.95,decay=0.0000002) 
 	model.compile(optimizer=sgd, loss='binary_crossentropy') if optimizer == 'sgd' else model.compile(optimizer=optimizer, loss='binary_crossentropy')
 
 
@@ -47,12 +48,16 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	print('AUC: ', AUC)
 
-	file = open('AUC_result_layers%s_nodes%s_batch%s_%s_drop-%s_Feat%s_%s.txt' % (num_layers,num_nodes,batch_size,data,drop,derived_feat,optimizer),'w')
+	file = open('AUC_result_layers%d_nodes%d_%s_drop-%s_Feat%s_optimizer-%s_lr-%.4f.txt' % (num_layers,num_nodes,data,drop,derived_feat,optimizer,learning_rate),'w')
 	file.write('AUC: %f \n' % AUC)
 	file.write('Dataset: %s \n' % data)
 	file.write('Nodes: %f \n' % num_nodes)
 	file.write('Batch: %f \n' % batch_size)
 	file.write('Layers: %f \n' % num_layers)
+	file.write('Dropout: %s \n' % drop)
+	file.write('Feature: %s \n' % derived_feat)
+	file.write('Optimizer: %s \n' % optimizer)
+	file.write('Learning rate: %s \n' % learning_rate)
 	file.write('Total runtime: %f' % (time.time() - start_time))
 	file.close()
 
@@ -67,11 +72,13 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	
 	#plt.figure()
 
-	plt.plot(True_positive_rate,False_positive_rate)
+	plt.plot(True_positive_rate,1-False_positive_rate)
 	plt.xlim([0.0,1.0])
 	plt.ylim([0.0,1.0])
-	plt.xlabel('True positive rate')
-	plt.ylabel('False positive rate')
+	plt.xlabel('Signal efficiency', fontsize=18)
+	plt.ylabel('Background rejection', fontsize=18)
 	plt.title('ROC Curve')
-	plt.savefig('ROC_dataset_%s_nodes%f_nlayers%f_drop-%s_Feat%s_%s.png' % (data,num_nodes,num_layers,drop,derived_feat,optimizer))
+	pylab.xticks(fontsize=14)
+	pylab.yticks(fontsize=14)
+	plt.savefig('ROC_dataset_%s_nodes%d_nlayers%d_drop-%s_Feat%s_optimizer-%s_lr-%.4f.png' % (data,num_nodes,num_layers,drop,derived_feat,optimizer,learning_rate))
 	
