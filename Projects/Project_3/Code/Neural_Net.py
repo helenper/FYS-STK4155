@@ -77,7 +77,7 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	plt.ylim([0.0,1.0])
 	plt.xlabel('Signal efficiency', fontsize=18)
 	plt.ylabel('Background rejection', fontsize=18)
-	plt.title('ROC Curve')
+	plt.title('ROC Curve',fontsize=20)
 	pylab.xticks(fontsize=14)
 	pylab.yticks(fontsize=14)
 	plt.savefig('ROC_dataset_%s_nodes%d_nlayers%d_drop-%s_Feat%s_optimizer-%s_lr-%.4f.png' % (data,num_nodes,num_layers,drop,derived_feat,optimizer,learning_rate))
