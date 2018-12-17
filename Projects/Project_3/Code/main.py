@@ -16,21 +16,18 @@ from Neural_Net import *
 #Comment this to turn on warnings
 #warnings.filterwarnings('ignore')
 
-np.random.seed(12)
+#np.random.seed(12)
 
-# system size
-
-#num_layers = 1 
 num_layers = np.int(sys.argv[1])
-#num_nodes = 300 
+
 num_nodes =  np.int(sys.argv[2])
-#batch_size = 100 
+
 batch_size = np.int(sys.argv[3])
-#epochs = 100 
+
 epochs = np.int(sys.argv[4])
 
 data = sys.argv[5]
-#data = input('Which dataset do you want to run, HIGGS or SUSY? [h/s]') 
+
 
 
 input_and_hidden_activation = sys.argv[6]
