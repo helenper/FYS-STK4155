@@ -19,11 +19,10 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	model.add(tf.keras.layers.Dense(num_nodes, kernel_initializer=input_initializer, activation=input_hidden_activation, input_dim=X_train.shape[1]))
 	
-	if drop == 'True': model.add(tf.keras.layers.Dropout(0.3))
 	
 	for i in range(num_layers):
 		model.add(tf.keras.layers.Dense(num_nodes, kernel_initializer=hidden_initializer, activation=input_hidden_activation))
-		if drop == 'True': model.add(tf.keras.layers.Dropout(0.3))	
+		if drop == 'True' and i == 0: model.add(tf.keras.layers.Dropout(0.5))
 
 	model.add(tf.keras.layers.Dense(y_train.shape[1], kernel_initializer=output_initializer, activation=output_activation))
 	
