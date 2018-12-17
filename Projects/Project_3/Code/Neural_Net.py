@@ -11,14 +11,12 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	start_time = time.time()
 
-	# Weights initializers for the different layers
 
 	input_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.1) 
 	hidden_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.05)
 	output_initializer = tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.001)
 
 	model.add(tf.keras.layers.Dense(num_nodes, kernel_initializer=input_initializer, activation=input_hidden_activation, input_dim=X_train.shape[1]))
-	
 	
 	for i in range(num_layers):
 		model.add(tf.keras.layers.Dense(num_nodes, kernel_initializer=hidden_initializer, activation=input_hidden_activation))
@@ -29,13 +27,12 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 
 	earlystop = tf.keras.callbacks.EarlyStopping(monitor='val_loss',min_delta=0.00001,patience=10, verbose=1)
 
-	#exp_learning_rate = tf.keras.callbacks.LearningRateScheduler()
 
 	sgd = tf.keras.optimizers.SGD(lr=learning_rate,momentum=0.95,decay=0.0000002) 
 	model.compile(optimizer=sgd, loss='binary_crossentropy') if optimizer == 'sgd' else model.compile(optimizer=optimizer, loss='binary_crossentropy')
 
 
-	model_info = model.fit(X_train,y_train,epochs=epochs,batch_size=batch_size,validation_data=[X_validate,y_validate], callbacks=[earlystop])#,exp_learning_rate])
+	model_info = model.fit(X_train,y_train,epochs=epochs,batch_size=batch_size,validation_data=[X_validate,y_validate], callbacks=[earlystop])
 
 
 	ypred = model.predict(X_test, batch_size=batch_size)
@@ -60,16 +57,6 @@ def Network(X_train, y_train, X_validate, y_validate, X_test, y_test, num_layers
 	file.write('Total runtime: %f' % (time.time() - start_time))
 	file.close()
 
-	"""
-	plt.plot(model_info.history['val_loss'])#range(1,len(model_info.history['val_loss']) + 1), model_info.history['val_loss'])
-	plt.title('Model Loss')
-	plt.xlabel('Epoch')
-	plt.ylabel('Val Loss')
-	#plt.xticks(np.arange(1,len(model_info.history['val_loss'])+1),len(model_info.history['val_loss'])/10)
-	plt.savefig('Loss_dataset_%s_nodes%f_nlayers%f.txt' % (data,num_nodes,num_layers))
-	"""
-	
-	#plt.figure()
 
 	plt.plot(True_positive_rate,1-False_positive_rate)
 	plt.xlim([0.0,1.0])
