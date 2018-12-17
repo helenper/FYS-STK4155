@@ -25,20 +25,20 @@ def dataimport(which_set, derived_feat, start=0, stop=np.inf):
 	path = os.path.join("..",path_to_data, file_name)
 
 	X = pd.read_csv(path)	
-	#X = pkl.load(open(path, 'r'))
+	
 
 	y = X.iloc[:,0]
 	X = X.iloc[:,1:]
 
 	X = np.array(X, dtype='float32')
 	y = np.array(y, dtype='float32').reshape((-1,1))
-	#if datatype == 'train':	
+	
 	X_train = X[0:ntrain, :]
 	y_train = y[0:ntrain]
-	#elif datatype == 'validate':
+	
 	X_validate = X[ntrain:ntrain+nvalid, :]
 	y_validate = y[ntrain:ntrain+nvalid]
-	#elif datatype == 'test':
+	
 	X_test = X[ntrain+nvalid:ntrain+nvalid+ntest, :]
 	y_test = y[ntrain+nvalid:ntrain+nvalid+ntest]
 
@@ -74,21 +74,3 @@ def dataimport(which_set, derived_feat, start=0, stop=np.inf):
 	return X_train, y_train, X_validate, y_validate, X_test, y_test
 
 
-
-
-def standardize(X):
-
-
-	for j in range(X.shape[1]):
-		vec = X[:, j]
-		if np.min(vec) < 0:
-			# Assume data is Gaussian or uniform -- center and standardize
-			vec = vec - np.mean(vec)
-			vec = vec/np.std(vec)
-		elif np.max(vec) > 1.0:
-			# Assume data is exponential -- just set mean to 1
-			vec = vec/np.mean(vec)
-
-		X[:, j] = vec
-
-	return X
